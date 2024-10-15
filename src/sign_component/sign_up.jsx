@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { signUp } from "../service/wetherBackApi";
 
 function Sign_up_Form() {
     const {
@@ -15,22 +16,19 @@ function Sign_up_Form() {
     // 비밀번호 체크
     const password = watch("password", ""); 
 
-    const submitForm = (data) => {
+    const submitForm = async(data) => {
         console.log(data);
         // 서버와 연결하는 함수 
         // 서버에게 데이터를 보냄 
-        // fetch('/api/endpoint', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // }).then(response => {
-        //     if (response.ok) {
-        //         console.log('Data sent successfully!');
-        //     }
-        // });
-    }
+        try{
+            const result = await signUp(data);
+            console.log("Successs");
+            alert("회원가입 되었습니다.");
+        } catch(error){
+            console("fail", error);
+            alert(error.message || "회원가입 중 오류가 생겼습니다.")
+        }
+    };
 
     return (
         <div className="main_sign">
@@ -61,6 +59,17 @@ function Sign_up_Form() {
                         }
                     })} />
                 {errors.user_id && <p style={{ color: 'red' }}>{errors.user_id.message}</p>}
+
+                <label htmlFor="email">Email</label>
+                <input
+                    name="email"
+                    type="email"
+                    id="email"
+                    placeholder="이메일 입력"
+                    {...register('email', {
+                        required: "*이메일을 입력해주세요"
+                    })}
+                />
 
                 <label htmlFor="age">age</label>
                 <input
