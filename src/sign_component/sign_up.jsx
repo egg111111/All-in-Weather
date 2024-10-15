@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { signUp } from "../service/wetherBackApi";
+import { useNavigate } from "react-router-dom";
 
-function Sign_up_Form() {
+
+function SignUpForm() {
+    const navigate = useNavigate();
     const {
         register,
         watch,
-        formState: {
-            isSubmitting,
-            errors
-        },
+        formState: { isSubmitting, errors },
         handleSubmit,
     } = useForm();
 
-    // 비밀번호 체크
-    const password = watch("password", ""); 
 
-    const submitForm = async(data) => {
-        console.log(data);
-        // 서버와 연결하는 함수 
-        // 서버에게 데이터를 보냄 
-        try{
-            const result = await signUp(data);
-            console.log("Successs");
-            alert("회원가입 되었습니다.");
-        } catch(error){
-            console("fail", error);
-            alert(error.message || "회원가입 중 오류가 생겼습니다.")
+    const password = watch("password", "");
+
+
+    const submitForm = async (data) => {
+        try {
+            const response = await fetch('http://localhost:8080/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+   
+            if (response.ok) {
+                console.log('User registered successfully!');
+                navigate('/login');
+            } else {
+                console.error('Failed to register user:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
     };
+
+
+    const jobOptions = [
+        "무직", "경영·사무·금융·보험직", "연구직 및 공학 기술직",
+        "교육·법률·사회복지·경찰·소방직 및 군인", "보건·의료직",
+        "예술·디자인·방송·스포츠직", "미용·여행·숙박·음식·경비·청소직",
+        "영업·판매·운전·운송직", "건설·채굴직", "설치·정비·생산직",
+        "농업어업직", "학생"
+    ];
+
 
     return (
         <div className="main_sign">
@@ -42,8 +59,10 @@ function Sign_up_Form() {
                     placeholder="닉네임 입력"
                     {...register('username', {
                         required: "*닉네임을 입력해주세요"
-                    })} />
+                    })}
+                />
                 {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
+
 
                 <label htmlFor="user_id">ID</label>
                 <input
@@ -57,30 +76,23 @@ function Sign_up_Form() {
                             value: 6,
                             message: "*6자 이상으로 입력해주세요"
                         }
-                    })} />
-                {errors.user_id && <p style={{ color: 'red' }}>{errors.user_id.message}</p>}
-
-                <label htmlFor="email">Email</label>
-                <input
-                    name="email"
-                    type="email"
-                    id="email"
-                    placeholder="이메일 입력"
-                    {...register('email', {
-                        required: "*이메일을 입력해주세요"
                     })}
                 />
+                {errors.user_id && <p style={{ color: 'red' }}>{errors.user_id.message}</p>}
 
-                <label htmlFor="age">age</label>
+
+                <label htmlFor="age">Age</label>
                 <input
                     name="age"
                     type="number"
                     id="age"
-                    min={0}
+                    min={10}
                     max={100}
-                    {...register('age', { min: 10, max: 100 })} />
+                    {...register('age', { min: 10, max: 100 })}
+                />
 
-                <label htmlFor="password">password</label>
+
+                <label htmlFor="password">Password</label>
                 <input
                     name="password"
                     type="password"
@@ -90,8 +102,11 @@ function Sign_up_Form() {
                         required: "*비밀번호를 입력해주세요",
                         minLength: { value: 6, message: "*비밀번호는 6~20자 사이로 설정해주세요" },
                         maxLength: { value: 20, message: "*비밀번호는 6~20자 사이로 설정해주세요" }
-                    })} />
+                    })}
+                />
                 {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
+
+
                 <input
                     id="password2"
                     type="password"
@@ -103,29 +118,33 @@ function Sign_up_Form() {
                 />
                 {errors.password2 && <p style={{ color: 'red' }}>{errors.password2.message}</p>}
 
-                <label htmlFor="job">job</label>
-                <select name="job_category" id="job"
-                    {...register("job", {
-                        required: "*직업을 선택해주세요"
-                    })}>
-                    <option value="무직">무직</option>
-                    <option value="경영·사무·금융·보험직">경영·사무·금융·보험직</option>
-                    <option value="연구직 및 공학 기술직">연구직 및 공학 기술직</option>
-                    <option value="교육·법률·사회복지·경찰·소방직 및 군인">교육·법률·사회복지·경찰·소방직 및 군인</option>
-                    <option value="보건·의료직">보건·의료직</option>
-                    <option value="예술·디자인·방송·스포츠직">예술·디자인·방송·스포츠직</option>
-                    <option value="미용·여행·숙박·음식·경비·청소직">미용·여행·숙박·음식·경비·청소직</option>
-                    <option value="영업·판매·운전·운송직">영업·판매·운전·운송직</option>
-                    <option value="건설·채굴직">건설·채굴직</option>
-                    <option value="설치·정비·생산직">설치·정비·생산직</option>
-                    <option value="농업어업직">농업어업직</option>
-                    <option value="학생">학생</option>
+
+                <label htmlFor="email">Email</label>
+                <input
+                    name="email"
+                    type="text"
+                    id="email"
+                    placeholder="이메일 입력"
+                    {...register('email', {
+                        required: "이메일을 입력해주세요"
+                    })}
+                />
+                {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+
+
+                <label htmlFor="job">Job</label>
+                <select
+                    name="job_category"
+                    id="job"
+                    {...register("job", { required: "*직업을 선택해주세요" })}
+                >
+                    {jobOptions.map((job, index) => (
+                        <option key={index} value={job}>{job}</option>
+                    ))}
                 </select>
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                >
+
+                <button type="submit" disabled={isSubmitting}>
                     회원가입
                 </button>
             </form>
@@ -133,4 +152,5 @@ function Sign_up_Form() {
     );
 }
 
-export default Sign_up_Form;
+
+export default SignUpForm;

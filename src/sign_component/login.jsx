@@ -1,56 +1,81 @@
-import React, {useState, useEffect} from "react";
-import { useDispatch } from "react-redux";
-import { log_in } from "../service/wetherBackApi";
+import React, { useState, useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function login(){
+
+function Login() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    useEffect(()=> {
-
-    }, [])
-
-    const LoginResult = async(e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        const loginData = { id, password };
 
-        try{
-            const result = await log_in({id, password});
+        try {
+            const response = await fetch('http://localhost:8080/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
 
-            console.log("seecuess: ", result);
-            dispatch({type: "LOGIN_SUCCESS", payload: result});
-        }catch(error){
-            console.error("fail: ", error);
-            setError(error.message || "로그인에 실패하였습니다.");
+            if (response.ok) {
+                const data = await response.json();
+                console.log('로그인 성공:', data);
+
+                // 로그인 성공 시 토큰 저장 
+                localStorage.setItem('token', data.token);
+
+                // 사용자의 정보를 Redux에 저장할 수도 있습니다.
+                // dispatch(loginSuccess(data));
+
+                // 로그인 성공 후 이동할 페이지로 리다이렉트
+                navigate('/dashboard');
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || '로그인에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('로그인 중 에러 발생:', error);
+            setError('서버와의 연결이 원활하지 않습니다. 다시 시도해주세요.');
         }
-    } ;
+    };
 
-    return(
+
+    return (
         <>
             <h1>로그인</h1>
-            <form onSubmit={LoginResult}>
+            <form onSubmit={handleLogin}>
                 <label htmlFor="id">ID </label>
-                <input 
-                    type="text" 
-                    id="id" 
+                <input
+                    type="text"
+                    id="id"
                     value={id}
-                    onChange={(e) => setId(e.target.value)}/>
+                    onChange={(e) => setId(e.target.value)}
+                    required
+                />
+
 
                 <label htmlFor="password">Password </label>
-                <input 
+                <input
                     type="password"
                     id="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)} />
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+
 
                 <button type="submit">로그인</button>
-            </form>
-            {error && <p style={{color:'red'}}>{error}</p>}           
+            </form>        
         </>
-    )
-
+    );
 }
 
-export default login;
+
+export default Login;

@@ -1,14 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import sign_up from './sign_up.jsx';
 
-function HomeBasic() {
+
+function homeBasic() {
     const navigate = useNavigate();
 
-    // 회원가입 버튼 클릭 시 '/sign_up' 페이지로 이동하는 함수
+
     const handleSignUpClick = () => {
         navigate('/sign_up');
     };
+
+
+    const handleLoginClick = () => {
+        navigate('/login');
+    };
+
 
     return (
         <div>
@@ -18,7 +24,7 @@ function HomeBasic() {
                     회원가입
                 </button>
                 <p></p>
-                <button>
+                <button onClick={handleLoginClick}>
                     로그인
                 </button>
             </div>
@@ -26,4 +32,5 @@ function HomeBasic() {
     );
 }
 
-export default HomeBasic;
+
+export default homeBasic;
