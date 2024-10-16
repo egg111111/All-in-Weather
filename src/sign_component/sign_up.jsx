@@ -64,13 +64,13 @@ function SignUpForm() {
                 {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
                 <br/>
 
-                <label htmlFor="user_id">ID</label>
+                <label htmlFor="userId">ID</label>
                 <input
-                    name="user_id"
+                    name="userId"
                     type="text"
-                    id="user_id"
+                    id="userId"
                     placeholder="아이디 입력"
-                    {...register('user_id', {
+                    {...register('userId', {
                         required: "*아이디를 입력해주세요",
                         minLength: {
                             value: 6,
@@ -78,7 +78,7 @@ function SignUpForm() {
                         }
                     })}
                 />
-                {errors.user_id && <p style={{ color: 'red' }}>{errors.user_id.message}</p>}
+                {errors.userId && <p style={{ color: 'red' }}>{errors.userId.message}</p>}
                 <br/>
 
                 <label htmlFor="age">Age</label>

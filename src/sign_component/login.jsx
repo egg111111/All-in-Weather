@@ -14,7 +14,7 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const loginData = { username, password };
+        const loginData = { userId:username, password };
 
         try {
             const response = await fetch('http://localhost:8080/api/users/login', {
