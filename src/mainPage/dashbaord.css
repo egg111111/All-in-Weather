@@ -1,0 +1,19 @@
+.hamburger {
+    position: absolute; /* 절대위치 */
+    top: 20px; 
+    right: 20px; 
+    font-size: 24px; 
+    background: none; 
+    border: none; 
+    cursor: pointer;
+}
+
+.menu {
+    position: absolute; 
+    top: 100px; 
+    right: 20px; 
+    background-color: white; 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    z-index: 1000; /* 메뉴가 다른 요소 위에 표시되도록 */
+}

@@ -62,7 +62,7 @@ function SignUpForm() {
                     })}
                 />
                 {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
-
+                <br/>
 
                 <label htmlFor="user_id">ID</label>
                 <input
@@ -79,7 +79,7 @@ function SignUpForm() {
                     })}
                 />
                 {errors.user_id && <p style={{ color: 'red' }}>{errors.user_id.message}</p>}
-
+                <br/>
 
                 <label htmlFor="age">Age</label>
                 <input
@@ -90,7 +90,7 @@ function SignUpForm() {
                     max={100}
                     {...register('age', { min: 10, max: 100 })}
                 />
-
+                <br/>
 
                 <label htmlFor="password">Password</label>
                 <input
@@ -105,7 +105,7 @@ function SignUpForm() {
                     })}
                 />
                 {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
-
+                <br/>
 
                 <input
                     id="password2"
@@ -117,7 +117,7 @@ function SignUpForm() {
                     })}
                 />
                 {errors.password2 && <p style={{ color: 'red' }}>{errors.password2.message}</p>}
-
+                <br/>
 
                 <label htmlFor="email">Email</label>
                 <input
@@ -130,7 +130,7 @@ function SignUpForm() {
                     })}
                 />
                 {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
-
+                <br/>
 
                 <label htmlFor="job">Job</label>
                 <select
@@ -142,7 +142,7 @@ function SignUpForm() {
                         <option key={index} value={job}>{job}</option>
                     ))}
                 </select>
-
+                <br/>
 
                 <button type="submit" disabled={isSubmitting}>
                     회원가입

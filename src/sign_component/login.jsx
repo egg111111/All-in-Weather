@@ -20,23 +20,24 @@ function Login() {
             const response = await fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(loginData),
             });
 
             if (response.ok) {
                 const data = await response.json();
+                const token = data.token;
                 console.log('로그인 성공:', data);
 
-                // 로그인 성공 시 토큰 저장 
-                localStorage.getItem('token', data.token);
+                // 로그인 성공 시 토큰, 유저네임 저장 
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', username);
+                
 
                 // 사용자의 정보를 Redux에 저장
                 //dispatch(loginSuccess(data));
 
-                // 로그인 성공 후 이동할 페이지로 리다이렉트
                 navigate('/dashboard');
             } else {
                 const errorData = await response.json();
@@ -61,6 +62,7 @@ function Login() {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                 />
+                <br/>
 
                 <label htmlFor="password">Password </label>
                 <input
@@ -70,6 +72,7 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
+                <p></p>
 
                 <button type="submit">로그인</button>
             </form>        
