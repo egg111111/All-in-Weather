@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import './login.css';
 
 
 function Login() {
@@ -30,7 +31,7 @@ function Login() {
                 const token = data.token;
                 console.log('로그인 성공:', data);
 
-                // 로그인 성공 시 토큰, 유저네임 저장 
+                // 로그인 성공 시 토큰, 유저아이디 저장 
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', userId);
                 
@@ -59,30 +60,32 @@ function Login() {
 
     return (
         <>
-            <h1>로그인</h1>
-            <form onSubmit={handleLogin}>
-                <label htmlFor="userId">ID </label>
-                <input
-                    type="text"
-                    id="userId"
-                    value={userId}
-                    onChange={(e) => setUserId(e.target.value)}
-                    required
-                />
-                <br/>
+        <div className="div-main">
+            <h1 className="title-div">로그인</h1>
+                <form className="form-div" onSubmit={handleLogin} >
+                    <label htmlFor="userId">ID </label>
+                    <input
+                        type="text"
+                        id="userId"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                        required
+                    />
+                    <br/>
 
-                <label htmlFor="password">Password </label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <p></p>
+                    <label htmlFor="password">Password </label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <p></p>
 
-                <button type="submit">로그인</button>
-            </form>        
+                    <button type="submit">로그인</button>
+                </form>   
+            </div>     
         </>
     );
 }

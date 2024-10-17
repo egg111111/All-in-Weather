@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 function myPage(){
     const [userData, setUserData] = useState({
@@ -33,7 +34,7 @@ function myPage(){
             } catch (error) {
                 console.error("사용자 정보 가져오기 실패:", error);
                 console.log("Fetched token:", localStorage.getItem('token'));
-                console.log("Fetched username:", localStorage.getItem('username'));
+                console.log("Fetched username:", localStorage.getItem('userId'));
             }
         }
 
@@ -55,10 +56,19 @@ function myPage(){
             });
 
             if (response.ok) {
-                setMessage("회원 정보가 성공적으로 수정되었습니다.");
                 setEditMode(false);
+                Swal.fire({
+                    title:"회원 정보가 수정되었습니다.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             } else {
                 setMessage("회원 정보 수정에 실패했습니다.");
+                Swal.fire({
+                    title:"회원 정보 수정에 실패했습니다..",
+                    icon: "error"
+                })
             }
         } catch (error) {
             console.error("회원 정보 수정 중 에러 발생:", error);
@@ -71,19 +81,20 @@ function myPage(){
         setUserData({ ...userData, [name]: value });
     };
 
+
     return (
         <div>
             <h2>회원 정보</h2>
             {editMode ? (
                 <div>
-                    <label>userId: </label>
+                    {/* <label>userId: </label>
                     <input 
                         type="text" 
                         name="userId" 
                         value={userData.userId} 
                         onChange={handleChange} 
                     />
-                    <br/>
+                    <br/> */}
 
                     <label>Usernmae: </label>
                     <input 
@@ -126,12 +137,14 @@ function myPage(){
                 </div>
             ) : (
                 <div>
-                    <p><strong>Id:</strong> {userData.id}</p>
+                    <p><strong>ID:</strong> {userData.id}</p>
+                    <p><strong>UserId:</strong> {userData.userId}</p>
                     <p><strong>Username:</strong> {userData.username}</p>
                     <p><strong>Email:</strong> {userData.email}</p>
                     <p><strong>Age:</strong> {userData.age}</p>
                     {/* <p><strong>Job:</strong> {userData.job}</p> */}
-                    <button onClick={() => setEditMode(true)}>수정</button>
+                    <button onClick={() => setEditMode(true)}>회원 정보 수정</button> 
+                    <button onClick={() => setEditMode(true)}>비밀번호 변경</button>
                 </div>
             )}
 

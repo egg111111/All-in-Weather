@@ -1,12 +1,37 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import './dashbaord.css';
 
 function dashboard() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const username = localStorage.getItem('username');
+    const [username, setUsername] = useState("");
+    //const username = localStorage.getItem('username');
+
+    //username 가져오기 
+    useEffect(() => {
+        async function fetchUsername() {
+            const userId = localStorage.getItem('userId'); 
+            try {
+                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsername(data.username); // 서버에서 받아온 username
+                } else {
+                    console.error("Failed to fetch username");
+                }
+            } catch (error) {
+                console.error("Error fetching username:", error);
+            }
+        }
+
+        fetchUsername();
+    }, []);
 
     function handleClick() {
         navigate('/myPage');

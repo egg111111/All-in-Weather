@@ -5,15 +5,12 @@
     font-style: normal;
 }
 
-.title-h1{
+.div-main{
+    text-align: center;
+}
+
+.title-div{
     font-family: 'PyeongChangPeace-Bold';
     padding: 10%;
     text-shadow: 5px 5px rgb(255, 255, 255), 0px 1px rgb(255, 255, 255), 1px 0px rgb(255, 255, 255), 0px -1px rgb(255, 255, 255);
-
 }
-
-.main-div{
-    /* background-color: #C1D0D4; */
-    padding: 20%;
-}
-

@@ -1,6 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import './sign_up.css'
 
 
 function SignUpForm() {
@@ -28,6 +30,12 @@ function SignUpForm() {
    
             if (response.ok) {
                 console.log('User registered successfully!');
+                Swal.fire({
+                    title:"회원 가입이 완료되었습니다.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 navigate('/login');
             } else {
                 console.error('Failed to register user:', response.statusText);
@@ -49,7 +57,7 @@ function SignUpForm() {
 
     return (
         <div className="main_sign">
-            <h3>회원가입</h3>
+            <h1 className="title-div">회원가입</h1>
             <form onSubmit={handleSubmit(submitForm)} className="sub_sign">
                 <label htmlFor="username">Username</label>
                 <input
