@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import './hom_basic.css';
 
 
 function homeBasic() {
@@ -17,8 +18,8 @@ function homeBasic() {
 
 
     return (
-        <div>
-            <h1> All-in-Weather </h1>
+        <div className="main-div">
+            <h1 className="title-h1"> All-in-Weather </h1>
             <div className="div-box">
                 <button onClick={handleSignUpClick}>
                     회원가입

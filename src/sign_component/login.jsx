@@ -7,14 +7,14 @@ function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const loginData = { userId:username, password };
+        const loginData = { userId, password };
 
         try {
             const response = await fetch('http://localhost:8080/api/users/login', {
@@ -32,7 +32,7 @@ function Login() {
 
                 // 로그인 성공 시 토큰, 유저네임 저장 
                 localStorage.setItem('token', token);
-                localStorage.setItem('username', username);
+                localStorage.setItem('userId', userId);
                 
 
                 // 사용자의 정보를 Redux에 저장
@@ -49,17 +49,24 @@ function Login() {
         }
     };
 
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if(token){
+            navigate('/dashboard');
+        }
+    }, [navigate])
+
 
     return (
         <>
             <h1>로그인</h1>
             <form onSubmit={handleLogin}>
-                <label htmlFor="username">username </label>
+                <label htmlFor="userId">ID </label>
                 <input
                     type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    id="userId"
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
                     required
                 />
                 <br/>

@@ -18,10 +18,10 @@ function myPage(){
     useEffect(() => {
         
         async function fetchUserData() {
-            const username = localStorage.getItem('username');
+            const userId = localStorage.getItem('userId');
             
             try {
-                const response = await fetch(`http://localhost:8080/api/users/show/${username}`, {
+                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -42,9 +42,10 @@ function myPage(){
 
     // 사용자 정보 수정 API 요청
     const handleSaveChanges = async () => {
+        const userId = localStorage.getItem('userId');
         // e.preventDefault();
         try {
-            const response = await fetch("http://localhost:8080/api/users/update?id", {
+            const response = await fetch(`http://localhost:8080/api/users/update/${userId}`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -75,16 +76,16 @@ function myPage(){
             <h2>회원 정보</h2>
             {editMode ? (
                 <div>
-                    <label>id: </label>
+                    <label>userId: </label>
                     <input 
                         type="text" 
-                        name="id" 
-                        value={userData.id} 
+                        name="userId" 
+                        value={userData.userId} 
                         onChange={handleChange} 
                     />
                     <br/>
 
-                    <label>Username: </label>
+                    <label>Usernmae: </label>
                     <input 
                         type="text" 
                         name="username" 
@@ -102,13 +103,13 @@ function myPage(){
                     />
                     <br/>
 
-                    {/* <label>Age: </label>
+                    <label>Age: </label>
                     <input 
                         type="number" 
                         name="age" 
                         value={userData.age} 
                         onChange={handleChange} 
-                    /> */}
+                    /> 
                     <br/>
 
                     {/* <label>Job: </label>
@@ -128,7 +129,7 @@ function myPage(){
                     <p><strong>Id:</strong> {userData.id}</p>
                     <p><strong>Username:</strong> {userData.username}</p>
                     <p><strong>Email:</strong> {userData.email}</p>
-                    {/* <p><strong>Age:</strong> {userData.age}</p> */}
+                    <p><strong>Age:</strong> {userData.age}</p>
                     {/* <p><strong>Job:</strong> {userData.job}</p> */}
                     <button onClick={() => setEditMode(true)}>수정</button>
                 </div>
