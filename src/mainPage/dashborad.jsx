@@ -8,6 +8,8 @@ function dashboard() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [username, setUsername] = useState("");
     //const username = localStorage.getItem('username');
+    const [location, setLocation] = useState({ latitude: null, longitude: null });
+    const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
 
     //username 가져오기 
     useEffect(() => {
@@ -21,7 +23,7 @@ function dashboard() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setUsername(data.username); // 서버에서 받아온 username
+                    setUsername(data.username); 
                 } else {
                     console.error("Failed to fetch username");
                 }
@@ -31,6 +33,29 @@ function dashboard() {
         }
 
         fetchUsername();
+    }, []);
+
+     // 위치 정보 가져오기
+     useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    localStorage.setItem("latitude", latitude);
+                    localStorage.setItem("longitude", longitude);
+                    setLocation({ latitude, longitude }); 
+                    setLocationStatus("위치 정보 불러오기 성공");
+                    console.log("현재 위치: 위도, 경도", latitude, longitude)
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    setLocationStatus("위치 정보 불러오기 실패");
+                }
+            );
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+            setLocationStatus("위치 정보가 지원되지 않는 브라우저입니다.");
+        }
     }, []);
 
     function handleClick() {

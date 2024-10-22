@@ -1,8 +1,10 @@
 import React, { useCallback } from "react";
 import { useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function myPage(){
+    const navigate = useNavigate();
     const [userData, setUserData] = useState({
         id: "",
         username: "",
@@ -87,14 +89,14 @@ function myPage(){
             <h2>회원 정보</h2>
             {editMode ? (
                 <div>
-                    {/* <label>userId: </label>
+                    <label>userId: </label>
                     <input 
                         type="text" 
                         name="userId" 
                         value={userData.userId} 
                         onChange={handleChange} 
                     />
-                    <br/> */}
+                    <br/>
 
                     <label>Usernmae: </label>
                     <input 
@@ -144,7 +146,8 @@ function myPage(){
                     <p><strong>Age:</strong> {userData.age}</p>
                     {/* <p><strong>Job:</strong> {userData.job}</p> */}
                     <button onClick={() => setEditMode(true)}>회원 정보 수정</button> 
-                    <button onClick={() => setEditMode(true)}>비밀번호 변경</button>
+                    <button onClick={() => {navigate('/pwUpdate');}}>비밀번호 변경</button>
+                    <button onClick={() => {navigate('/dashboard');}}>돌아가기</button>
                 </div>
             )}
 
