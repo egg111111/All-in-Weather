@@ -108,6 +108,8 @@ function id_pw_update() {
                 })}
                 onClick={handleChange}
             />
+            {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
+            <br/>
             <br/>
             <label htmlFor="password2">비밀번호 확인</label>
             <input

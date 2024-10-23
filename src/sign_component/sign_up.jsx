@@ -46,15 +46,6 @@ function SignUpForm() {
     };
 
 
-    const jobOptions = [
-        "무직", "경영·사무·금융·보험직", "연구직 및 공학 기술직",
-        "교육·법률·사회복지·경찰·소방직 및 군인", "보건·의료직",
-        "예술·디자인·방송·스포츠직", "미용·여행·숙박·음식·경비·청소직",
-        "영업·판매·운전·운송직", "건설·채굴직", "설치·정비·생산직",
-        "농업어업직", "학생"
-    ];
-
-
     return (
         <div className="main_sign">
             <h1 className="title-div">회원가입</h1>
@@ -139,17 +130,6 @@ function SignUpForm() {
                 />
                 {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
                 <br/>
-
-                <label htmlFor="job">Job</label>
-                <select
-                    name="job_category"
-                    id="job"
-                    {...register("job", { required: "*직업을 선택해주세요" })}
-                >
-                    {jobOptions.map((job, index) => (
-                        <option key={index} value={job}>{job}</option>
-                    ))}
-                </select>
                 <br/>
 
                 <button type="submit" disabled={isSubmitting}>

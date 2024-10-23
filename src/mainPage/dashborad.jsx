@@ -10,6 +10,7 @@ function dashboard() {
     //const username = localStorage.getItem('username');
     const [location, setLocation] = useState({ latitude: null, longitude: null });
     const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
+    const [weatherData, setWeather] = useState("");
 
     //username 가져오기 
     useEffect(() => {
@@ -33,7 +34,7 @@ function dashboard() {
         }
 
         fetchUsername();
-    }, []);
+    }, [username]);
 
      // 위치 정보 가져오기
      useEffect(() => {
@@ -41,11 +42,12 @@ function dashboard() {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    localStorage.setItem("latitude", latitude);
-                    localStorage.setItem("longitude", longitude);
+                    // localStorage.setItem("latitude", latitude);
+                    // localStorage.setItem("longitude", longitude);
                     setLocation({ latitude, longitude }); 
                     setLocationStatus("위치 정보 불러오기 성공");
                     console.log("현재 위치: 위도, 경도", latitude, longitude)
+                    getWeather(latitude, longitude);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -58,6 +60,54 @@ function dashboard() {
         }
     }, []);
 
+    //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리 
+    //openWeatherMap API 로직 
+
+    const API_KEY = '819890026bf9aab1c43f4ee2ba683f4c';
+
+    const getWeather = (latitude, longitude) => {
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=kr`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            const weatherData = {
+                temp: json.main.temp,
+                place: json.name,
+                description: json.weather[0].main
+            };
+            setWeather(weatherData);
+            console.log(json);
+            console.log(weatherData);
+        })
+        .catch((error)=>{
+            console.error('Error: ', error);
+        })
+    }
+
+    //서버로 정보 보내기 
+    const sendWeatherPost = (data) =>{
+        fetch('http://localhost:8080/api/weahter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON.stringify(data)
+        })
+        .then((response) => {
+            if(response.ok){
+                console.log('sccuess');
+            } else{
+                console.error('fail');
+            }
+        })
+        .catch((error) => {
+            console.error('Error sending data to backend:', error);
+        })
+    }
+
+
+    //핸들러 로직
     function handleClick() {
         navigate('/myPage');
         setIsMenuOpen(false);
@@ -75,7 +125,9 @@ function dashboard() {
 
     return (
         <>
-            <h1> 여기 날씨 api </h1>
+            <h2> {weatherData.temp}°C </h2>
+            <p> {weatherData.place} </p>
+            <p> {weatherData.description} </p>
             
             <button className="hamburger" onClick={toggleMenu}>
                 {isMenuOpen ? '✖️' : '☰'} 
