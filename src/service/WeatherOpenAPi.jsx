@@ -2,7 +2,7 @@ import React from "react";
 import { json } from "react-router-dom";
 
 function WeatherOpenApi (){
-    const API_KEY = '819890026bf9aab1c43f4ee2ba683f4c';
+    const API_KEY = 'weahterkey';
 
     const getWether = () => {
         const lat = parseFloat(localStorage.getItem("latitude"));
