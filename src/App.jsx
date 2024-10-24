@@ -8,6 +8,7 @@ import Dashboard from './mainPage/dashborad';
 import MyPage from './mainPage/myPage';
 import WeatherOpenApi from './service/WeatherOpenAPi';
 import Id_pw_update from './mainPage/Id_pw_update';
+import ChatgptApi from './service/chatgptApi';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
@@ -22,8 +23,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />
-              <Route path="/WeatherAPITest" element={<WeatherOpenApi />} />
               <Route path="/pwUpdate" element={<Id_pw_update />} />
+              <Route path="/chatgpt" element={<ChatgptApi />} />
           </Routes>
       </Router>
     </Provider>

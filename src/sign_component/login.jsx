@@ -34,7 +34,7 @@ function Login() {
                 // 로그인 성공 시 토큰, 유저아이디 저장 
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', userId);
-                
+
 
                 // 사용자의 정보를 Redux에 저장
                 //dispatch(loginSuccess(data));
@@ -50,9 +50,20 @@ function Login() {
         }
     };
 
+    const handleGoogleLogin = () => {
+        // Google OAuth 인증을 위한 리디렉션
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    };
+
+    const handleNaverLogin = () => {
+        // Naver OAuth 인증을 위한 리디렉션
+        window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
+    };
+
+
     useEffect(() => {
         const token = localStorage.getItem('token')
-        if(token){
+        if (token) {
             navigate('/dashboard');
         }
     }, [navigate])
@@ -60,8 +71,8 @@ function Login() {
 
     return (
         <>
-        <div className="div-main">
-            <h1 className="title-div">로그인</h1>
+            <div className="div-main">
+                <h1 className="title-div">로그인</h1>
                 <form className="form-div" onSubmit={handleLogin} >
                     <label htmlFor="userId">ID </label>
                     <input
@@ -71,7 +82,7 @@ function Login() {
                         onChange={(e) => setUserId(e.target.value)}
                         required
                     />
-                    <br/>
+                    <br />
 
                     <label htmlFor="password">Password </label>
                     <input
@@ -84,8 +95,12 @@ function Login() {
                     <p></p>
 
                     <button type="submit">로그인</button>
-                </form>   
-            </div>     
+                </form>
+
+                <button onClick={handleGoogleLogin} style={{ margin: '10px' }}>Login with Google</button>
+                <button onClick={handleNaverLogin} style={{ margin: '10px' }}>Login with Naver</button>
+
+            </div>
         </>
     );
 }

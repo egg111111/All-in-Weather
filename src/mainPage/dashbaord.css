@@ -17,3 +17,16 @@
     padding: 10px; 
     z-index: 1000; /* 메뉴가 다른 요소 위에 표시되도록 */
 }
+
+img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
+
+.weather{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

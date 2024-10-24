@@ -1,7 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import ChatgptApi from "../service/chatgptApi";
 import './dashbaord.css';
+import { DiMagento } from "react-icons/di";
 
 function dashboard() {
     const navigate = useNavigate();
@@ -62,11 +64,10 @@ function dashboard() {
 
     //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리 
     //openWeatherMap API 로직 
-
-    const API_KEY = '819890026bf9aab1c43f4ee2ba683f4c';
-
     const getWeather = (latitude, longitude) => {
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=kr`)
+        const iconSection = document.querySelector('.icon');
+        const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${Weather_Key}&units=metric&lang=kr`)
         .then((response) => {
             return response.json();
         })
@@ -74,8 +75,11 @@ function dashboard() {
             const weatherData = {
                 temp: json.main.temp,
                 place: json.name,
-                description: json.weather[0].main
+                description: json.weather[0].description
             };
+            const icon = json.weather[0].icon;
+            const iconURL = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+            iconSection.setAttribute('src', iconURL);
             setWeather(weatherData);
             console.log(json);
             console.log(weatherData);
@@ -123,11 +127,18 @@ function dashboard() {
         setIsMenuOpen((props) => !props);
     };
 
+    //Gpt 호출 로직 
+    const handleCall_GPT = async() => {
+        ChatgptApi();
+    }
+
     return (
-        <>
-            <h2> {weatherData.temp}°C </h2>
-            <p> {weatherData.place} </p>
-            <p> {weatherData.description} </p>
+        <>  <div className="weather" >
+                <img className="weather_icon" class="icon"></img>
+                <h2> {weatherData.temp}°C </h2>
+                <p> {weatherData.place} </p>
+                <p> {weatherData.description} </p>
+            </div>
             
             <button className="hamburger" onClick={toggleMenu}>
                 {isMenuOpen ? '✖️' : '☰'} 
@@ -143,9 +154,10 @@ function dashboard() {
 
             <br/>
 
-            <button> 옷차림 추천 </button>
+            {/* <button> 옷차림 추천 </button> */}
             <button> 활동 추천 </button>
             <button> 준비물 추천 </button>
+            <ChatgptApi></ChatgptApi>
             <p>{username} 님 안녕하세요! </p>
         </>
     );

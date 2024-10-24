@@ -29,7 +29,7 @@ function SignUpForm() {
             });
    
             if (response.ok) {
-                console.log('User registered successfully!');
+                console.log('User registered successfully');
                 Swal.fire({
                     title:"회원 가입이 완료되었습니다.",
                     icon: "success",
