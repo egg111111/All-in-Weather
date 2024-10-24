@@ -152,7 +152,7 @@ function dashboard() {
                 </div>
             )}
 
-            <br/>
+            <br/> 
 
             {/* <button> 옷차림 추천 </button> */}
             <button> 활동 추천 </button>
