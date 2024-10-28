@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import './login.css';
 
 
@@ -47,6 +48,11 @@ function Login() {
         } catch (error) {
             console.error('로그인 중 에러 발생:', error);
             setError('서버와의 연결이 원활하지 않습니다. 다시 시도해주세요.');
+            Swal.fire({
+                title: "로그인에 실패했습니다.",
+                text: "아이디 또는 비밀번호를 다시 확인해주세요.",
+                icon: "error"
+            })
         }
     };
 

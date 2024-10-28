@@ -144,7 +144,6 @@ function myPage() {
                 </div>
             ) : (
                 <div>
-                    <p><strong>ID:</strong> {userData.id}</p>
                     <p><strong>UserId:</strong> {userData.userId}</p>
                     <p><strong>Username:</strong> {userData.username}</p>
                     <p><strong>Email:</strong> {userData.email}</p>
@@ -153,6 +152,8 @@ function myPage() {
                     <button onClick={() => setEditMode(true)}>회원 정보 수정</button>
                     <button onClick={() => { navigate('/pwUpdate'); }}>비밀번호 변경</button>
                     <button onClick={() => { navigate('/dashboard'); }}>돌아가기</button>
+                    <br/>
+                    <button onClick={() => { navigate('/delete'); }}>회원 탈퇴</button>
                 </div>
             )}
 

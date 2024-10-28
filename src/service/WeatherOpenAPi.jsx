@@ -2,12 +2,12 @@ import React from "react";
 import { json } from "react-router-dom";
 
 function WeatherOpenApi (){
-    const API_KEY = 'weahterkey';
+    const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
 
     const getWether = () => {
         const lat = parseFloat(localStorage.getItem("latitude"));
         const lon = parseFloat(localStorage.getItem("longitude"));
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`)
+        fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${Weather_Key}`)
         .then((response) => {
             return response.json();
         })

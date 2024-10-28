@@ -62,7 +62,7 @@ function dashboard() {
         }
     }, []);
 
-    //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리 
+    //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리?
     //openWeatherMap API 로직 
     const getWeather = (latitude, longitude) => {
         const iconSection = document.querySelector('.icon');
@@ -153,12 +153,12 @@ function dashboard() {
             )}
 
             <br/> 
-
+            <p>{username} 님 안녕하세요! </p>
             {/* <button> 옷차림 추천 </button> */}
             <button> 활동 추천 </button>
             <button> 준비물 추천 </button>
-            <ChatgptApi></ChatgptApi>
-            <p>{username} 님 안녕하세요! </p>
+            <ChatgptApi weatherData={weatherData} />
+           
         </>
     );
 }

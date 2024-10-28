@@ -9,6 +9,8 @@ import MyPage from './mainPage/myPage';
 import WeatherOpenApi from './service/WeatherOpenAPi';
 import Id_pw_update from './mainPage/Id_pw_update';
 import ChatgptApi from './service/chatgptApi';
+import Delete_user from './mainPage/delete';
+
 
 import { Provider } from 'react-redux';
 import store from './store/store';
@@ -24,7 +26,9 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />
               <Route path="/pwUpdate" element={<Id_pw_update />} />
+              <Route path="/weatherTest" element={< WeatherOpenApi/>} />
               <Route path="/chatgpt" element={<ChatgptApi />} />
+              <Route path="/delete" element={< Delete_user/>} />
           </Routes>
       </Router>
     </Provider>

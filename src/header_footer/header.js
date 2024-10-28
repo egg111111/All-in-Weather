@@ -1,7 +1,6 @@
 import React from "react"
-import { useState, useEffect } from "react"
 
-const header = () => {
+const Header = () => {
     return(
         <div>
             <button className="hamburger" onClick={toggleMenu}>
@@ -10,3 +9,5 @@ const header = () => {
         </div>
     )
 }
+
+export default Header;

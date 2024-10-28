@@ -91,6 +91,30 @@ function SignUpForm() {
                 />
                 <br/>
 
+                <label>Gender</label>
+                <div>
+                    <label htmlFor="male">
+                        <input
+                            type="radio"
+                            id="male"
+                            value="male"
+                            {...register('gender', { required: "*성별을 선택해주세요" })}
+                        />
+                        남성
+                    </label>
+                    <label htmlFor="female">
+                        <input
+                            type="radio"
+                            id="female"
+                            value="female"
+                            {...register('gender', { required: "*성별을 선택해주세요" })}
+                        />
+                        여성
+                    </label>
+                </div>
+                {errors.gender && <p style={{ color: 'red' }}>{errors.gender.message}</p>}
+                <br/>
+
                 <label htmlFor="password">Password</label>
                 <input
                     name="password"
