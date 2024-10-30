@@ -67,21 +67,20 @@ function dashboard() {
     const getWeather = (latitude, longitude) => {
         const iconSection = document.querySelector('.icon');
         const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${Weather_Key}&units=metric&lang=kr`)
+        fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${35.8714354}&lon=${128.601445}&appid=${Weather_Key}&units=metric&lang=kr`)
         .then((response) => {
             return response.json();
         })
         .then((json) => {
             const weatherData = {
-                temp: json.main.temp,
-                place: json.name,
-                description: json.weather[0].description
+                temp: json.current.temp,
+                description: json.current.weather[0].description
             };
-            const icon = json.weather[0].icon;
+            const icon = json.current.weather[0].icon;
             const iconURL = `http://openweathermap.org/img/wn/${icon}@2x.png`;
             iconSection.setAttribute('src', iconURL);
             setWeather(weatherData);
-            console.log(json);
+            console.log("weatherJSON",json);
             console.log(weatherData);
         })
         .catch((error)=>{
@@ -112,8 +111,13 @@ function dashboard() {
 
 
     //핸들러 로직
-    function handleClick() {
+    function handlePageClick() {
         navigate('/myPage');
+        setIsMenuOpen(false);
+    }
+
+    function handleViewClick() {
+        navigate('/recList');
         setIsMenuOpen(false);
     }
 
@@ -136,7 +140,6 @@ function dashboard() {
         <>  <div className="weather" >
                 <img className="weather_icon" class="icon"></img>
                 <h2> {weatherData.temp}°C </h2>
-                <p> {weatherData.place} </p>
                 <p> {weatherData.description} </p>
             </div>
             
@@ -146,8 +149,10 @@ function dashboard() {
 
             {isMenuOpen && (
                 <div className="menu">
-                    <button onClick={handleClick}>마이 페이지</button>
-                    <br></br>
+                    <button onClick={handlePageClick}>마이 페이지</button>
+                    <br/>
+                    <button onClick={handleViewClick}>나의 추천 기록</button>
+                    <br/>
                     <button onClick={handleLogout}>로그아웃</button>
                 </div>
             )}

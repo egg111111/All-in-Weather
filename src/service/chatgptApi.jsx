@@ -38,6 +38,12 @@ function chatgptApi(weatherData) {
         fetchUserData();
     }, []);
 
+    useEffect(() => {
+        if(gptData) {
+            sendGptResult(gptData);
+        }
+    }, [gptData]);
+
 
     //gpt 출력 로직 
     const call_get = async () => {
@@ -51,7 +57,7 @@ function chatgptApi(weatherData) {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [
-                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 옷 취향은 캐주얼이고 실내 활동을 좋아하는 ${userData.age}세 여자의 옷 차림을 추천해줘, 간략하게` },
+                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 옷 취향은 레이어드고 실내 활동을 좋아하는 ${userData.age}세 남자의 옷 차림을 추천해줘, 간략하게` },
                     ],
                     temperature: 0.5,
                     max_tokens: 50,
@@ -59,9 +65,9 @@ function chatgptApi(weatherData) {
             });
 
             const data = await response.json();
-            setGptData(data.choices[0].message.content);
-            console.log("Response: ", data);
-            sendGptResult(data);
+            const recommendation = data.choices[0].message.content;
+            setGptData(recommendation);
+            console.log("Response: ", recommendation);
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
