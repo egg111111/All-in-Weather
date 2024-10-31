@@ -117,7 +117,7 @@ function dashboard() {
     }
 
     function handleViewClick() {
-        navigate('/recList');
+        navigate('/recView');
         setIsMenuOpen(false);
     }
 
@@ -143,9 +143,6 @@ function dashboard() {
                 <p> {weatherData.description} </p>
             </div>
             
-            <button className="hamburger" onClick={toggleMenu}>
-                {isMenuOpen ? '✖️' : '☰'} 
-            </button>
 
             {isMenuOpen && (
                 <div className="menu">
@@ -160,8 +157,7 @@ function dashboard() {
             <br/> 
             <p>{username} 님 안녕하세요! </p>
             {/* <button> 옷차림 추천 </button> */}
-            <button> 활동 추천 </button>
-            <button> 준비물 추천 </button>
+            {/* <button> 준비물 추천 </button> */}
             <ChatgptApi weatherData={weatherData} />
            
         </>

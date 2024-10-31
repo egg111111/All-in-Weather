@@ -45,8 +45,8 @@ function chatgptApi(weatherData) {
     }, [gptData]);
 
 
-    //gpt 출력 로직 
-    const call_get = async () => {
+    //gpt 출력 로직(옷차림)
+    const call_get_style = async () => {
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -61,6 +61,34 @@ function chatgptApi(weatherData) {
                     ],
                     temperature: 0.5,
                     max_tokens: 50,
+                })
+            });
+
+            const data = await response.json();
+            const recommendation = data.choices[0].message.content;
+            setGptData(recommendation);
+            console.log("Response: ", recommendation);
+        } catch (error) {
+            console.error("API 호출 실패:", error);
+        }
+    }
+
+    //gpt 출력 로직(활동)
+    const call_get_activity = async () => {
+        try {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${import.meta.env.VITE_GPT_KEY}`,
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 실내 활동을 좋아하는 ${userData.age}세 남자의 오늘 활동을 추천해줘, 간략하게` },
+                    ],
+                    temperature: 0.5,
+                    max_tokens: 300,
                 })
             });
 
@@ -109,7 +137,8 @@ function chatgptApi(weatherData) {
     return (
         <>
             <div>
-                <button onClick={call_get}> 옷차림 추천 </button>
+                <button onClick={call_get_style}> 옷차림 추천 </button>
+                <button onClick={call_get_activity}>활동 추천</button>
                 <br />
                 {gptData && <div>{gptData}</div>}
             </div>

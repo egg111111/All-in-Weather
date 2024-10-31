@@ -1,11 +1,20 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
   background-color: #C1D0D4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-.body{
-  background-color: #C1D0D4;
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;  /*너비 최대 설정*/
+  text-align: center;
+  background-color: #96aaaa;
+  padding: 10%;
 }
