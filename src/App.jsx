@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import './App.css'
 import Signup from './sign_component/sign_up'
 import Home_basic from './sign_component/home_basic'
@@ -15,11 +15,13 @@ import RecList from './page_component/recList';
 import RecView from './page_component/recView';
 
 import Layout from './header_footer/layout';
+import Sidebar from './header_footer/sidebar';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
 
 function App() {
+
   return (
     <Provider store={store} >
       <Router>

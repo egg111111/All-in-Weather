@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import OpenAI from "openai";
+import Loading from '../header_footer/loding'
 
 function chatgptApi(weatherData) {
     console.log(weatherData);
@@ -12,6 +13,7 @@ function chatgptApi(weatherData) {
         age: "",
         // gender: ""
     });
+    const [loading, setLoading] = useState(false);
 
     //회원 정보를 가져오기 
     useEffect(() => {
@@ -47,6 +49,7 @@ function chatgptApi(weatherData) {
 
     //gpt 출력 로직(옷차림)
     const call_get_style = async () => {
+        setLoading(true);
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -65,9 +68,11 @@ function chatgptApi(weatherData) {
             });
 
             const data = await response.json();
-            const recommendation = data.choices[0].message.content;
-            setGptData(recommendation);
-            console.log("Response: ", recommendation);
+            const recStyle = data.choices[0].message.content;
+            setGptData(recStyle);
+            console.log("Response: ", recStyle);
+            setLoading(false);
+            sendGptResult(recStyle);
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
@@ -75,6 +80,7 @@ function chatgptApi(weatherData) {
 
     //gpt 출력 로직(활동)
     const call_get_activity = async () => {
+        setLoading(true);
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -85,17 +91,18 @@ function chatgptApi(weatherData) {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [
-                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 실내 활동을 좋아하는 ${userData.age}세 남자의 오늘 활동을 추천해줘, 간략하게` },
+                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 실외 활동을 좋아하는 ${userData.age}세 여자의 오늘 활동을 추천해줘, 간략하게` },
                     ],
                     temperature: 0.5,
-                    max_tokens: 300,
+                    max_tokens: 50,
                 })
             });
 
             const data = await response.json();
-            const recommendation = data.choices[0].message.content;
-            setGptData(recommendation);
-            console.log("Response: ", recommendation);
+            const recActivity = data.choices[0].message.content;
+            setGptData(recActivity);
+            console.log("Response: ", recActivity);
+            setLoading(false);
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
@@ -103,10 +110,10 @@ function chatgptApi(weatherData) {
 
 
     //결과값을 서버로 전송 
-    const sendGptResult = async (recommendation) => {
+    const sendGptResult = async (recStyle) => {
         const userId = localStorage.getItem('userId');
-        console.log(recommendation);
-        if(!recommendation){
+        console.log(recStyle);
+        if(!recStyle){
             console.error("내용이 존재하지 않습니다.")
             return;
         }
@@ -119,7 +126,7 @@ function chatgptApi(weatherData) {
                 },
                 body: JSON.stringify({
                     userId: userId,
-                    recommendation: recommendation
+                    recStyle: recStyle
                 })
             });
 
@@ -140,6 +147,7 @@ function chatgptApi(weatherData) {
                 <button onClick={call_get_style}> 옷차림 추천 </button>
                 <button onClick={call_get_activity}>활동 추천</button>
                 <br />
+                {loading ? <Loading/> : null}
                 {gptData && <div>{gptData}</div>}
             </div>
         </>

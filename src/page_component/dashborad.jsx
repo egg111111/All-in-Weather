@@ -1,9 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import ChatgptApi from "../service/chatgptApi";
 import './dashbaord.css';
-import { DiMagento } from "react-icons/di";
+import WeatherChart from "./weatherChart";
+import Londing from "../header_footer/loding";
 
 function dashboard() {
     const navigate = useNavigate();
@@ -14,29 +17,58 @@ function dashboard() {
     const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
     const [weatherData, setWeather] = useState("");
 
-    //username 가져오기 
+    const [userInfo, setUserInfo] = useState(null);
+    const [error, setError] = useState(null);
+    const [nickname, setNickname] = useState('');
+    const userId = localStorage.getItem('userId');
+
+
+    // 사용자 정보 가져오기
     useEffect(() => {
-        async function fetchUsername() {
-            const userId = localStorage.getItem('userId'); 
-            try {
-                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUsername(data.username); 
-                } else {
-                    console.error("Failed to fetch username");
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+
+
+        // 일반 로그인 확인
+        if (userId && token) {
+            fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-            } catch (error) {
-                console.error("Error fetching username:", error);
-            }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error("Failed to fetch user data");
+                })
+                .then(data => {
+                    setUserInfo(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching user data:", error);
+                    setError("Failed to fetch user information");
+                });
+        } else {
+            // 소셜 로그인일 경우 쿠키 기반으로 사용자 정보 요청
+            axios.get('http://localhost:8080/api/users/social_user', { withCredentials: true })
+                .then(response => {
+                    setUserInfo(response.data);
+                    const social_username = response.data.social_username;
+                    const nickname = response.data.nickname;
+                    localStorage.setItem('social_username', social_username);
+                    localStorage.setItem('nickname', nickname);
+                })
+                .catch(error => {
+                    console.error("Error fetching user info:", error);
+                    setError("Failed to fetch user information");
+                });
+            localStorage.removeItem('userId');
         }
 
-        fetchUsername();
-    }, [username]);
+
+    }, [nickname]);
+
 
      // 위치 정보 가져오기
      useEffect(() => {
@@ -49,7 +81,7 @@ function dashboard() {
                     setLocation({ latitude, longitude }); 
                     setLocationStatus("위치 정보 불러오기 성공");
                     console.log("현재 위치: 위도, 경도", latitude, longitude)
-                    getWeather(latitude, longitude);
+                    // getWeather(latitude, longitude);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -64,6 +96,7 @@ function dashboard() {
 
     //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리?
     //openWeatherMap API 로직 
+    //날씨는 
     const getWeather = (latitude, longitude) => {
         const iconSection = document.querySelector('.icon');
         const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
@@ -78,7 +111,7 @@ function dashboard() {
             };
             const icon = json.current.weather[0].icon;
             const iconURL = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-            iconSection.setAttribute('src', iconURL);
+            // iconSection.setAttribute('src', iconURL);
             setWeather(weatherData);
             console.log("weatherJSON",json);
             console.log(weatherData);
@@ -88,48 +121,32 @@ function dashboard() {
         })
     }
 
-    //서버로 정보 보내기 
-    const sendWeatherPost = (data) =>{
-        fetch('http://localhost:8080/api/weahter', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, 
-            body: JSON.stringify(data)
-        })
-        .then((response) => {
-            if(response.ok){
-                console.log('sccuess');
-            } else{
-                console.error('fail');
-            }
-        })
-        .catch((error) => {
-            console.error('Error sending data to backend:', error);
-        })
-    }
+        //username 가져오기 
+        if(username){
+            useEffect(() => {
+                async function fetchUsername() {
+                    const userId = localStorage.getItem('userId'); 
+                    try {
+                        const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            }
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            setUsername(data.username); 
+                        } else {
+                            console.error("Failed to fetch username");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching username:", error);
+                    }
+                }
+        
+                fetchUsername();
+            }, [username]);
+        }
 
-
-    //핸들러 로직
-    function handlePageClick() {
-        navigate('/myPage');
-        setIsMenuOpen(false);
-    }
-
-    function handleViewClick() {
-        navigate('/recView');
-        setIsMenuOpen(false);
-    }
-
-    function handleLogout() {
-        localStorage.removeItem('token');
-        console.log('로그아웃 성공');
-        navigate('/')
-    }
-
-    const toggleMenu = () => {
-        setIsMenuOpen((props) => !props);
-    };
 
     //Gpt 호출 로직 
     const handleCall_GPT = async() => {
@@ -137,11 +154,9 @@ function dashboard() {
     }
 
     return (
-        <>  <div className="weather" >
-                <img className="weather_icon" class="icon"></img>
-                <h2> {weatherData.temp}°C </h2>
-                <p> {weatherData.description} </p>
-            </div>
+        <>  
+            <WeatherChart />
+
             
 
             {isMenuOpen && (
@@ -155,9 +170,18 @@ function dashboard() {
             )}
 
             <br/> 
-            <p>{username} 님 안녕하세요! </p>
-            {/* <button> 옷차림 추천 </button> */}
-            {/* <button> 준비물 추천 </button> */}
+            <p>
+                {error ? (
+                    <p>{error}</p>
+                ) : userInfo ? (
+                    <div>
+                        <strong>안녕하세요</strong> {userInfo.nickname || userInfo.username}님
+                    </div>
+                ) : (
+                    <p>Loading user information...</p>
+                )}
+            </p>
+
             <ChatgptApi weatherData={weatherData} />
            
         </>
