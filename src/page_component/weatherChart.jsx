@@ -69,27 +69,23 @@ function WeatherChart({ onSetCurrentWeather }) {
                     const data = await response.json();
                     console.log(data);
 
-
                     // 현재 날씨 정보 가져오기
-                    const newCurrentWeather = {
+                    setCurrentWeather ({
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
                         weather: data.current.weather[0].description,
-                    };
-                    setCurrentWeather(newCurrentWeather);
+                    })
 
-                    const feels_humidity = {
+                    setLike_hum ({
                         feels_like: Math.round(data.current.feels_like),
                         humidity: data.current.humidity
-                    }
-                    setLike_hum(feels_humidity);
+                    })
 
-                    const sunrise_set = {
+                    setSun( {
                         sunrise: data.current.sunrise,
                         sunset: data.current.sunset
-                    }
-                    setSun(sunrise_set);
+                    })
 
                     //대기오염 api 가져오기 
                     const pollution_response = await fetch(
@@ -97,13 +93,12 @@ function WeatherChart({ onSetCurrentWeather }) {
                     );
                     const pollution_data = await pollution_response.json();
                     console.log(pollution_data);
-                    const airPollution = {
+                    setAirPoll ({
                         pm2_5: Math.round(pollution_data.list[0].components.pm2_5),
                         so2: Math.round(pollution_data.list[0].components.so2),
                         no: Math.round(pollution_data.list[0].components.no),
                         o3: Math.round(pollution_data.list[0].components.o3)
-                    };
-                    setAirPoll(airPollution);
+                    })
                     console.log(airPoll);
 
                     const forecastData = data.hourly.slice(0, 24).map(hour => ({
@@ -127,7 +122,26 @@ function WeatherChart({ onSetCurrentWeather }) {
         if (currentWeather) {
             localStorage.setItem("currentWeather", JSON.stringify(currentWeather));
         }
-    }, [currentWeather, airPoll]);
+    }, [currentWeather, airPoll, sun, like_hum]);
+
+    // useEffect(() => {
+    //     if (airPoll) {
+    //         console.log("Updated airPoll state:", airPoll);
+    //     }
+    // }, [airPoll])
+
+    // useEffect(() => {
+    //     if (like_hum) {
+    //         console.log("Updated like_hum state:", like_hum);
+    //     }
+    // }, [like_hum])
+
+    // useEffect(() => {
+    //     if (sun) {
+    //         console.log("Updated sun state:", sun);
+    //     }
+    // }, [sun])
+
 
 
     const handleNext = () => {
@@ -142,6 +156,18 @@ function WeatherChart({ onSetCurrentWeather }) {
             setCurrentHourIndex(currentHourIndex - hoursPerPage);
         }
     };
+
+    const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    }).replace('오후', '오후 ').replace('오전', '오전 ') : null;
+
+    const formattedSunset = sun ? new Date(sun.sunset * 1000).toLocaleTimeString("ko-KR", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    }).replace('오후', '오후 ').replace('오전', '오전 ') : null;
 
 
     const data = {
@@ -233,13 +259,25 @@ function WeatherChart({ onSetCurrentWeather }) {
                     </div>
                 ))}
             </div>
-            <div className="weather-pollution-container">
-                <p>PM2.5: {airPoll.pm2_5} SO2: {airPoll.so2} NO: {airPoll.no} O3: {airPoll.o3}</p>
-            
-            </div>
 
-            <div>
-                <p> {like_hum.feels_like} {like_hum.humidity}</p>
+            <div className="weather-pollution-container">
+                <p>PM2.5: {airPoll.pm2_5}  SO2: {airPoll.so2} NO: {airPoll.no}  O3: {airPoll.o3}</p>
+
+            </div>
+            <br />
+            <div className="weather-feels-container">
+                <p> 체감온도: {like_hum.feels_like}</p>
+                <p> 습도: {like_hum.humidity}</p>
+
+                <div className="weather-second-box">
+                    {sun && (
+                        <div className="sun-times">
+                            <p>일출: {formattedSunrise}</p>
+                            <p>일몰: {formattedSunset}</p>
+                        </div>
+                    )}
+
+                </div>
             </div>
         </div>
     );
