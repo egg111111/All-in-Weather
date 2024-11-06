@@ -82,7 +82,8 @@ function Login() {
 
     return (
         <>
-            <div className="div-main">
+            <div className='sign-up-container'>
+                <div className='sign-up-box'>
                 <h1 className="title-div">로그인</h1>
                 <form className="form-div" onSubmit={handleLogin} >
                     <label htmlFor="userId">ID </label>
@@ -111,7 +112,7 @@ function Login() {
                 <button onClick={handleGoogleLogin} style={{ margin: '10px' }}>Login with Google</button>
                 <button onClick={handleNaverLogin} style={{ margin: '10px' }}>Login with Naver</button>
                 <button onClick={handleKakaoLogin} style={{ margin: '10px' }}>Login with Kakao</button>
-
+                </div>
             </div>
         </>
     );
