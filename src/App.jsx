@@ -4,21 +4,28 @@ import './App.css'
 import Signup from './sign_component/sign_up'
 import Home_basic from './sign_component/home_basic'
 import Login from './sign_component/login';
-import Dashboard from './mainPage/dashborad';
-import MyPage from './mainPage/myPage';
-import WeatherOpenApi from './service/WeatherOpenAPi';
-import Id_pw_update from './mainPage/Id_pw_update';
-import ChatgptApi from './service/chatgptApi';
-import Delete_user from './mainPage/delete';
+import Dashboard from './page_component/dashborad';
+import MyPage from './page_component/myPage';
 
+import WeatherOpenApi from './service/WeatherOpenAPi';
+import Id_pw_update from './page_component/Id_pw_update';
+import ChatgptApi from './service/chatgptApi';
+import Delete_user from './page_component/delete';
+import SocialDeleteUser from './page_component/social_delete';
+import RecList from './page_component/recList';
+import RecView from './page_component/recView';
+
+import Layout from './header_footer/layout';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
 
 function App() {
   return (
-    <Provider store={store}>
+    <Provider store={store} >
       <Router>
+        <Layout>
+        <div className="centered-content">
           <Routes>
               <Route path="/" element={<Home_basic />} />
               <Route path="/sign_up" element={<Signup />} />
@@ -29,11 +36,15 @@ function App() {
               <Route path="/weatherTest" element={< WeatherOpenApi/>} />
               <Route path="/chatgpt" element={<ChatgptApi />} />
               <Route path="/delete" element={< Delete_user/>} />
+              <Route path="/social_delete" element={< SocialDeleteUser/>} />
+              <Route path="/recList" element={<RecList/>} />
+              <Route path="/recView" element={<RecView/>} />
           </Routes>
+          </div>
+          </Layout>
       </Router>
     </Provider>
   );
 }
 
 export default App
-

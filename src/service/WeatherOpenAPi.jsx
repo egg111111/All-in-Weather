@@ -25,27 +25,6 @@ function WeatherOpenApi (){
         })
     }
 
-    //서버로 정보 보내기 
-    const sendWeatherPost = (data) =>{
-        fetch('http://localhost:8080/api/weahter', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, 
-            body: JSON.stringify(data)
-        })
-        .then((response) => {
-            if(response.ok){
-                console.log('sccuess');
-            } else{
-                console.error('fail');
-            }
-        })
-        .catch((error) => {
-            console.error('Error sending data to backend:', error);
-        })
-    }
-
     return(
         <>
         <div>

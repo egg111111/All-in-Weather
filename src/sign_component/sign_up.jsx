@@ -1,168 +1,253 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import './sign_up.css'
+import React, { useRef, useState } from 'react';
+import InputBox from "./InputBox";
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import './sign_up.module.css';
+import './style.css';
 
+export default function SignUp() {
+  const idRef = useRef(null);
+  const passwordRef = useRef(null);
+  const passwordCheckRef = useRef(null);
+  const emailRef = useRef(null);
+  const verificationCodeRef = useRef(null); // 인증 코드 입력을 위한 ref 추가
 
-function SignUpForm() {
-    const navigate = useNavigate();
-    const {
-        register,
-        watch,
-        formState: { isSubmitting, errors },
-        handleSubmit,
-    } = useForm();
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
+  const [email, setEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState(''); // 인증 코드 상태 추가
 
+  const [isIdError, setIsIdError] = useState(false);
+  const [isPasswordError, setPasswordError] = useState(false);
+  const [isPasswordCheckError, setPasswordCheckError] = useState(false);
+  const [isEmailError, setEmailError] = useState(false);
+  const [isVerificationError, setVerificationError] = useState(false); // 인증 코드 오류 상태 추가
 
-    const password = watch("password", "");
+  const [idMessage, setIdMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState(''); // 인증 메시지 상태 추가
 
+  const [isIdCheck, setIdCheck] = useState(false);
+  const [isEmailCheck, setEmailCheck] = useState(false);
 
-    const submitForm = async (data) => {
-        try {
-            const response = await fetch('http://localhost:8080/api/users/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-   
-            if (response.ok) {
-                console.log('User registered successfully');
-                Swal.fire({
-                    title:"회원 가입이 완료되었습니다.",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                navigate('/login');
-            } else {
-                console.error('Failed to register user:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+  const signUpButtonClass = id && password && passwordCheck && email ? 'primary-button-lg' : 'disable-button-lg';
+
+  const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
+  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$/;
+
+  const navigate = useNavigate();
+
+  const checkUserId = async (userId) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/check-userId', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      const isAvailable = await response.json();
+      setIsIdError(isAvailable);
+      setIdMessage(isAvailable ?"이미 사용 중인 아이디입니다.": "사용 가능한 아이디입니다.");
+      setIdCheck(!isAvailable);
+    } catch (error) {
+      console.error("Error checking userId:", error);
+    }
+  };
+
+  const checkEmail = async (email) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const isAvailable = await response.json();  // true 값이면 이미 존재하는 이메일
+      setEmailError(isAvailable);
+      setEmailMessage(isAvailable ?"이미 사용 중인 이메일입니다." :"사용 가능한 이메일입니다." );
+      setEmailCheck(!isAvailable);
+    } catch (error) {
+      console.error("Error checking email:", error);
+    }
+  };
+
+  const sendEmailVerification = async (email) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/send-verification-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, email }), // ID와 이메일을 전송
+      });
+      const message = await response.text();
+      setEmailMessage(message); // 성공 또는 실패 메시지 설정
+      setEmailCheck(true); // 이메일 인증 요청을 한 것으로 설정
+    } catch (error) {
+      console.error("Error sending verification code:", error);
+    }
+  };
+
+  const verifyCode = async (userId, email, code) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId, email, certificationNumber: code }),
+      });
+      const isVerified = await response.json();
+      setVerificationError(!isVerified);
+      setVerificationMessage(isVerified ? "인증이 완료되었습니다." : "인증 코드가 일치하지 않습니다.");
+    } catch (error) {
+      console.error("Error verifying code:", error);
+    }
+  };
+
+  const onEmailVerificationButtonClickHandler = async () => {
+    if (!isEmailCheck) {  // 기본값이 false 이므로 중복 검사를 수행
+      await checkEmail(email); // 이메일 중복 확인 호출
+      // isEmailError가 true이면 중복된 이메일
+      if (isEmailError) { 
+        alert('이메일 중복 확인을 해주세요.'); // 오류가 있을 경우 사용자에게 경고
+        return;
+      }
+    }
+    
+    // 이메일이 유효한 경우 인증 코드 전송
+    if (email && !isEmailError) { // isEmailError가 false인 경우에만 인증 코드 전송
+      await sendEmailVerification(email);
+    }
+  };
+  
+  
+
+  const onSignUpButtonClickHandler = async () => {
+    if (!id || !password || !passwordCheck || !email) return;
+    if (!isIdCheck) {
+      alert('ID 중복 확인은 필수입니다.');
+      return;
+    }
+    const checkedPassword = passwordPattern.test(password);
+    if (!checkedPassword) {
+      setPasswordError(true);
+      setPasswordMessage('영문, 숫자를 혼용하여 8~13자 입력해주세요.');
+      return;
+    }
+    if (!isEmailCheck) {
+        alert('이메일 중복 확인을 해주세요.');
+        return;
+      }
+    if (password !== passwordCheck) {
+      setPasswordCheckError(true);
+      setPasswordCheckMessage('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    const requestBody = {
+        username: id, 
+        userId: id, 
+        password, 
+        email,
+        age:20 
     };
+    console.log(requestBody);
+    try {
+      const response = await fetch('http://localhost:8080/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+    //   const responseBody = await response.json();
+      if (response.ok) {
+        Swal.fire({
+          title: "회원 가입이 완료되었습니다.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate('/login');
+      } else {
+        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
-
-    return (
-        <div className="main_sign">
-            <h1 className="title-div">회원가입</h1>
-            <form onSubmit={handleSubmit(submitForm)} className="sub_sign">
-                <label htmlFor="username">Username</label>
-                <input
-                    name="username"
-                    type="text"
-                    id="username"
-                    placeholder="닉네임 입력"
-                    {...register('username', {
-                        required: "*닉네임을 입력해주세요"
-                    })}
-                />
-                {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
-                <br/>
-
-                <label htmlFor="userId">ID</label>
-                <input
-                    name="userId"
-                    type="text"
-                    id="userId"
-                    placeholder="아이디 입력"
-                    {...register('userId', {
-                        required: "*아이디를 입력해주세요",
-                        minLength: {
-                            value: 6,
-                            message: "*6자 이상으로 입력해주세요"
-                        }
-                    })}
-                />
-                {errors.userId && <p style={{ color: 'red' }}>{errors.userId.message}</p>}
-                <br/>
-
-                <label htmlFor="age">Age</label>
-                <input
-                    name="age"
-                    type="number"
-                    id="age"
-                    min={10}
-                    max={100}
-                    {...register('age', { min: 10, max: 100 })}
-                />
-                <br/>
-
-                <label>Gender</label>
-                <div>
-                    <label htmlFor="male">
-                        <input
-                            type="radio"
-                            id="male"
-                            value="male"
-                            {...register('gender', { required: "*성별을 선택해주세요" })}
-                        />
-                        남성
-                    </label>
-                    <label htmlFor="female">
-                        <input
-                            type="radio"
-                            id="female"
-                            value="female"
-                            {...register('gender', { required: "*성별을 선택해주세요" })}
-                        />
-                        여성
-                    </label>
+  return (
+    <div className='sign-up-container'>
+      <div className='sign-up-box' >
+          <h1 className="title-div" style={{ backgroundColor: '#96aaaa' }}>회원가입</h1>
+          <div className='sign-up-content-box' >
+            <div className='sign-up-content-sns-sign-in-box'></div>
+              <div className='sign-up-content-sns-sign-in-title'>{'sns 회원가입'}</div>
+                <div className='sign-up-content-sns-sign-in-button-box'>
+                  <div className='kakao-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('kakao')}></div>
+                  <div className='naver-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('naver')}></div>
                 </div>
-                {errors.gender && <p style={{ color: 'red' }}>{errors.gender.message}</p>}
-                <br/>
-
-                <label htmlFor="password">Password</label>
-                <input
-                    name="password"
-                    type="password"
-                    id="password"
-                    placeholder="비밀번호 입력"
-                    {...register('password', {
-                        required: "*비밀번호를 입력해주세요",
-                        minLength: { value: 6, message: "*비밀번호는 6~20자 사이로 설정해주세요" },
-                        maxLength: { value: 20, message: "*비밀번호는 6~20자 사이로 설정해주세요" }
-                    })}
+              <div className='sign-up-content-divider'></div>
+              <div className='sign-up-content-input-box'>
+                <InputBox
+                  ref={idRef}
+                  title='아이디'
+                  placeholder='아이디를 입력해주세요'
+                  type='text'
+                  value={id}
+                  onChange={(e) => { setId(e.target.value); setIdMessage(''); setIdCheck(false); }}
+                  isErrorMessage={isIdError}
+                  message={idMessage}
+                  buttonTitle='중복 확인'
+                  onButtonClick={() => checkUserId(id)}
                 />
-                {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
-                <br/>
-
-                <input
-                    id="password2"
-                    type="password"
-                    placeholder="비밀번호 재입력"
-                    {...register('password2', {
-                        required: "*비밀번호를 다시 한 번 입력해주세요",
-                        validate: value => value === password || "*비밀번호가 일치하지 않습니다"
-                    })}
+                <InputBox
+                  ref={passwordRef}
+                  title='비밀번호'
+                  placeholder='비밀번호를 입력해주세요'
+                  type='password'
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setPasswordMessage(''); }}
+                  isErrorMessage={isPasswordError}
+                  message={passwordMessage}
                 />
-                {errors.password2 && <p style={{ color: 'red' }}>{errors.password2.message}</p>}
-                <br/>
-
-                <label htmlFor="email">Email</label>
-                <input
-                    name="email"
-                    type="text"
-                    id="email"
-                    placeholder="이메일 입력"
-                    {...register('email', {
-                        required: "이메일을 입력해주세요"
-                    })}
+                <InputBox
+                  ref={passwordCheckRef}
+                  title='비밀번호 확인'
+                  placeholder='비밀번호를 입력해주세요'
+                  type='password'
+                  value={passwordCheck}
+                  onChange={(e) => { setPasswordCheck(e.target.value); setPasswordCheckMessage(''); }}
+                  isErrorMessage={isPasswordCheckError}
+                  message={passwordCheckMessage}
                 />
-                {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
-                <br/>
-                <br/>
-
-                <button type="submit" disabled={isSubmitting}>
-                    회원가입
-                </button>
-            </form>
-        </div>
-    );
+                <InputBox
+                  ref={emailRef}
+                  title='이메일'
+                  placeholder='이메일 주소를 입력해주세요'
+                  type='text'
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setEmailMessage(''); }}
+                  isErrorMessage={isEmailError}
+                  message={emailMessage}
+                  buttonTitle='이메일 인증'
+                  onButtonClick={onEmailVerificationButtonClickHandler} 
+                />
+                <InputBox
+                  ref={verificationCodeRef}
+                  title='인증 코드'
+                  placeholder='인증 코드를 입력해주세요'
+                  type='text'
+                  value={verificationCode}
+                  onChange={(e) => { setVerificationCode(e.target.value); setVerificationMessage(''); }}
+                  isErrorMessage={isVerificationError}
+                  message={verificationMessage}
+                  buttonTitle='이메일 인증 확인'
+                  onButtonClick={() => verifyCode(id, email, verificationCode)} // 인증 코드 확인 요청
+                />
+              </div>
+              <div className='sign-up-content-button-box'>
+                <div className={`${signUpButtonClass} full-width`} onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
+                {/* <div className='text-link-lg full-width' onClick={() => navigate('/login')}>{'로그인'}</div> */}
+              </div>
+          </div>
+      </div>
+    </div>
+  );
 }
-
-
-export default SignUpForm;

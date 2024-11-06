@@ -66,6 +66,11 @@ function Login() {
         window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
     };
 
+    const handleKakaoLogin = () => {
+        // Naver OAuth 인증을 위한 리디렉션
+        window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+    };
+
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -105,6 +110,7 @@ function Login() {
 
                 <button onClick={handleGoogleLogin} style={{ margin: '10px' }}>Login with Google</button>
                 <button onClick={handleNaverLogin} style={{ margin: '10px' }}>Login with Naver</button>
+                <button onClick={handleKakaoLogin} style={{ margin: '10px' }}>Login with Kakao</button>
 
             </div>
         </>
