@@ -5,15 +5,9 @@ import Loading from '../header_footer/loding'
 
 import WeatherChart from "../page_component/weatherChart";
 
-function chatgptApi({weatherData}) {
+function chatgptApi({weatherData, userData}) {
     const [gptData, setGptData] = useState("")
-    const [userData, setUserData] = useState({
-        userId: "",
-        username: "",
-        email: "",
-        age: "",
-        // gender: ""
-    });
+    
     const [loading, setLoading] = useState(false);
     const [currentWeather, setCurrentWeather] = useState([]);
 
@@ -27,34 +21,39 @@ function chatgptApi({weatherData}) {
 
 
     //회원 정보를 가져오기 
-    useEffect(() => {
-        async function fetchUserData() {
-            const userId = localStorage.getItem('userId');
+    // useEffect(() => {
+    //     async function fetchUserData() {
+    //         const userId = localStorage.getItem('userId');
 
-            try {
-                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                setUserData(data);
-            } catch (error) {
-                console.error("사용자 정보 가져오기 실패:", error);
-                console.log("Fetched token:", localStorage.getItem('token'));
-                console.log("Fetched username:", localStorage.getItem('userId'));
-            }
-        }
+    //         try {
+    //             const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+    //                 method: "GET",
+    //                 headers: {
+    //                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    //                     'Content-Type': 'application/json'
+    //                 }
+    //             });
+    //             const data = await response.json();
+    //             setUserData(data);
+    //         } catch (error) {
+    //             console.error("사용자 정보 가져오기 실패:", error);
+    //             console.log("Fetched token:", localStorage.getItem('token'));
+    //             console.log("Fetched username:", localStorage.getItem('userId'));
+    //         }
+    //     }
 
-        fetchUserData();
-    }, []);
+    //     fetchUserData();
+    // }, []);
 
 
     //gpt 출력 로직(옷차림)
     const call_get_style = async (savedWeather) => {
         setLoading(true);
+        if (!weatherData || !weatherData.temp) { // temp 속성 체크
+            console.error("Weather data is missing or incomplete:", weatherData);
+            return; // weatherData가 유효하지 않을 경우 함수 종료
+        }
+
         console.log('weather: ', savedWeather.temp);
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -86,6 +85,11 @@ function chatgptApi({weatherData}) {
     //gpt 출력 로직(활동)
     const call_get_activity = async (savedWeather) => {
         setLoading(true);
+        if (!weatherData || !weatherData.temp) { // temp 속성 체크
+            console.error("Weather data is missing or incomplete:", weatherData);
+            return; // weatherData가 유효하지 않을 경우 함수 종료
+        }
+
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -119,31 +123,43 @@ function chatgptApi({weatherData}) {
     const sendGptResult = async (recData, type) => {
         const userId = localStorage.getItem('userId');
         console.log(recData);
+        if (!weatherData || !weatherData.temp) { // temp 속성 체크
+            console.error("Weather data is missing or incomplete:", weatherData);
+            return; // weatherData가 유효하지 않을 경우 함수 종료
+        }
+
         if(!recData){
             console.error("내용이 존재하지 않습니다.")
             return;
         }
-        const bodyData = {
-            userId: userId,
-            temp_high: currentWeather.high,
-            temp_low: currentWeather.low
-        };
+        // const bodyData = {
+        //     temp_high: currentWeather.high,
+        //     temp_low: currentWeather.low
+        // };
         
-        // type에 따라 다른 데이터 컬럼에 저장
+        //type에 따라 다른 데이터 컬럼에 저장
+        const bodyData={};
         if (type === 'style') {
             bodyData.recStyle = recData; // recStyle 컬럼에 저장
         } else if (type === 'activity') {
             bodyData.recActivity = recData; // recActivity 컬럼에 저장
         }
 
-        try {
+
+        if(userId)
+        {try {
             const response = await fetch(`http://localhost:8080/api/chat/save`, {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(bodyData)
+                body: JSON.stringify({
+                    userId: userId,
+                    temp_high: currentWeather.high,
+                    temp_low: currentWeather.low,
+                    recStyle : bodyData.recStyle,
+                    recActivity : bodyData.recActivity })
             });
 
             if (response.ok) {
@@ -153,6 +169,19 @@ function chatgptApi({weatherData}) {
             }
         } catch (error) {
             console.error("서버 전송 중 오류 발생:", error);
+        }} else if(username) {
+            response = await fetch(`http://localhost:8080/api/chat/social_save`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', // 쿠키를 포함하여 전송
+                body: JSON.stringify({
+                    username: username,
+                    bodyData
+                }),
+            });
+
         }
     }
 

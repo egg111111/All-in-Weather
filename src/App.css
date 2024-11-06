@@ -13,8 +13,105 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 800px;  /*너비 최대 설정*/
+  max-width: 800px;
   text-align: center;
-  background-color: #96aaaa;
+  background-color: #dde7e7;
   padding: 10%;
 }
+
+.kakao-sign-in-button {
+  width: 56px;
+  height: 56px;
+ 
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+  background-image : url(assets/images/kakao.png);
+ 
+  cursor:pointer;
+  }
+ 
+  .naver-sign-in-button {
+  width: 56px;
+  height: 56px;
+ 
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+  background-image : url(assets/images/naver.png);
+ 
+  cursor:pointer;
+  }
+
+
+
+
+  .primary-button-lg {
+    border-radius: 6px;
+    padding: 8px 24px;
+   
+    box-sizing: border-box;
+ 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+ 
+    background-color: rgba(58,87,232,1);
+ 
+    color: rgba(255,255,255,1);
+ 
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 175%;
+ 
+    cursor: pointer;
+ 
+  }
+ 
+  .primary-button-lg:hover {
+    opacity: 0.95;
+  }
+ 
+  .disable-button-lg {
+    border-radius: 6px;
+    padding: 8px 24px;
+   
+    box-sizing: border-box;
+ 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+ 
+    background-color: #C1D0D4;
+ 
+    color: rgba(255,255,255,1);
+ 
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 175%;
+ 
+    cursor: default;
+ 
+  }
+ 
+  .text-link-lg {
+    box-sizing: border-box;
+ 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+ 
+    color: rgba(113,113, 113, 1);
+ 
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 175%;
+ 
+    cursor: pointer;
+  }
+ 
+  .text-link-lg:hover {
+   color: rgba(40,40,4,1);
+  }
+ 
+  .full-width {
+    width:100%;
+  }

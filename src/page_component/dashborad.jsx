@@ -71,54 +71,54 @@ function dashboard() {
 
 
      // 위치 정보 가져오기
-     useEffect(() => {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    // localStorage.setItem("latitude", latitude);
-                    // localStorage.setItem("longitude", longitude);
-                    setLocation({ latitude, longitude }); 
-                    setLocationStatus("위치 정보 불러오기 성공");
-                    console.log("현재 위치: 위도, 경도", latitude, longitude)
-                    // getWeather(latitude, longitude);
-                },
-                (error) => {
-                    console.error("Error getting location:", error);
-                    setLocationStatus("위치 정보 불러오기 실패");
-                }
-            );
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-            setLocationStatus("위치 정보가 지원되지 않는 브라우저입니다.");
-        }
-    }, []);
+    //  useEffect(() => {
+    //     if ("geolocation" in navigator) {
+    //         navigator.geolocation.getCurrentPosition(
+    //             (position) => {
+    //                 const { latitude, longitude } = position.coords;
+    //                 // localStorage.setItem("latitude", latitude);
+    //                 // localStorage.setItem("longitude", longitude);
+    //                 setLocation({ latitude, longitude }); 
+    //                 setLocationStatus("위치 정보 불러오기 성공");
+    //                 console.log("현재 위치: 위도, 경도", latitude, longitude)
+    //                 // getWeather(latitude, longitude);
+    //             },
+    //             (error) => {
+    //                 console.error("Error getting location:", error);
+    //                 setLocationStatus("위치 정보 불러오기 실패");
+    //             }
+    //         );
+    //     } else {
+    //         console.log("Geolocation is not supported by this browser.");
+    //         setLocationStatus("위치 정보가 지원되지 않는 브라우저입니다.");
+    //     }
+    // }, []);
 
         //username 가져오기 
-        if(username){
-            useEffect(() => {
-                async function fetchUsername() {
-                    const userId = localStorage.getItem('userId'); 
-                    try {
-                        const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('token')}`
-                            }
-                        });
-                        if (response.ok) {
-                            const data = await response.json();
-                            setUsername(data.username); 
-                        } else {
-                            console.error("Failed to fetch username");
-                        }
-                    } catch (error) {
-                        console.error("Error fetching username:", error);
-                    }
-                }
+        // if(username){
+        //     useEffect(() => {
+        //         async function fetchUsername() {
+        //             const userId = localStorage.getItem('userId'); 
+        //             try {
+        //                 const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+        //                     headers: {
+        //                         'Authorization': `Bearer ${localStorage.getItem('token')}`
+        //                     }
+        //                 });
+        //                 if (response.ok) {
+        //                     const data = await response.json();
+        //                     setUsername(data.username); 
+        //                 } else {
+        //                     console.error("Failed to fetch username");
+        //                 }
+        //             } catch (error) {
+        //                 console.error("Error fetching username:", error);
+        //             }
+        //         }
         
-                fetchUsername();
-            }, [username]);
-        }
+        //         fetchUsername();
+        //     }, [username]);
+        // }
 
 
     //Gpt 호출 로직 
@@ -128,17 +128,7 @@ function dashboard() {
 
     return (
         <>  
-            <WeatherChart onSetCurrentWeather={setCurrentWeather} />
-
-            {isMenuOpen && (
-                <div className="menu">
-                    <button onClick={handlePageClick}>마이 페이지</button>
-                    <br/>
-                    <button onClick={handleViewClick}>나의 추천 기록</button>
-                    <br/>
-                    <button onClick={handleLogout}>로그아웃</button>
-                </div>
-            )}
+            <WeatherChart userData={userInfo} />
 
             <br/> 
             <p>
@@ -146,14 +136,15 @@ function dashboard() {
                     <p>{error}</p>
                 ) : userInfo ? (
                     <div>
-                        <strong>안녕하세요</strong> {userInfo.nickname || userInfo.username}님
+                        <strong>안녕하세요</strong> {userInfo.nickname ? userInfo.nickname : userInfo.username}님
+
                     </div>
                 ) : (
                     <p>Loading user information...</p>
                 )}
             </p>
 
-            <ChatgptApi weatherData={currentWeather} />
+            {/* <ChatgptApi weatherData={currentWeather} /> */}
            
         </>
     );
