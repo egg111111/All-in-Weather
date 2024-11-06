@@ -18,16 +18,20 @@ import rainyIcon from '../icon/rainy.png';
 import cloudyIcon from '../icon/cloudy.png';
 
 
+
 // Chart.js 구성 요소 등록
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels); // 플러그인 등록
 
 
-function WeatherChart() {
+function WeatherChart({ onSetCurrentWeather }) {
     const [hourlyData, setHourlyData] = useState([]);
     const [location, setLocation] = useState({ latitude: null, longitude: null });
     const [currentWeather, setCurrentWeather] = useState(null);
     const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
     const [currentHourIndex, setCurrentHourIndex] = useState(0);
+    const [airPoll, setAirPoll] = useState(null);
+    const [like_hum, setLike_hum] = useState(null);
+    const [sun, setSun] = useState(null);
 
 
     // 페이지 상태를 추적하는 변수 추가
@@ -63,22 +67,50 @@ function WeatherChart() {
                         `https://api.openweathermap.org/data/3.0/onecall?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&units=metric&lang=kr`
                     );
                     const data = await response.json();
+                    console.log(data);
 
 
                     // 현재 날씨 정보 가져오기
-                    setCurrentWeather({
+                    const newCurrentWeather = {
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
                         weather: data.current.weather[0].description,
-                    });
+                    };
+                    setCurrentWeather(newCurrentWeather);
 
+                    const feels_humidity = {
+                        feels_like: Math.round(data.current.feels_like),
+                        humidity: data.current.humidity
+                    }
+                    setLike_hum(feels_humidity);
+
+                    const sunrise_set = {
+                        sunrise: data.current.sunrise,
+                        sunset: data.current.sunset
+                    }
+                    setSun(sunrise_set);
+
+                    //대기오염 api 가져오기 
+                    const pollution_response = await fetch(
+                        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
+                    );
+                    const pollution_data = await pollution_response.json();
+                    console.log(pollution_data);
+                    const airPollution = {
+                        pm2_5: Math.round(pollution_data.list[0].components.pm2_5),
+                        so2: Math.round(pollution_data.list[0].components.so2),
+                        no: Math.round(pollution_data.list[0].components.no),
+                        o3: Math.round(pollution_data.list[0].components.o3)
+                    };
+                    setAirPoll(airPollution);
+                    console.log(airPoll);
 
                     const forecastData = data.hourly.slice(0, 24).map(hour => ({
                         time: new Date(hour.dt * 1000).toLocaleTimeString("ko-KR", {
                             hour: "numeric",
                             hour12: true,
-                        }).replace('오후', '오후 ').replace('오전', '오전 ') ,
+                        }).replace('오후', '오후 ').replace('오전', '오전 '),
                         temp: Math.round(hour.temp),
                         precipitation: hour.pop * 100,
                     }));
@@ -90,6 +122,12 @@ function WeatherChart() {
             fetchWeatherData();
         }
     }, [location, Weather_Key]);
+
+    useEffect(() => {
+        if (currentWeather) {
+            localStorage.setItem("currentWeather", JSON.stringify(currentWeather));
+        }
+    }, [currentWeather, airPoll]);
 
 
     const handleNext = () => {
@@ -137,7 +175,7 @@ function WeatherChart() {
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem) {
+                    label: function (tooltipItem) {
                         return `${tooltipItem.dataset.label}: ${tooltipItem.parsed.y}°C`;
                     },
                 },
@@ -158,47 +196,55 @@ function WeatherChart() {
 
 
     return (
-      <div>
-          {currentWeather && (
-              <div className="current-weather">
-                  <h3 className="current-temp">{currentWeather.temp}°C</h3>
-                  <div className="weather-info">
-                      <div className="temp-details">
-                          <h4 className="high-low">
-                               {currentWeather.high}°C, / {currentWeather.low}°C
-                          </h4>
-                      </div>
-                      <p className="weather-status">{currentWeather.weather}</p>
-                  </div>
-              </div>
-          )}
-          <div className="chart-container">
-              <Line data={data} options={options} width={600} height={300} />
-              <div className="temperature-labels"></div>
-              {!isFirstPage && (
-                  <button className="next-button" onClick={handlePrev}>&lt;</button>
-              )}
-              {!isLastPage && (
-                  <button className="next-button" onClick={handleNext}>&gt;</button>
-              )}
-          </div>
-          <div className="weather-chart-container">
-              {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
-                  <div key={index} className="weather-hour">
-                      <p className="weather-hour-time">{hour.time}</p>
-                      <p className="weather-hour-precipitation">{hour.precipitation}%</p>
-                      <img
-                          src={hour.precipitation > 50 ? rainyIcon : cloudyIcon}
-                          alt="강수 확률 아이콘"
-                          className="weather-hour-icon"
-                      />
-                  </div>
-              ))}
-          </div>
-      </div>
-  );
- 
- 
+        <div>
+            {currentWeather && (
+                <div className="current-weather">
+                    <h3 className="current-temp">{currentWeather.temp}°C</h3>
+                    <div className="weather-info">
+                        <div className="temp-details">
+                            <h4 className="high-low">
+                                {currentWeather.high}°C, / {currentWeather.low}°C
+                            </h4>
+                        </div>
+                        <p className="weather-status">{currentWeather.weather}</p>
+                    </div>
+                </div>
+            )}
+            <div className="chart-container">
+                <Line data={data} options={options} width={600} height={300} />
+                <div className="temperature-labels"></div>
+                {!isFirstPage && (
+                    <button className="next-button" onClick={handlePrev}>&lt;</button>
+                )}
+                {!isLastPage && (
+                    <button className="next-button" onClick={handleNext}>&gt;</button>
+                )}
+            </div>
+            <div className="weather-chart-container">
+                {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
+                    <div key={index} className="weather-hour">
+                        <p className="weather-hour-time">{hour.time}</p>
+                        <p className="weather-hour-precipitation">{hour.precipitation}%</p>
+                        <img
+                            src={hour.precipitation > 50 ? rainyIcon : cloudyIcon}
+                            alt="강수 확률 아이콘"
+                            className="weather-hour-icon"
+                        />
+                    </div>
+                ))}
+            </div>
+            <div className="weather-pollution-container">
+                <p>PM2.5: {airPoll.pm2_5} SO2: {airPoll.so2} NO: {airPoll.no} O3: {airPoll.o3}</p>
+            
+            </div>
+
+            <div>
+                <p> {like_hum.feels_like} {like_hum.humidity}</p>
+            </div>
+        </div>
+    );
+
+
 }
 
 

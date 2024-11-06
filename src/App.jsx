@@ -11,7 +11,6 @@ import WeatherOpenApi from './service/WeatherOpenAPi';
 import Id_pw_update from './page_component/Id_pw_update';
 import ChatgptApi from './service/chatgptApi';
 import Delete_user from './page_component/delete';
-import RecList from './page_component/recList';
 import RecView from './page_component/recView';
 
 import Layout from './header_footer/layout';
@@ -37,7 +36,6 @@ function App() {
               <Route path="/weatherTest" element={< WeatherOpenApi/>} />
               <Route path="/chatgpt" element={<ChatgptApi />} />
               <Route path="/delete" element={< Delete_user/>} />
-              <Route path="/recList" element={<RecList/>} />
               <Route path="/recView" element={<RecView/>} />
           </Routes>
           </div>

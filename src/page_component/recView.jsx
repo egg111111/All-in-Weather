@@ -68,7 +68,8 @@ function recView() {
                 <div className="modal-background">
                     <div className="modal-content">
                         <h3>{formatDate(selecteRec.createDate)}의 기록</h3>
-                        <p>{selecteRec.recommendation}</p>
+                        <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
+                        <p>{selecteRec.recActivity || selecteRec.recStyle}</p>
                         <button onClick={closeModal}>Close</button>
                     </div>
                 </div>

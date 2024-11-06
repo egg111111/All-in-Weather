@@ -15,7 +15,7 @@ function dashboard() {
     //const username = localStorage.getItem('username');
     const [location, setLocation] = useState({ latitude: null, longitude: null });
     const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
-    const [weatherData, setWeather] = useState("");
+    const [currentWeather, setCurrentWeather] = useState(null);
 
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
@@ -94,33 +94,6 @@ function dashboard() {
         }
     }, []);
 
-    //사용자의 위치 정보가 로컬에 있으면 위험하니까 대시보드에서 전부 처리?
-    //openWeatherMap API 로직 
-    //날씨는 
-    const getWeather = (latitude, longitude) => {
-        const iconSection = document.querySelector('.icon');
-        const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
-        fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${35.8714354}&lon=${128.601445}&appid=${Weather_Key}&units=metric&lang=kr`)
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            const weatherData = {
-                temp: json.current.temp,
-                description: json.current.weather[0].description
-            };
-            const icon = json.current.weather[0].icon;
-            const iconURL = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-            // iconSection.setAttribute('src', iconURL);
-            setWeather(weatherData);
-            console.log("weatherJSON",json);
-            console.log(weatherData);
-        })
-        .catch((error)=>{
-            console.error('Error: ', error);
-        })
-    }
-
         //username 가져오기 
         if(username){
             useEffect(() => {
@@ -155,9 +128,7 @@ function dashboard() {
 
     return (
         <>  
-            <WeatherChart />
-
-            
+            <WeatherChart onSetCurrentWeather={setCurrentWeather} />
 
             {isMenuOpen && (
                 <div className="menu">
@@ -182,7 +153,7 @@ function dashboard() {
                 )}
             </p>
 
-            <ChatgptApi weatherData={weatherData} />
+            <ChatgptApi weatherData={currentWeather} />
            
         </>
     );

@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import OpenAI from "openai";
 import Loading from '../header_footer/loding'
 
-function chatgptApi(weatherData) {
-    console.log(weatherData);
+import WeatherChart from "../page_component/weatherChart";
+
+function chatgptApi({weatherData}) {
     const [gptData, setGptData] = useState("")
     const [userData, setUserData] = useState({
         userId: "",
@@ -14,6 +15,16 @@ function chatgptApi(weatherData) {
         // gender: ""
     });
     const [loading, setLoading] = useState(false);
+    const [currentWeather, setCurrentWeather] = useState([]);
+
+    useEffect(() => {
+        const savedWeather = localStorage.getItem("currentWeather");
+        if (savedWeather) {
+            setCurrentWeather(JSON.parse(savedWeather));
+            console.log("sccuess weather", savedWeather);
+        }
+    }, []);
+
 
     //회원 정보를 가져오기 
     useEffect(() => {
@@ -40,16 +51,11 @@ function chatgptApi(weatherData) {
         fetchUserData();
     }, []);
 
-    useEffect(() => {
-        if(gptData) {
-            sendGptResult(gptData);
-        }
-    }, [gptData]);
-
 
     //gpt 출력 로직(옷차림)
-    const call_get_style = async () => {
+    const call_get_style = async (savedWeather) => {
         setLoading(true);
+        console.log('weather: ', savedWeather.temp);
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
@@ -60,7 +66,7 @@ function chatgptApi(weatherData) {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [
-                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 옷 취향은 레이어드고 실내 활동을 좋아하는 ${userData.age}세 남자의 옷 차림을 추천해줘, 간략하게` },
+                        { role: "user", content: `오늘 날씨는 ${savedWeather.temp}, ${savedWeather.description}, 옷 취향은 레이어드고 실외 활동을 좋아하는 ${userData.age}세 남자의 옷 차림을 추천해줘, 간략하게` },
                     ],
                     temperature: 0.5,
                     max_tokens: 50,
@@ -70,16 +76,15 @@ function chatgptApi(weatherData) {
             const data = await response.json();
             const recStyle = data.choices[0].message.content;
             setGptData(recStyle);
-            console.log("Response: ", recStyle);
             setLoading(false);
-            sendGptResult(recStyle);
+            sendGptResult(recStyle, 'style');
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
     }
 
     //gpt 출력 로직(활동)
-    const call_get_activity = async () => {
+    const call_get_activity = async (savedWeather) => {
         setLoading(true);
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -91,7 +96,7 @@ function chatgptApi(weatherData) {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: [
-                        { role: "user", content: `오늘 날씨는 ${weatherData.temp}, ${weatherData.description}, 실외 활동을 좋아하는 ${userData.age}세 여자의 오늘 활동을 추천해줘, 간략하게` },
+                        { role: "user", content: `오늘 날씨는 ${savedWeather.temp}, ${savedWeather.weather}, 실외 활동을 좋아하는 ${userData.age}세 여자의 오늘 활동을 추천해줘, 간략하게` },
                     ],
                     temperature: 0.5,
                     max_tokens: 50,
@@ -103,6 +108,7 @@ function chatgptApi(weatherData) {
             setGptData(recActivity);
             console.log("Response: ", recActivity);
             setLoading(false);
+            sendGptResult(recActivity, 'activity');
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
@@ -110,13 +116,26 @@ function chatgptApi(weatherData) {
 
 
     //결과값을 서버로 전송 
-    const sendGptResult = async (recStyle) => {
+    const sendGptResult = async (recData, type) => {
         const userId = localStorage.getItem('userId');
-        console.log(recStyle);
-        if(!recStyle){
+        console.log(recData);
+        if(!recData){
             console.error("내용이 존재하지 않습니다.")
             return;
         }
+        const bodyData = {
+            userId: userId,
+            temp_high: currentWeather.high,
+            temp_low: currentWeather.low
+        };
+        
+        // type에 따라 다른 데이터 컬럼에 저장
+        if (type === 'style') {
+            bodyData.recStyle = recData; // recStyle 컬럼에 저장
+        } else if (type === 'activity') {
+            bodyData.recActivity = recData; // recActivity 컬럼에 저장
+        }
+
         try {
             const response = await fetch(`http://localhost:8080/api/chat/save`, {
                 method: "POST",
@@ -124,10 +143,7 @@ function chatgptApi(weatherData) {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    userId: userId,
-                    recStyle: recStyle
-                })
+                body: JSON.stringify(bodyData)
             });
 
             if (response.ok) {
