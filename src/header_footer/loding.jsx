@@ -5,7 +5,7 @@ function londing() {
     return(
         <>
             <p>잠시만 기다려주세요</p>
-            <img src={Spinner} alt="로딩중" width="5%"></img>
+            <img src={Spinner} alt="로딩중" width="50px"></img>
         </>
     )
 }

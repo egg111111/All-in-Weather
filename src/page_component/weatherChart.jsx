@@ -8,10 +8,12 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 플러그인
+import annotationPlugin from "chartjs-plugin-annotation";
 
+import { useMediaQuery } from "react-responsive";
 
 import "./weatherChart.css";
 import rainyIcon from '../icon/rainy.png';
@@ -23,7 +25,7 @@ import ChatgptApi from "../service/chatgptApi"
 
 
 // Chart.js 구성 요소 등록
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels); // 플러그인 등록
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels, annotationPlugin); // 플러그인 등록
 
 
 function WeatherChart({ userData }) {
@@ -38,11 +40,18 @@ function WeatherChart({ userData }) {
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
 
+   const isMobile = useMediaQuery({query: "(max-width:576px)"});
+   const isTablet = useMediaQuery({query: "(min-witdh:576px)"  && "(max-witdh:768px)"})
 
     // 페이지 상태를 추적하는 변수 추가
-    const hoursPerPage = 8; // 페이지당 시간 수
+    let hoursPerPage = 8; // 페이지당 시간 수
     const isFirstPage = currentHourIndex === 0;
     const isLastPage = currentHourIndex + hoursPerPage >= hourlyData.length;
+    if(isMobile){
+        hoursPerPage = 6;
+    } else if(isTablet){
+        hoursPerPage = 7;
+    }
 
     const getAddressFromCoords = (latitude, longitude) => {
         if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
@@ -101,19 +110,19 @@ function WeatherChart({ userData }) {
                     console.log(data);
 
                     // 현재 날씨 정보 가져오기
-                    setCurrentWeather ({
+                    setCurrentWeather({
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
                         weather: data.current.weather[0].description,
                     })
 
-                    setLike_hum ({
+                    setLike_hum({
                         feels_like: Math.round(data.current.feels_like),
                         humidity: data.current.humidity
                     })
 
-                    setSun( {
+                    setSun({
                         sunrise: data.current.sunrise,
                         sunset: data.current.sunset
                     })
@@ -124,7 +133,7 @@ function WeatherChart({ userData }) {
                     );
                     const pollution_data = await pollution_response.json();
                     console.log(pollution_data);
-                    setAirPoll ({
+                    setAirPoll({
                         pm2_5: Math.round(pollution_data.list[0].components?.pm2_5),
                         so2: Math.round(pollution_data.list[0].components?.so2),
                         no: Math.round(pollution_data.list[0].components?.no),
@@ -155,25 +164,6 @@ function WeatherChart({ userData }) {
         }
     }, [currentWeather, airPoll, sun, like_hum]);
 
-    // useEffect(() => {
-    //     if (airPoll) {
-    //         console.log("Updated airPoll state:", airPoll);
-    //     }
-    // }, [airPoll])
-
-    // useEffect(() => {
-    //     if (like_hum) {
-    //         console.log("Updated like_hum state:", like_hum);
-    //     }
-    // }, [like_hum])
-
-    // useEffect(() => {
-    //     if (sun) {
-    //         console.log("Updated sun state:", sun);
-    //     }
-    // }, [sun])
-
-
 
     const handleNext = () => {
         if (currentHourIndex + hoursPerPage < hourlyData.length) {
@@ -200,48 +190,112 @@ function WeatherChart({ userData }) {
         hour12: true,
     }).replace('오후', '오후 ').replace('오전', '오전 ') : null;
 
+    //일출 일몰 구별 
+    const sunriseTimestamp = sun ? sun.sunrise * 1000 : null;
+    const sunsetTimestamp = sun ? sun.sunset * 1000 : null;
 
+    // 데이터 및 라벨 분리
+    const beforeSunrise = hourlyData.filter(
+        (hour) => new Date(hour.time).getTime() < formattedSunrise
+    );
+    const afterSunriseBeforeSunset = hourlyData.filter(
+        (hour) =>
+            new Date(hour.time).getTime() >= formattedSunrise &&
+            new Date(hour.time).getTime() < formattedSunset
+    );
+    const afterSunset = hourlyData.filter(
+        (hour) => new Date(hour.time).getTime() >= formattedSunset
+    );
+
+
+    // 타임스탬프 형태로 sunriseTimestamp와 sunsetTimestamp를 사용
     const data = {
-        labels: hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map(hour => hour.time),
+        labels: hourlyData
+            .slice(currentHourIndex, currentHourIndex + hoursPerPage)
+            .map(hour => hour?.time || "Unknown"),  // hour가 정의되지 않은 경우 "Unknown" 표시
         datasets: [
             {
                 label: "Temperature (°C)",
-                data: hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map(hour => hour.temp),
-                borderColor: "rgba(255, 99, 132, 1)",
+                data: hourlyData
+                    .slice(currentHourIndex, currentHourIndex + hoursPerPage)
+                    .map(hour => hour?.temp || null),  // hour가 정의되지 않은 경우 null로 설정
+                borderColor: hourlyData
+                    .slice(currentHourIndex, currentHourIndex + hoursPerPage)
+                    .map(hour => {
+                        if (!hour || !hour.time) return "black";  // hour가 정의되지 않으면 기본 색상
+                        // hour.time 문자열을 Date 객체로 변환 후 getTime()으로 타임스탬프 변환
+                        const hourTime = new Date(`1970-01-01T${hour.time}:00`).getTime();
+                        if (sunriseTimestamp && sunsetTimestamp) {
+                            if (hourTime >= sunriseTimestamp && hourTime < sunsetTimestamp) {
+                                return "red";  // 일출 이후 일몰 전에는 붉은색
+                            } else {
+                                return "navy";  // 일몰 이후는 남색
+                            }
+                        }
+                        return "black";
+                    }),
                 backgroundColor: "rgba(255, 99, 132, 0.2)",
                 pointRadius: 5,
-                // 데이터 레이블 설정
                 datalabels: {
-                    color: 'black', // 텍스트 색상
-                    anchor: 'end', // 레이블 위치
-                    align: 'end', // 레이블 정렬
-                    formatter: (value) => {
-                        return `${value}°C`; // 표시할 텍스트
-                    }
+                    color: 'black',
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: (value) => `${value}°C`
                 }
             },
         ],
     };
 
-
     const options = {
         responsive: true,
-        maintainAspectRatio: false, // 이 설정을 false로 하여 캔버스의 높이를 유지하지 않음
-        layout: { padding: {
-            top: 30,
-            bottom: 30 // 하단 패딩을 크게 설정하여 그래프를 아래로 이동
-        } },
+        maintainAspectRatio: false,
+        layout: {
+            padding: {
+                top: 30,
+                bottom: 0,
+            },
+        },
         plugins: {
             legend: {
-                display: false,
+                display: true,
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem) {
+                    label: function (tooltipItem) {
                         return `${tooltipItem.dataset.label}: ${tooltipItem.parsed.y}°C`;
                     },
                 },
             },
+            // annotation: {
+            //     annotations: [
+            //         {
+            //             type: 'line',
+            //             scaleID: 'x',
+            //             value: formattedSunrise,
+            //             borderColor: 'orange',
+            //             borderWidth: 2,
+            //             label: {
+            //                 content: '일출',
+            //                 enabled: true,
+            //                 position: 'top',
+            //                 color: 'orange',
+            //             }
+            //         },
+            //         {
+            //             type: 'line',
+            //             scaleID: 'x',
+            //             value: formattedSunset,
+            //             borderColor: 'navy',
+            //             borderWidth: 2,
+            //             label: {
+            //                 content: '일몰',
+            //                 enabled: true,
+            //                 position: 'top',
+            //                 color: 'navy',
+            //             }
+            //         }
+            //     ]
+            // }
         },
         scales: {
             y: {
@@ -251,7 +305,7 @@ function WeatherChart({ userData }) {
                 title: {
                     display: true,
                 },
-                ticks: { maxRotation: 0, minRotation: 0, },
+                ticks: { maxRotation: 0, minRotation: 0 },
             },
         },
     };
@@ -260,67 +314,88 @@ function WeatherChart({ userData }) {
 
     return (
         <div>
-             <div className="current-location">
-            <h4>현재 위치: {address}</h4>
-        </div>
+            <div className="first-container">
+
+                {currentWeather && (
+                    <div className="current-weather">
+                        <h4 className="current-location"> 📍 {address}</h4>
+                        <div className="weather-info">
+                            <div className="temp-details">
+                                <h4 className="high-low">{currentWeather.high}°C / {currentWeather.low}°C</h4>
+                            </div>
+                            <p className="weather-status">{currentWeather.weather}</p>
+                        </div>
+                        <h3 className="current-temp">{currentWeather.temp}°C</h3>
+                        <div className="weather-feels-container">
+                            <p> 체감온도 {like_hum?.feels_like}</p>
+                            <p> 습도 {like_hum?.humidity}</p>
 
 
-        {currentWeather && (
-            <div className="current-weather">
-                <h3 className="current-temp">{currentWeather.temp}°C</h3>
-                <div className="weather-info">
-                    <div className="temp-details">
-                        <h4 className="high-low">{currentWeather.high}°C / {currentWeather.low}°C</h4>
+                        </div>
                     </div>
-                    <p className="weather-status">{currentWeather.weather}</p>
+                )}
+                <div className="chatgpt-button">
+                    {currentWeather && (
+                        <ChatgptApi weatherData={currentWeather} userData={userData} />// currentWeather 전달
+                    )}
                 </div>
             </div>
-        )}
 
 
-        <div className="chart-container">
-            {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
-            <Line data={data} options={options} width={800} height={200} />
-            {!isLastPage && <button className="next-button" onClick={handleNext}>&gt;</button>}
-        </div>
+            <div className="chart-container">
+                {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
 
-
-        <div className="weather-chart-container">
-            {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
-                <div key={index} className="weather-hour">
-                    <p className="weather-hour-time">{hour.time}</p>
-                    <p className="weather-hour-precipitation">{hour.precipitation}%</p>
-                    <img src={
-                        hour.precipitation >= 60 ? rainyIcon :
-                        hour.precipitation >= 30 ? cloudyIcon : sunnyIcon} alt="강수 확률 아이콘" className="weather-hour-icon" />
+                <div className="line-chart">
+                    <Line data={data} options={options} />
                 </div>
-            ))}
-        </div>
+
+                {!isLastPage && <button className="next-button" onClick={handleNext}>&gt;</button>}
+
+                <div className="weather-chart-container">
+                    {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
+                        <div key={index} className="weather-hour">
+                            <p className="weather-hour-precipitation">{hour.precipitation}%</p>
+                            <img
+                                src={
+                                    hour.precipitation >= 60 ? rainyIcon :
+                                        hour.precipitation >= 30 ? cloudyIcon : sunnyIcon
+                                }
+                                alt="강수 확률 아이콘"
+                                className="weather-hour-icon"
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
 
             <div className="weather-pollution-container">
-                <p>PM2.5: {airPoll?.pm2_5}  SO2: {airPoll?.so2} NO: {airPoll?.no}  O3: {airPoll?.o3}</p>
+                <table className="pollution-table">
+                    <th>미세먼지</th>
+                    <th>이산화황</th>
+                    <th>이산화질소</th>
+                    <th> 오존 </th>
+                    <tr>
+                        <td> {airPoll?.pm2_5}</td>
+                        <td>{airPoll?.so2}</td>
+                        <td>{airPoll?.no}</td>
+                        <td> {airPoll?.o3}</td>
+                    </tr>
+                </table>
+                <p></p>
 
             </div>
             <br />
-            <div className="weather-feels-container">
-                <p> 체감온도: {like_hum?.feels_like}</p>
-                <p> 습도: {like_hum?.humidity}</p>
 
-                <div className="weather-second-box">
-                    {sun && (
-                        <div className="sun-times">
-                            <p>일출: {formattedSunrise}</p>
-                            <p>일몰: {formattedSunset}</p>
-                        </div>
-                    )}
+            <div className="weather-second-box">
+                {sun && (
+                    <div className="sun-times">
+                        <p>일출: {formattedSunrise}</p>
+                        <p>일몰: {formattedSunset}</p>
+                    </div>
+                )}
 
-                </div>
             </div>
 
-{currentWeather && (
-                <ChatgptApi weatherData={currentWeather} userData={userData} />// currentWeather 전달
-            )}
-            
 
         </div>
     );

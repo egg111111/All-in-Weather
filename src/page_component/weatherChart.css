@@ -1,22 +1,41 @@
+@media (max-width: 576px) {
+  .chart-container {
+    
+  }
+  
+}
+
+.first-container{
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  align-content: center;
+  padding-left: 1.5%;
+}
 
 .weather-chart-container {
-  margin-top: 20px;
+  margin-top: 0;
   overflow-x: auto;
   display: flex;
   justify-content: center;
   padding: 0 10px;
 }
 
+.line-chart{
+  width: 80vh;
+  height: 30vh;
+}
+
 
 .chart-container {
+  display: flex;
+  flex-direction: column;
   position: relative;
   max-width: 600px;
   margin: 20px auto;
   padding: 40px 20px 20px 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -24,18 +43,20 @@
 
 .weather-hour {
   text-align: center;
-  min-width: 65px;
-  margin: 10px;
-  background-color: #f8f8f8;
+  min-width: 5vh;
+  margin: 0px 10px 10px 10px;
+  /* background-color: #f8f8f8; */
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 
-.weather-hour-time, .weather-hour-precipitation {
+.weather-hour-time,
+.weather-hour-precipitation {
   margin: 5px 0;
-  font-size: 14px;
+  font-size: 10px;
   color: #555;
 }
 
@@ -43,12 +64,15 @@
 .weather-hour-icon {
   width: 24px;
   height: 24px;
-  margin: 5px auto; /* Change from 5px 0 to 5px auto */
-  display: block; /* Ensure the icon is treated as a block element */
+  margin: 5px auto;
+  /* Change from 5px 0 to 5px auto */
+  display: block;
+  /* Ensure the icon is treated as a block element */
 }
 
 
-.prev-button, .next-button {
+.prev-button,
+.next-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -60,18 +84,20 @@
   transform: translateY(-50%);
   padding: 3px;
   border-radius: 30%;
-  background-color: rgba(255,255,255,0.8);
-  box-shadow: 0 2px 4px 2px rgba(0,0,0,0.1);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.1);
 }
 
 
 .prev-button {
-  left: 5px; /* 왼쪽 버튼 위치 조정 */
+  left: 5px;
+  /* 왼쪽 버튼 위치 조정 */
 }
 
 
 .next-button {
-  right: 5px; /* 오른쪽 버튼 위치 조정 */
+  right: 5px;
+  /* 오른쪽 버튼 위치 조정 */
 }
 
 
@@ -88,23 +114,31 @@
 
 
 .temperature-label {
+  display: grid;
   font-size: 16px;
   color: #333;
 }
 
 
 .current-weather {
-  display: flex;
+  display: grid;
   align-items: center;
-  
+  justify-content:center;
+  width: 50vh;
+  height: 20vh;
   /* justify-content: space-between; */
   margin-bottom: 20px;
-  padding: 20px;
+  padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  gap: 24px;
+  gap: -10px;
+  column-gap: 5px;
+  grid-template-columns: 1.5fr 1fr;
+  /* grid-column: 1/ span 2;
+  grid-row: 1/span 3; */
+  grid-template-rows: 60px 1.5fr;
 }
 
 
@@ -115,14 +149,16 @@
 
 
 .current-temp {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   margin-right: 20px;
+  height: 100%;
 }
 
 
 .temp-details {
   font-size: 16px;
+  margin-bottom: -20%;
 }
 
 
@@ -133,46 +169,69 @@
 
 
 .current-location {
-  margin: 10px 0;
-  font-size: 16px;
+  display: grid;
+  /* margin: 10px 0; */
+  font-size: 11px;
   color: #333;
   text-align: center;
+  height: 30%;
+}
+
+.weather-feels-container {
+  position: relative;
+  align-items: left;
+  padding: 8px;
+  font-size: 14px;
+  margin-top: -30%;
 }
 
 
-  .weather-pollution-container{
-    position: relative;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px; 
-    border-radius: 5px; /* 둥근 모서리 */
-    font-size: 14px;    /* 글씨 크기 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  }
+.weather-pollution-container {
+  position: relative;
+  display: grid; /* Flexbox로 설정 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  
+  background-color: #fff; /* 배경색 */
+  padding: 8px;
+  margin-top: 2%;
+  font-size: 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .weather-second-box{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+.pollution-table {
+  display: table;
+  margin: 0 auto; 
+  margin-top: 5%;
+  border-spacing: 10vh 0px;
+  
+}
 
-  .weather-feels-container{
-    /* position: relative; */
-    align-items: left;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px; 
-    border-radius: 5px; /* 둥근 모서리 */
-    font-size: 14px;    /* 글씨 크기 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  }
+.weather-second-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-  .sun-times{
-    /* position: relative; */
-    align-items: right;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px; 
-    border-radius: 5px; /* 둥근 모서리 */
-    font-size: 14px;    /* 글씨 크기 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  }
+
+.sun-times {
+  /* position: relative; */
+  align-items: right;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 8px;
+  border-radius: 5px;
+  /* 둥근 모서리 */
+  font-size: 14px;
+  /* 글씨 크기 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  /* 그림자 효과 */
+}
+
+.chatgpt-button {
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}

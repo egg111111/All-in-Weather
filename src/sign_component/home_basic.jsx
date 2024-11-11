@@ -24,7 +24,7 @@ function homeBasic() {
                 <button onClick={handleSignUpClick}>
                     회원가입
                 </button>
-                
+                <br/>
                 <button onClick={handleLoginClick}>
                     로그인
                 </button>

@@ -190,6 +190,8 @@ function chatgptApi({weatherData, userData}) {
         <>
             <div>
                 <button onClick={call_get_style}> 옷차림 추천 </button>
+                <br/>
+                <br/>
                 <button onClick={call_get_activity}>활동 추천</button>
                 <br />
                 {loading ? <Loading/> : null}
