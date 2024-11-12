@@ -33,20 +33,22 @@ body {
   align-items: center;
   /* height: 150vh; */
   /* max-width: 600px; */
+  min-height: 100vh;
+  padding: 3%;
 }
 
 .centered-content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* flex-direction: column; */
   justify-content: center;
-  align-items: center;
-  width: 100vh;
-  height: 130vh;
+  align-items: start;
+  width: fit-content;
+  height: fit-content;
   /* max-width: 800px; */
   text-align: center;
+  /* background-color: #dde7e7; */
   background-color: #dde7e7;
-  padding: 10%;
-  margin-left: -9%;
+  
 }
 
 .kakao-sign-in-button {

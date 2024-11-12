@@ -12,6 +12,7 @@ import Id_pw_update from './page_component/Id_pw_update';
 import ChatgptApi from './service/chatgptApi';
 import Delete_user from './page_component/delete';
 import RecView from './page_component/recView';
+import Result from './page_component/result';
 
 import Layout from './header_footer/layout';
 import Sidebar from './header_footer/sidebar';
@@ -37,6 +38,7 @@ function App() {
               <Route path="/chatgpt" element={<ChatgptApi />} />
               <Route path="/delete" element={< Delete_user/>} />
               <Route path="/recView" element={<RecView/>} />
+              <Route path="/result" element={<Result/>} />
           </Routes>
           </div>
           </Layout>

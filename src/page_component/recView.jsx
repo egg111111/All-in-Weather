@@ -7,6 +7,9 @@ function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [filter, setFilter] = useState("style"); // "style", "activity", "all" 중 하나를 선택
+
+
     const navigate = useNavigate();
 
     const getRecList = async () => {
@@ -53,15 +56,47 @@ function recView() {
         return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
     }
 
+    const filteredView = view.filter((item) => {
+        if (filter === "all") return true; // 전체 보기
+        if (filter === "style") return item.recStyle; // 스타일만 보기
+        if (filter === "activity") return item.recActivity; // 활동만 보기
+        return false;
+    });
+
     return (
-        <>
+        <div className="recview-back">
             <h2>추천기록</h2>
+
+            <div className="filter-options">
+            <label>
+                    <input
+                        type="radio"
+                        value="style"
+                        checked={filter === "style"}
+                        onChange={() => setFilter("style")}
+                    />
+                    스타일
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="activity"
+                        checked={filter === "activity"}
+                        onChange={() => setFilter("activity")}
+                    />
+                    활동
+                </label>
+            </div>
             <ul>
-                {view.map((item, index) => (
-                    <li key={index} onClick={() => handleDateClick(item)} style={{ cursor: "pointer", color: "blue" }}>
+                <div className="rec_background">
+                {filteredView.map((item, index) => (
+                    <li key={index} 
+                        onClick={() => handleDateClick(item)} 
+                        style={{ cursor: "pointer", color: "blue" }}>
                         {formatDate(item.createDate)}의 기록 
                     </li>
                 ))}
+                </div>
             </ul>
 
             {showModal && selecteRec && (
@@ -74,7 +109,7 @@ function recView() {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

@@ -19,6 +19,8 @@ import "./weatherChart.css";
 import rainyIcon from '../icon/rainy.png';
 import cloudyIcon from '../icon/cloudy.png';
 import sunnyIcon from '../icon/sunshine.png';
+import sunriseIcon from '../icon/sunrise.png';
+import sunsetIcon from '../icon/sunset.png';
 
 import ChatgptApi from "../service/chatgptApi"
 
@@ -40,17 +42,17 @@ function WeatherChart({ userData }) {
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
 
-   const isMobile = useMediaQuery({query: "(max-width:576px)"});
-   const isTablet = useMediaQuery({query: "(min-witdh:576px)"  && "(max-witdh:768px)"})
+   const isMobile = useMediaQuery({query: "(max-width:474px)"});
+   const isTablet = useMediaQuery({query: "(min-witdh:475px) and (max-witdh:768px)"})
 
     // 페이지 상태를 추적하는 변수 추가
     let hoursPerPage = 8; // 페이지당 시간 수
     const isFirstPage = currentHourIndex === 0;
     const isLastPage = currentHourIndex + hoursPerPage >= hourlyData.length;
     if(isMobile){
-        hoursPerPage = 6;
+        hoursPerPage = 4;
     } else if(isTablet){
-        hoursPerPage = 7;
+        hoursPerPage = 6;
     }
 
     const getAddressFromCoords = (latitude, longitude) => {
@@ -207,6 +209,21 @@ function WeatherChart({ userData }) {
         (hour) => new Date(hour.time).getTime() >= formattedSunset
     );
 
+    //미세먼지 기준 구분
+    function PM_standard(pm){
+        var pm_string; 
+        if(pm <= 30 ){
+            pm_string = "좋음";
+        } else if (pm > 30 && pm <= 80){
+            pm_string = "보통"; 
+        } else if (pm > 80 && pm <= 150){
+            pm_string = "나쁨";
+        } else {
+            pm_string = "매우 나쁨"
+        }
+        return pm_string;
+    }
+
 
     // 타임스탬프 형태로 sunriseTimestamp와 sunsetTimestamp를 사용
     const data = {
@@ -257,7 +274,7 @@ function WeatherChart({ userData }) {
         },
         plugins: {
             legend: {
-                display: true,
+                display: false,
             },
             tooltip: {
                 callbacks: {
@@ -266,36 +283,6 @@ function WeatherChart({ userData }) {
                     },
                 },
             },
-            // annotation: {
-            //     annotations: [
-            //         {
-            //             type: 'line',
-            //             scaleID: 'x',
-            //             value: formattedSunrise,
-            //             borderColor: 'orange',
-            //             borderWidth: 2,
-            //             label: {
-            //                 content: '일출',
-            //                 enabled: true,
-            //                 position: 'top',
-            //                 color: 'orange',
-            //             }
-            //         },
-            //         {
-            //             type: 'line',
-            //             scaleID: 'x',
-            //             value: formattedSunset,
-            //             borderColor: 'navy',
-            //             borderWidth: 2,
-            //             label: {
-            //                 content: '일몰',
-            //                 enabled: true,
-            //                 position: 'top',
-            //                 color: 'navy',
-            //             }
-            //         }
-            //     ]
-            // }
         },
         scales: {
             y: {
@@ -303,7 +290,7 @@ function WeatherChart({ userData }) {
             },
             x: {
                 title: {
-                    display: true,
+                    display: false,
                 },
                 ticks: { maxRotation: 0, minRotation: 0 },
             },
@@ -329,14 +316,12 @@ function WeatherChart({ userData }) {
                         <div className="weather-feels-container">
                             <p> 체감온도 {like_hum?.feels_like}</p>
                             <p> 습도 {like_hum?.humidity}</p>
-
-
                         </div>
                     </div>
                 )}
                 <div className="chatgpt-button">
                     {currentWeather && (
-                        <ChatgptApi weatherData={currentWeather} userData={userData} />// currentWeather 전달
+                        <ChatgptApi weatherData={currentWeather} userData={userData} />
                     )}
                 </div>
             </div>
@@ -375,7 +360,7 @@ function WeatherChart({ userData }) {
                     <th>이산화질소</th>
                     <th> 오존 </th>
                     <tr>
-                        <td> {airPoll?.pm2_5}</td>
+                        <td>{PM_standard(airPoll?.pm2_5)} ({airPoll?.pm2_5}) </td>
                         <td>{airPoll?.so2}</td>
                         <td>{airPoll?.no}</td>
                         <td> {airPoll?.o3}</td>
@@ -389,7 +374,9 @@ function WeatherChart({ userData }) {
             <div className="weather-second-box">
                 {sun && (
                     <div className="sun-times">
+                        <img src={sunriseIcon} ></img>
                         <p>일출: {formattedSunrise}</p>
+                        <img src={sunsetIcon} ></img>
                         <p>일몰: {formattedSunset}</p>
                     </div>
                 )}

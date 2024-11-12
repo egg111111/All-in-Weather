@@ -1,3 +1,10 @@
+.recview-back{
+    background-color: #E0E7E7;
+    padding: 10%;
+    width: 60vw;
+    height: 100vh;
+}
+
 .modal-background {
     position: fixed;
     top: 0;
@@ -12,9 +19,23 @@
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     width: 300px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.rec_background{
+    display: grid;
+    margin-top: 10%;
+    /* background-color: #bcbcbc; */
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.ul{
+    color: white;
+    border-color: black;
+    
 }

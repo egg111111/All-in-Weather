@@ -26,6 +26,9 @@
     border: 2px solid #202020;
     border-radius: 40px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .openBtn {
@@ -38,3 +41,4 @@
     position: relative;
     width: 100%;
 }
+

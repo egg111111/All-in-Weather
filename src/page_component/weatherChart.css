@@ -1,15 +1,11 @@
-@media (max-width: 576px) {
-  .chart-container {
-    
-  }
-  
-}
 
-.first-container{
+.first-container {
   display: grid;
   grid-template-columns: 1fr 0.5fr;
   align-content: center;
-  padding-left: 1.5%;
+  /* padding-left: 1.5%; */
+  /* width: 89vw;
+  height: 20vh; */
 }
 
 .weather-chart-container {
@@ -18,11 +14,13 @@
   display: flex;
   justify-content: center;
   padding: 0 10px;
+  transform-origin: center;
 }
 
-.line-chart{
-  width: 80vh;
+.line-chart {
+  width: 75vw;
   height: 30vh;
+  max-width: 600px;
 }
 
 
@@ -30,6 +28,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  width: 80vw;
   max-width: 600px;
   margin: 20px auto;
   padding: 40px 20px 20px 20px;
@@ -123,10 +122,9 @@
 .current-weather {
   display: grid;
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   width: 50vh;
   height: 20vh;
-  /* justify-content: space-between; */
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #e0e0e0;
@@ -158,7 +156,7 @@
 
 .temp-details {
   font-size: 16px;
-  margin-bottom: -20%;
+  margin-bottom: -13%;
 }
 
 
@@ -188,28 +186,32 @@
 
 .weather-pollution-container {
   position: relative;
-  display: grid; /* Flexbox로 설정 */
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  
-  background-color: #fff; /* 배경색 */
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
   padding: 8px;
   margin-top: 2%;
   font-size: 14px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90vw;
+  max-width: 640px;
+  height: 20vh;
+  max-height: 200px;
 }
 
 .pollution-table {
   display: table;
-  margin: 0 auto; 
+  width: 80vw;
+  max-width: 600px;
+  height: 10vh;
+  margin: 0 auto;
   margin-top: 5%;
-  border-spacing: 10vh 0px;
-  
 }
 
 .weather-second-box {
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
@@ -226,6 +228,13 @@
   font-size: 14px;
   /* 글씨 크기 */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: grid;
+  
+  grid-template-columns: 1fr 1fr;
+  width: 80vw;
+  max-width: 600px;
+  align-items: center;
+  justify-items: center;
   /* 그림자 효과 */
 }
 
@@ -234,4 +243,18 @@
   display: grid;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 576px) {
+  .current-weather {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    width: 50vw;
+    /* 모바일에서 폭을 화면에 맞게 조정 */
+    height: auto;
+    /* 높이를 자동으로 조정 */
+    gap: 10px;
+    /* 모바일에서는 여백을 추가 */
+    justify-content: center;
+  }
 }
