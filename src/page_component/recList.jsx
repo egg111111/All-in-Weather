@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function recommendation_note() {
     const [recList, setRecList] = useState([]);
@@ -10,7 +11,7 @@ function recommendation_note() {
     const getRecList = async () => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await fetch(`http://localhost:8080/api/chat/read/${userId}`, {
+            const response = await fetch(`${API_URL}/api/chat/read/${userId}`, {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

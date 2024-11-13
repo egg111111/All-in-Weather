@@ -10,6 +10,10 @@ const Header = () => {
 
     function handleLogout() {
         localStorage.removeItem('token');
+        localStorage.removeItem('name');
+        localStorage.removeItem('nickname');
+        localStorage.removeItem('social_userId');
+        localStorage.removeItem('social_username');
         console.log('로그아웃 성공');
         navigate('/')
     }

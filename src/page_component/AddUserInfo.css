@@ -1,0 +1,45 @@
+.extra-info-form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.age-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gender-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-buttons button {
+  padding: 8px 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.gender-buttons button.active {
+  border-color: #007bff;
+}
+
+.height-weight-group {
+  display: flex;
+  gap: 10px;
+}
+
+.height-weight-group input {
+  flex: 1;
+}

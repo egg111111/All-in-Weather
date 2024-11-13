@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import './recView.css'
+const API_URL = import.meta.env.VITE_API_URL;
 
 function recView() {
     const [view, setView] = useState([]);
@@ -16,7 +17,7 @@ function recView() {
             let response;
             // 일반 로그인일 경우
             if (userId) {
-                response = await fetch(`http://localhost:8080/api/chat/read/${userId}`, {
+                response = await fetch(`${API_URL}/api/chat/read/${userId}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -29,7 +30,7 @@ function recView() {
                 }
             }
             else {
-                response = await fetch(`http://localhost:8080/api/chat/read/social/${username}`, {
+                response = await fetch(`${API_URL}/api/chat/read/social/${username}`, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json'

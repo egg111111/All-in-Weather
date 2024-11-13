@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './sign_up.module.css';
 import './style.css';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SignUp() {
   const idRef = useRef(null);
@@ -42,7 +43,7 @@ export default function SignUp() {
 
   const checkUserId = async (userId) => {
     try {
-      const response = await fetch('http://localhost:8080/api/users/check-userId', {
+      const response = await fetch(`${API_URL}/api/users/check-userId`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
@@ -58,7 +59,7 @@ export default function SignUp() {
 
   const checkEmail = async (email) => {
     try {
-      const response = await fetch('http://localhost:8080/api/users/check-email', {
+      const response = await fetch(`${API_URL}/api/users/check-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -74,7 +75,7 @@ export default function SignUp() {
 
   const sendEmailVerification = async (email) => {
     try {
-      const response = await fetch('http://localhost:8080/api/users/send-verification-code', {
+      const response = await fetch(`${API_URL}/api/users/send-verification-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, email }), // ID와 이메일을 전송
@@ -89,7 +90,7 @@ export default function SignUp() {
 
   const verifyCode = async (userId, email, code) => {
     try {
-      const response = await fetch('http://localhost:8080/api/users/verify-code', {
+      const response = await fetch(`${API_URL}/api/users/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: userId, email, certificationNumber: code }),
@@ -135,41 +136,55 @@ export default function SignUp() {
     if (!isEmailCheck) {
         alert('이메일 중복 확인을 해주세요.');
         return;
-      }
+    }
     if (password !== passwordCheck) {
       setPasswordCheckError(true);
       setPasswordCheckMessage('비밀번호가 일치하지 않습니다.');
       return;
     }
+
     const requestBody = {
-        username: id, 
-        userId: id, 
         password, 
         email,
-        age:20 
+        userId: id,
     };
+
     console.log(requestBody);
+
     try {
-      const response = await fetch('http://localhost:8080/api/users/register', {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       });
-    //   const responseBody = await response.json();
+
       if (response.ok) {
-        Swal.fire({
-          title: "회원 가입이 완료되었습니다.",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        navigate('/login');
+        // 응답에서 토큰 받기
+        const responseBody = await response.json();
+        const token = responseBody.token;  // 서버에서 반환한 토큰을 받음
+        const userId = responseBody.user.userId;  // 서버에서 반환한 토큰을 받음
+
+        // 토큰을 localStorage에 저장
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId);
+
+        // 회원가입 완료 후 /addUserInfo로 리다이렉트
+        navigate('/addUserInfo');
       } else {
         alert('회원가입에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
     }
+  };
+
+  const handleNaverLogin = () => {
+      window.location.href = `${API_URL}/oauth2/authorization/naver`;
+  };
+
+  const handleKakaoLogin = () => {
+      window.location.href = `${API_URL}/oauth2/authorization/kakao`;
   };
 
   return (
@@ -180,8 +195,8 @@ export default function SignUp() {
             <div className='sign-up-content-sns-sign-in-box'></div>
               <div className='sign-up-content-sns-sign-in-title'>{'sns 회원가입'}</div>
                 <div className='sign-up-content-sns-sign-in-button-box'>
-                  <div className='kakao-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('kakao')}></div>
-                  <div className='naver-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('naver')}></div>
+                  <div className='kakao-sign-in-button' onClick={() => handleKakaoLogin('kakao')}></div>
+                  <div className='naver-sign-in-button' onClick={() => handleNaverLogin('naver')}></div>
                 </div>
               <div className='sign-up-content-divider'></div>
               <div className='sign-up-content-input-box'>
@@ -243,7 +258,7 @@ export default function SignUp() {
                 />
               </div>
               <div className='sign-up-content-button-box'>
-                <div className={`${signUpButtonClass} full-width`} onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
+                <div className={`${signUpButtonClass} full-width`} onClick={onSignUpButtonClickHandler}>{'다음'}</div>
                 {/* <div className='text-link-lg full-width' onClick={() => navigate('/login')}>{'로그인'}</div> */}
               </div>
           </div>

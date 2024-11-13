@@ -14,6 +14,7 @@ import Delete_user from './page_component/delete';
 import SocialDeleteUser from './page_component/social_delete';
 import RecList from './page_component/recList';
 import RecView from './page_component/recView';
+import AddUserInfo from './page_component/AddUserInfo';
 
 import Layout from './header_footer/layout';
 
@@ -29,6 +30,7 @@ function App() {
           <Routes>
               <Route path="/" element={<Home_basic />} />
               <Route path="/sign_up" element={<Signup />} />
+              <Route path="/addUserInfo" element={<AddUserInfo />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />

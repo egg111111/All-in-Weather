@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import googleImage from '/src/assets/images/google.png';
 import naverImage from '/src/assets/images/naver.png';
 import kakaoImage from '/src/assets/images/kakao.png';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function MyPage() {
     const navigate = useNavigate();
@@ -14,10 +15,10 @@ function MyPage() {
         age: "",
     });
     const [socialUserData, setSocialUserData] = useState({
-        social_username: "",
+        social_userId: "",
         name: "",
         email: "",
-        nickname: "", // 랜덤 닉네임 추가
+        social_nickname: "", // 랜덤 닉네임 추가
     });
     const [editMode, setEditMode] = useState(false);
     const [message, setMessage] = useState("");
@@ -33,7 +34,7 @@ function MyPage() {
 
                 // 일반 로그인일 경우
                 if (userId) {
-                    response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                    response = await fetch(`${API_URL}/api/users/show/${userId}`, {
                         method: "GET",
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -48,7 +49,7 @@ function MyPage() {
                 } 
                 // 소셜 로그인일 경우
                 else {
-                    response = await fetch('http://localhost:8080/api/users/social_user', {
+                    response = await fetch(`${API_URL}/api/users/social_user`, {
                         method: "GET",
                         headers: {
                             'Content-Type': 'application/json'
@@ -58,8 +59,8 @@ function MyPage() {
                     if (response.ok) {
                         const data = await response.json();
                         setSocialUserData(data);
-                        localStorage.setItem('nickname', data.nickname);
-                        localStorage.setItem('social_username', data.social_username);
+                        localStorage.setItem('social_nickname', data.social_nickname);
+                        localStorage.setItem('social_userId', data.social_userId);
                         localStorage.setItem('name', data.name);
                         localStorage.setItem('email', data.email);
                         setIsSocialLogin(true);
@@ -79,7 +80,7 @@ function MyPage() {
             let response;
             if (isSocialLogin) {
                 // 소셜 로그인 데이터 전송
-                response = await fetch(`http://localhost:8080/api/users/update/social/${socialUserData.social_username}`, {
+                response = await fetch(`${API_URL}/api/users/update/social/${socialUserData.social_userId}`, {
                     method: "PUT",
                     headers: {
                         'Content-Type': 'application/json',
@@ -98,14 +99,14 @@ function MyPage() {
                     });
     
                     // 로컬 스토리지 업데이트
-                    console.log("Updated nickname:", socialUserData.nickname); 
-                    localStorage.setItem('nickname', socialUserData.nickname); // 닉네임 업데이트
+                    console.log("Updated nickname:", socialUserData.social_nickname); 
+                    localStorage.setItem('social_nickname', socialUserData.social_nickname); // 닉네임 업데이트
                     localStorage.setItem('name', socialUserData.name); // 이름 업데이트
                     localStorage.setItem('email', socialUserData.email); // 이메일 업데이트
                 }
             } else {
                 // 일반 로그인 데이터 전송
-                response = await fetch(`http://localhost:8080/api/users/update/${homeUserData.userId}`, {
+                response = await fetch(`${API_URL}/api/users/update/${homeUserData.userId}`, {
                     method: "PUT",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -172,7 +173,7 @@ function MyPage() {
     const getProviderImage = () => {
         // social_username에서 제공자 키워드 찾기
         const provider = Object.keys(providerImages).find(key =>
-            socialUserData.social_username?.includes(key)
+            socialUserData.social_userId?.includes(key)
         );
         // 제공자에 해당하는 이미지 반환, 기본 이미지는 defaultImage 사용
         return provider ? providerImages[provider] : defaultImage;
@@ -188,8 +189,8 @@ function MyPage() {
                     {editMode ? (
                         <div>
                             <label>닉네임: </label> 
-                            <img src={getProviderImage()} alt={socialUserData.social_username} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
-                            <input type="text" name="nickname" value={socialUserData.nickname} onChange={handleChange} />
+                            <img src={getProviderImage()} alt={socialUserData.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
+                            <input type="text" name="nickname" value={socialUserData.social_nickname} onChange={handleChange} />
                             <br />
                             <label>이름:</label>
                             <input type="text" name="name" value={socialUserData.name} onChange={handleChange} />
@@ -204,8 +205,8 @@ function MyPage() {
                         <div>
                             <p>
                                 <strong>닉네임: </strong> 
-                                <img src={getProviderImage()} alt={socialUserData.social_username} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
-                                <span style={{ display: "inline" }}>{socialUserData.nickname}</span>
+                                <img src={getProviderImage()} alt={socialUserData.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
+                                <span style={{ display: "inline" }}>{socialUserData.social_nickname}</span>
                             </p>
                             <p><strong>이름:</strong> {socialUserData.name}</p>
                             {/* <p><strong>소셜 ID:</strong> {socialUserData.social_username}</p> */}

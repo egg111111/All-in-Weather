@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function IdPwUpdate() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ function IdPwUpdate() {
         async function fetchId() {
             const userId = localStorage.getItem('userId');
             try {
-                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                const response = await fetch(`${API_URL}/api/users/show/${userId}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -45,7 +46,7 @@ function IdPwUpdate() {
     const handleSaveChangesPw = async () => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await fetch(`http://localhost:8080/api/users/password/${userId}`, {
+            const response = await fetch(`${API_URL}/api/users/password/${userId}`, {
                 method: "PUT",
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

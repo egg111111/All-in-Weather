@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function DeleteUser() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ function DeleteUser() {
             const userId = localStorage.getItem('userId');
             const username = localStorage.getItem('username');
             try {
-                const response = await fetch(`http://localhost:8080/api/users/show/${userId}`, {
+                const response = await fetch(`${API_URL}/api/users/show/${userId}`, {
                     method: "GET",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -46,7 +47,7 @@ function DeleteUser() {
             let response;
             if (isSocialLogin) {
                 // 소셜 로그인 사용자 삭제 API 호출
-                response = await fetch(`http://localhost:8080/api/users/delete/social_user/${username}`, {
+                response = await fetch(`${API_URL}/api/users/delete/social_user/${username}`, {
                     method: "DELETE",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -55,7 +56,7 @@ function DeleteUser() {
                 });
             } else {
                 // 일반 사용자 삭제 API 호출
-                response = await fetch(`http://localhost:8080/api/users/delete/${userId}`, {
+                response = await fetch(`${API_URL}/api/users/delete/${userId}`, {
                     method: "DELETE",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -93,7 +94,7 @@ function DeleteUser() {
     // 비밀번호 확인 로직 (일반 로그인 사용자 전용)
     const handleVerifyPassword = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/users/verify-password`, {
+            const response = await fetch(`${API_URL}/api/users/verify-password`, {
                 method: "POST",
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

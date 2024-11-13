@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function ChatgptApi({ weatherData, userData }) {
     const [gptData, setGptData] = useState("");
@@ -53,7 +54,7 @@ function ChatgptApi({ weatherData, userData }) {
     
             // Check if the user is logged in with a userId or username
             if (userId) {
-                response = await fetch(`http://localhost:8080/api/chat/save`, {
+                response = await fetch(`${API_URL}/api/chat/save`, {
                     method: "POST",
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -65,7 +66,7 @@ function ChatgptApi({ weatherData, userData }) {
                     }),
                 });
             } else if (username) {
-                response = await fetch(`http://localhost:8080/api/chat/social_save`, {
+                response = await fetch(`${API_URL}/api/chat/social_save`, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',

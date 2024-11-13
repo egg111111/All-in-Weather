@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function SocialDeleteUser() {
     const navigate = useNavigate();
@@ -8,7 +9,7 @@ function SocialDeleteUser() {
 
     const deleteUser = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/users/delete/social_user/${social_username}`, {
+            const response = await fetch(`${API_URL}/api/users/delete/social_user/${social_username}`, {
                 method: "DELETE",
                 headers: {
                   'Content-Type': 'application/json'
