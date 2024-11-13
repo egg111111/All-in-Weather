@@ -81,8 +81,16 @@ function Login() {
     };
 
     const handleKakaoLogin = () => {
+<<<<<<< HEAD
         window.location.href = `${API_URL}/oauth2/authorization/kakao`;
     };
+=======
+        // Naver OAuth 인증을 위한 리디렉션
+        window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+    };
+
+
+>>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -93,6 +101,7 @@ function Login() {
 
     return (
         <>
+<<<<<<< HEAD
             <div className='sign-in-container'>
                 <div className='sign-in-box'>
                     <h1 className="title-div">로그인</h1>
@@ -134,6 +143,38 @@ function Login() {
                     </div>
                 </div>
             </div>    
+=======
+            <div className="div-main">
+                <h1 className="title-div">로그인</h1>
+                <form className="form-div" onSubmit={handleLogin} >
+                    <label htmlFor="userId">ID </label>
+                    <input
+                        type="text"
+                        id="userId"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                        required
+                    />
+                    <br />
+
+                    <label htmlFor="password">Password </label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <p></p>
+
+                    <button type="submit">로그인</button>
+                </form>
+
+                <button onClick={handleGoogleLogin} style={{ margin: '10px' }}>Login with Google</button>
+                <button onClick={handleNaverLogin} style={{ margin: '10px' }}>Login with Naver</button>
+                <button onClick={handleKakaoLogin} style={{ margin: '10px' }}>Login with Kakao</button>
+            </div>
+>>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         </>
     );
 }
