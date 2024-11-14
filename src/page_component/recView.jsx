@@ -11,6 +11,10 @@ function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [filter, setFilter] = useState("style"); // "style", "activity", "all" 중 하나를 선택
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemPerPage = 10;
+
     const navigate = useNavigate();
 
     const getRecList = async () => {
@@ -62,7 +66,8 @@ function recView() {
             });
             if (response.ok) {
                 const data = await response.json();
-                setView(data);
+                const sortedData = data.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+                setView(sortedData); // 정렬된 데이터를 상태로 설정
             } else {
                 console.error("Failed to fetch recommendations:", response.statusText);
             }
@@ -95,16 +100,74 @@ function recView() {
         return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
     }
 
+    const filteredView = view.filter((item) => {
+        if (filter === "all") return true; // 전체 보기
+        if (filter === "style") return item.recStyle; // 스타일만 보기
+        if (filter === "activity") return item.recActivity; // 활동만 보기
+        return false;
+    });
+
+    const indexOfLastItem = currentPage * itemPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemPerPage;
+    const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handlePageChange = (pageNumber) =>{
+        setCurrentPage(pageNumber);
+    }
+
+    const totalPages = Math.ceil(filteredView.length / itemPerPage);
+    const pageNumbers = Array.from({length:totalPages}, (_, index)=> index + 1 );
+
     return (
-        <>
+        <div className="recview-back">
             <h2>추천기록</h2>
-            <ul>
-                {view.map((item, index) => (
-                    <li key={index} onClick={() => handleDateClick(item)} style={{ cursor: "pointer", color: "blue" }}>
+            <p> 기록은 최대 30일까지 볼 수 있습니다.</p>
+
+            <div className="filter-options">
+            <label>
+                    <input
+                        type="radio"
+                        value="style"
+                        checked={filter === "style"}
+                        onChange={() => setFilter("style")}
+                    />
+                    스타일
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="activity"
+                        checked={filter === "activity"}
+                        onChange={() => setFilter("activity")}
+                    />
+                    활동
+                </label>
+            </div>
+            <ul className="rec_list">
+                <div className="rec_background">
+                {currentItems.map((item, index) => (
+                    <li key={index} 
+                        onClick={() => handleDateClick(item)} 
+                        style={{ cursor: "pointer", color: "black" }}>
                         {formatDate(item.createDate)}의 기록 
                     </li>
                 ))}
+                </div>
             </ul>
+
+            {totalPages > 1 && (
+                <div className="pagination">
+                    {pageNumbers.map((number) => (
+                        <button
+                            key={number}
+                            onClick={() => handlePageChange(number)}
+                            className={number === currentPage ? "active" : ""}
+                            >
+                                {number}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {showModal && selecteRec && (
                 <div className="modal-background">
@@ -120,7 +183,7 @@ function recView() {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     )
 }
 

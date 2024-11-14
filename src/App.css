@@ -1,35 +1,60 @@
+/* 모바일 화면 */
+@media (max-width: 576px) {
+  .centered-content {
+      width: 90vw;
+      height: auto;
+      padding: 5%;
+  }
+
+  .primary-button-lg {
+      width: 100%;
+      padding: 10px;
+  }
+}
+
+/* 태블릿 화면 */
+@media (min-width: 576px) and (max-width: 768px) {
+  .centered-content {
+      width: 80vw;
+      height: auto;
+      padding: 8%;
+  }
+
+  .primary-button-lg {
+      font-size: 14px;
+      padding: 8px;
+  }
+}
+
 body {
   background-color: #C1D0D4;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  /* height: 150vh; */
+  /* max-width: 600px; */
+  min-height: 100vh;
+  padding: 3%;
 }
 
 .centered-content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* flex-direction: column; */
   justify-content: center;
-  align-items: center;
   width: 100%;
   max-width: 800px;
-<<<<<<< HEAD
-  background-color: #dde7e7;
+  align-items: start;
+  width: fit-content;
+  height: fit-content;
+  /* max-width: 800px; */ text-align: center;
+  /* background-color: #dde7e7; */
+  background-color: #dde7e7; 
   padding: 10%;
-  text-align: center;
-=======
-  text-align: center;
-  background-color: #dde7e7;
-  padding: 10%;
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 }
 
 .kakao-sign-in-button {
   width: 56px;
   height: 56px;
-<<<<<<< HEAD
-  
   background-position: 50% 50%;
   background-size: 100% 100%;
   background-image : url(assets/images/kakao.png);
@@ -139,98 +164,3 @@ body {
   border-top: 1px solid rgba(238,238,238,1);
   width: 64px;
 }
-=======
- 
-  background-position: 50% 50%;
-  background-size: 100% 100%;
-  background-image : url(assets/images/kakao.png);
- 
-  cursor:pointer;
-  }
- 
-  .naver-sign-in-button {
-  width: 56px;
-  height: 56px;
- 
-  background-position: 50% 50%;
-  background-size: 100% 100%;
-  background-image : url(assets/images/naver.png);
- 
-  cursor:pointer;
-  }
-
-
-
-
-  .primary-button-lg {
-    border-radius: 6px;
-    padding: 8px 24px;
-   
-    box-sizing: border-box;
- 
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
- 
-    background-color: rgba(58,87,232,1);
- 
-    color: rgba(255,255,255,1);
- 
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
- 
-    cursor: pointer;
- 
-  }
- 
-  .primary-button-lg:hover {
-    opacity: 0.95;
-  }
- 
-  .disable-button-lg {
-    border-radius: 6px;
-    padding: 8px 24px;
-   
-    box-sizing: border-box;
- 
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
- 
-    background-color: #C1D0D4;
- 
-    color: rgba(255,255,255,1);
- 
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
- 
-    cursor: default;
- 
-  }
- 
-  .text-link-lg {
-    box-sizing: border-box;
- 
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
- 
-    color: rgba(113,113, 113, 1);
- 
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
- 
-    cursor: pointer;
-  }
- 
-  .text-link-lg:hover {
-   color: rgba(40,40,4,1);
-  }
- 
-  .full-width {
-    width:100%;
-  }
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd

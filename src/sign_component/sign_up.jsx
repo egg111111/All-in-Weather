@@ -137,21 +137,21 @@ export default function SignUp() {
       const response = await fetch(`${API_URL}/api/users/send-verification-code`, {
 =======
 
-//   const checkEmail = async (email) => {
-//     try {
-//       const response = await fetch('http://localhost:8080/api/users/check-email', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ email }),
-//       });
-//       const isAvailable = await response.json();  // true 값이면 이미 존재하는 이메일
-//       setEmailError(isAvailable);
-//       setEmailMessage(isAvailable ?"이미 사용 중인 이메일입니다." :"사용 가능한 이메일입니다." );
-//       setEmailCheck(!isAvailable);
-//     } catch (error) {
-//       console.error("Error checking email:", error);
-//     }
-//   };
+  const checkEmail = async (email) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const isAvailable = await response.json();  // true 값이면 이미 존재하는 이메일
+      setEmailError(isAvailable);
+      setEmailMessage(isAvailable ?"이미 사용 중인 이메일입니다." :"사용 가능한 이메일입니다." );
+      setEmailCheck(!isAvailable);
+    } catch (error) {
+      console.error("Error checking email:", error);
+    }
+  };
 
 
   const sendEmailVerification = async (email) => {
@@ -198,7 +198,7 @@ export default function SignUp() {
 >>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
   const onEmailVerificationButtonClickHandler = async () => {
     if (!isEmailCheck) {  // 기본값이 false 이므로 중복 검사를 수행
-      await checkEmail(email); // 이메일 중복 확인 호출
+        await checkEmail(email); // 이메일 중복 확인 호출
       // isEmailError가 true이면 중복된 이메일
 <<<<<<< HEAD
       if (isEmailError) { 

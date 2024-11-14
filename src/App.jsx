@@ -7,7 +7,6 @@ import Login from './sign_component/login';
 import Dashboard from './page_component/dashborad';
 import MyPage from './page_component/myPage';
 
-import WeatherOpenApi from './service/WeatherOpenAPi';
 import Id_pw_update from './page_component/Id_pw_update';
 import ChatgptApi from './service/chatgptApi';
 import Delete_user from './page_component/delete';
@@ -20,6 +19,8 @@ import AddUserInfo from './page_component/AddUserInfo';
 import Layout from './header_footer/layout';
 =======
 import RecView from './page_component/recView';
+import Result from './page_component/result';
+import Perference_check from './page_component/preference_check';
 
 import Layout from './header_footer/layout';
 import Sidebar from './header_footer/sidebar';
@@ -43,7 +44,6 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />
               <Route path="/pwUpdate" element={<Id_pw_update />} />
-              <Route path="/weatherTest" element={< WeatherOpenApi/>} />
               <Route path="/chatgpt" element={<ChatgptApi />} />
               <Route path="/delete" element={< Delete_user/>} />
 <<<<<<< HEAD
@@ -52,6 +52,8 @@ function App() {
 =======
 >>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
               <Route path="/recView" element={<RecView/>} />
+              <Route path="/result" element={<Result/>} />
+              <Route path="/perference" element={<Perference_check/>} />
           </Routes>
           </div>
           </Layout>

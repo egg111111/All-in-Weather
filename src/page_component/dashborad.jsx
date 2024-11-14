@@ -20,7 +20,7 @@ import axios from "axios";
 import ChatgptApi from "../service/chatgptApi";
 import './dashbaord.css';
 import WeatherChart from "./weatherChart";
-import Londing from "../header_footer/loding";
+import Londing from "../header_footer/loading";
 
 function dashboard() {
     const navigate = useNavigate();

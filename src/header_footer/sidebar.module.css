@@ -39,9 +39,6 @@
   position: relative;
   width: 100%;
 }
-=======
-    background-color: #E3ECF1;
-}
 
 .sidebar {
     background-color: #E3ECF1;
@@ -67,6 +64,9 @@
     border: 2px solid #202020;
     border-radius: 40px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .openBtn {
@@ -79,4 +79,3 @@
     position: relative;
     width: 100%;
 }
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd

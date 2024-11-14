@@ -1,5 +1,11 @@
+.recview-back{
+    background-color: #E0E7E7;
+    padding: 10%;
+    width: 60vw;
+    height: 100vh;
+}
+
 .modal-background {
-<<<<<<< HEAD
   position: fixed;
   top: 0;
   left: 0;
@@ -18,8 +24,6 @@
   border-radius: 8px;
   width: 300px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-=======
     position: fixed;
     top: 0;
     left: 0;
@@ -33,10 +37,42 @@
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     width: 300px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
+.rec_background{
+    display: grid;
+    margin-top: 10%;
+    /* background-color: #bcbcbc; */
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.rec_list{
+    list-style-type: none;
+    line-height: 250%;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #7DCAEA;
+    color: white;
+    font-weight: bold;
+    border-color: #7DCAEA;
+}
