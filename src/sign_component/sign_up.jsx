@@ -1,17 +1,10 @@
 import React, { useRef, useState } from 'react';
-<<<<<<< HEAD
 import InputBox from "./InputBox";
-=======
-import InputBox from './inputbox';
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './sign_up.module.css';
 import './style.css';
-<<<<<<< HEAD
 const API_URL = import.meta.env.VITE_API_URL;
-=======
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 
 export default function SignUp() {
   const idRef = useRef(null);
@@ -20,20 +13,11 @@ export default function SignUp() {
   const emailRef = useRef(null);
   const verificationCodeRef = useRef(null); // 인증 코드 입력을 위한 ref 추가
 
-<<<<<<< HEAD
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState(''); // 인증 코드 상태 추가
-=======
-export default function SignUp() {
-  const idRef = useRef(null);
-  const passwordRef = useRef(null);
-  const passwordCheckRef = useRef(null);
-  const emailRef = useRef(null);
-  const verificationCodeRef = useRef(null); // 인증 코드 입력을 위한 ref 추가
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 
   const [isIdError, setIsIdError] = useState(false);
   const [isPasswordError, setPasswordError] = useState(false);
@@ -41,24 +25,15 @@ export default function SignUp() {
   const [isEmailError, setEmailError] = useState(false);
   const [isVerificationError, setVerificationError] = useState(false); // 인증 코드 오류 상태 추가
 
-<<<<<<< HEAD
   const [idMessage, setIdMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordCheckMessage, setPasswordCheckMessage] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [verificationMessage, setVerificationMessage] = useState(''); // 인증 메시지 상태 추가
-=======
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-  const [email, setEmail] = useState('');
-  const [verificationCode, setVerificationCode] = useState(''); // 인증 코드 상태 추가
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 
   const [isIdCheck, setIdCheck] = useState(false);
   const [isEmailCheck, setEmailCheck] = useState(false);
 
-<<<<<<< HEAD
   const signUpButtonClass = id && password && passwordCheck && email ? 'primary-button-lg' : 'disable-button-lg';
 
   const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
@@ -69,39 +44,6 @@ export default function SignUp() {
   const checkUserId = async (userId) => {
     try {
       const response = await fetch(`${API_URL}/api/users/check-userId`, {
-=======
-  const [isIdError, setIsIdError] = useState(false);
-  const [isPasswordError, setPasswordError] = useState(false);
-  const [isPasswordCheckError, setPasswordCheckError] = useState(false);
-  const [isEmailError, setEmailError] = useState(false);
-  const [isVerificationError, setVerificationError] = useState(false); // 인증 코드 오류 상태 추가
-
-
-  const [idMessage, setIdMessage] = useState('');
-  const [passwordMessage, setPasswordMessage] = useState('');
-  const [passwordCheckMessage, setPasswordCheckMessage] = useState('');
-  const [emailMessage, setEmailMessage] = useState('');
-  const [verificationMessage, setVerificationMessage] = useState(''); // 인증 메시지 상태 추가
-
-
-  const [isIdCheck, setIdCheck] = useState(false);
-  const [isEmailCheck, setEmailCheck] = useState(false);
-
-
-  const signUpButtonClass = id && password && passwordCheck && email ? 'primary-button-lg' : 'disable-button-lg';
-
-
-  const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
-  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$/;
-
-
-  const navigate = useNavigate();
-
-
-  const checkUserId = async (userId) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/users/check-userId', {
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
@@ -115,7 +57,6 @@ export default function SignUp() {
     }
   };
 
-<<<<<<< HEAD
   const checkEmail = async (email) => {
     try {
       const response = await fetch(`${API_URL}/api/users/check-email`, {
@@ -135,29 +76,6 @@ export default function SignUp() {
   const sendEmailVerification = async (email) => {
     try {
       const response = await fetch(`${API_URL}/api/users/send-verification-code`, {
-=======
-
-  const checkEmail = async (email) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/users/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const isAvailable = await response.json();  // true 값이면 이미 존재하는 이메일
-      setEmailError(isAvailable);
-      setEmailMessage(isAvailable ?"이미 사용 중인 이메일입니다." :"사용 가능한 이메일입니다." );
-      setEmailCheck(!isAvailable);
-    } catch (error) {
-      console.error("Error checking email:", error);
-    }
-  };
-
-
-  const sendEmailVerification = async (email) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/users/send-verification-code', {
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, email }), // ID와 이메일을 전송
@@ -170,16 +88,9 @@ export default function SignUp() {
     }
   };
 
-<<<<<<< HEAD
   const verifyCode = async (userId, email, code) => {
     try {
       const response = await fetch(`${API_URL}/api/users/verify-code`, {
-=======
-
-  const verifyCode = async (userId, email, code) => {
-    try {
-      const response = await fetch('http://localhost:8080/api/users/verify-code', {
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: userId, email, certificationNumber: code }),
@@ -192,41 +103,23 @@ export default function SignUp() {
     }
   };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
   const onEmailVerificationButtonClickHandler = async () => {
     if (!isEmailCheck) {  // 기본값이 false 이므로 중복 검사를 수행
-        await checkEmail(email); // 이메일 중복 확인 호출
+      await checkEmail(email); // 이메일 중복 확인 호출
       // isEmailError가 true이면 중복된 이메일
-<<<<<<< HEAD
       if (isEmailError) { 
-=======
-      if (isEmailError) {
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         alert('이메일 중복 확인을 해주세요.'); // 오류가 있을 경우 사용자에게 경고
         return;
       }
     }
-<<<<<<< HEAD
     
-=======
-   
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
     // 이메일이 유효한 경우 인증 코드 전송
     if (email && !isEmailError) { // isEmailError가 false인 경우에만 인증 코드 전송
       await sendEmailVerification(email);
     }
   };
-<<<<<<< HEAD
   
   
-=======
- 
- 
-
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 
   const onSignUpButtonClickHandler = async () => {
     if (!id || !password || !passwordCheck || !email) return;
@@ -243,58 +136,21 @@ export default function SignUp() {
     if (!isEmailCheck) {
         alert('이메일 중복 확인을 해주세요.');
         return;
-<<<<<<< HEAD
     }
-=======
-      }
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
     if (password !== passwordCheck) {
       setPasswordCheckError(true);
       setPasswordCheckMessage('비밀번호가 일치하지 않습니다.');
       return;
     }
-<<<<<<< HEAD
 
     const requestBody = {
         password, 
         email,
         userId: id,
-=======
-    const requestBody = {
-        username: id,
-        userId: id,
-        password,
-        email,
-        age:20
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
     };
-    console.log(requestBody);
-    try {
-      const response = await fetch('http://localhost:8080/api/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
-    //   const responseBody = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          title: "회원 가입이 완료되었습니다.",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        navigate('/login');
-      } else {
-        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
 
     console.log(requestBody);
 
-<<<<<<< HEAD
     try {
       const response = await fetch(`${API_URL}/api/users/register`, {
         method: 'POST',
@@ -331,8 +187,6 @@ export default function SignUp() {
       window.location.href = `${API_URL}/oauth2/authorization/kakao`;
   };
 
-=======
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
   return (
     <div className='sign-up-container'>
       <div className='sign-up-box' >
@@ -341,13 +195,8 @@ export default function SignUp() {
             <div className='sign-up-content-sns-sign-in-box'></div>
               <div className='sign-up-content-sns-sign-in-title'>{'sns 회원가입'}</div>
                 <div className='sign-up-content-sns-sign-in-button-box'>
-<<<<<<< HEAD
                   <div className='kakao-sign-in-button' onClick={() => handleKakaoLogin('kakao')}></div>
                   <div className='naver-sign-in-button' onClick={() => handleNaverLogin('naver')}></div>
-=======
-                  <div className='kakao-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('kakao')}></div>
-                  <div className='naver-sign-in-button' onClick={() => onSnsSignInButtonClickHandler('naver')}></div>
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
                 </div>
               <div className='sign-up-content-divider'></div>
               <div className='sign-up-content-input-box'>
@@ -393,11 +242,7 @@ export default function SignUp() {
                   isErrorMessage={isEmailError}
                   message={emailMessage}
                   buttonTitle='이메일 인증'
-<<<<<<< HEAD
                   onButtonClick={onEmailVerificationButtonClickHandler} 
-=======
-                  onButtonClick={onEmailVerificationButtonClickHandler}
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
                 />
                 <InputBox
                   ref={verificationCodeRef}
@@ -413,11 +258,7 @@ export default function SignUp() {
                 />
               </div>
               <div className='sign-up-content-button-box'>
-<<<<<<< HEAD
                 <div className={`${signUpButtonClass} full-width`} onClick={onSignUpButtonClickHandler}>{'다음'}</div>
-=======
-                <div className={`${signUpButtonClass} full-width`} onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
                 {/* <div className='text-link-lg full-width' onClick={() => navigate('/login')}>{'로그인'}</div> */}
               </div>
           </div>
@@ -425,7 +266,3 @@ export default function SignUp() {
     </div>
   );
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd

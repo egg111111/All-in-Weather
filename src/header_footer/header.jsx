@@ -10,13 +10,10 @@ const Header = () => {
 
     function handleLogout() {
         localStorage.removeItem('token');
-<<<<<<< HEAD
         localStorage.removeItem('name');
         localStorage.removeItem('nickname');
         localStorage.removeItem('social_userId');
         localStorage.removeItem('social_username');
-=======
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
         console.log('로그아웃 성공');
         navigate('/')
     }

@@ -22,8 +22,6 @@ import sunnyIcon from '../icon/sunshine.png';
 import sunriseIcon from '../icon/sunrise.png';
 import sunsetIcon from '../icon/sunset.png';
 
-import ChatgptApi from "../service/chatgptApi"
-
 
 
 // Chart.js 구성 요소 등록
@@ -109,6 +107,7 @@ function WeatherChart({ userData }) {
                         `https://api.openweathermap.org/data/3.0/onecall?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&units=metric&lang=kr`
                     );
                     const data = await response.json();// 현재 날씨 정보 가져오기
+                    console.log(data);
                     setCurrentWeather({
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
@@ -146,25 +145,12 @@ function WeatherChart({ userData }) {
                             hour12: true,
                         }).replace('오후', '오후 ').replace('오전', '오전 '),
                         temp: Math.round(hour.temp),
-                        precipitation: hour.pop * 100,
+                        precipitation: Math.round(hour.pop * 100),
                     }));
                     setHourlyData(forecastData);
                 } catch (error) {
                     console.error("Error fetching weather data:", error);
                 }
-
-                const pollution_response = await fetch(
-                    `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
-                );
-                const pollution_data = await pollution_response.json();
-                console.log(pollution_data);
-                setAirPoll({
-                    pm2_5: Math.round(pollution_data.list[0].components.pm2_5),
-                    so2: Math.round(pollution_data.list[0].components.so2),
-                    no: Math.round(pollution_data.list[0].components.no),
-                    o3: Math.round(pollution_data.list[0].components.o3)
-                })
-
             };
             fetchWeatherData();
         }
@@ -395,4 +381,6 @@ function WeatherChart({ userData }) {
         </div>
     );
 }
+
+export default WeatherChart;
 

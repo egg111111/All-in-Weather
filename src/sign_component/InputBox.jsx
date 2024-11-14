@@ -1,15 +1,6 @@
 import React, { forwardRef } from "react";
 import './style.css';
 
-<<<<<<< HEAD
-const InputBox = forwardRef((props, ref) => {
-  const { title, placeholder, type, value, isErrorMessage, buttonTitle, message, onChange, onKeyDown, onButtonClick } = props;
-
-  const buttonClass = value === '' ? 'input-box-button-disable' : 'input-box-button';
-  const messageClass = isErrorMessage ? 'input-box-message-error' : 'input-box-message';
-
-=======
-
 const InputBox = forwardRef((props, ref) => {
   const { title, placeholder, type, value, isErrorMessage, buttonTitle, message, onChange, onKeyDown, onButtonClick } = props;
 
@@ -18,7 +9,6 @@ const InputBox = forwardRef((props, ref) => {
   const messageClass = isErrorMessage ? 'input-box-message-error' : 'input-box-message';
 
 
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
   return (
     <div className="input-box">
       <div className="input-box-title">{title}</div>
@@ -33,8 +23,4 @@ const InputBox = forwardRef((props, ref) => {
   );
 });
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
 export default InputBox;

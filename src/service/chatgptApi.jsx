@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const API_URL = import.meta.env.VITE_API_URL;
 
 import OpenAI from "openai";
-import Loading from '../header_footer/loding'
+import Loading from '../header_footer/loading'
 import { useNavigate } from "react-router-dom";
 import WeatherChart from "../page_component/weatherChart";
 import Result from "../page_component/result";

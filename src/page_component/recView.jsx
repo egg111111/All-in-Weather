@@ -2,11 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import './recView.css'
-<<<<<<< HEAD
 const API_URL = import.meta.env.VITE_API_URL;
-=======
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
-
 function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
@@ -19,7 +15,6 @@ function recView() {
 
     const getRecList = async () => {
         const userId = localStorage.getItem('userId');
-<<<<<<< HEAD
         const username = localStorage.getItem('social_username');
         try {
             let response;
@@ -54,29 +49,7 @@ function recView() {
             console.error("사용자 정보 가져오기 중 오류:", error);
         }
     }
-  
-=======
-        try {
-            const response = await fetch(`http://localhost:8080/api/chat/read/${userId}`, {
-                method: "GET",
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                const sortedData = data.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
-                setView(sortedData); // 정렬된 데이터를 상태로 설정
-            } else {
-                console.error("Failed to fetch recommendations:", response.statusText);
-            }
-        } catch (error) {
-            console.error("Error fetching recommendations:", error);
-        }
-    }
 
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
     useEffect(() => {
         getRecList();
     }, [])
@@ -173,12 +146,8 @@ function recView() {
                 <div className="modal-background">
                     <div className="modal-content">
                         <h3>{formatDate(selecteRec.createDate)}의 기록</h3>
-<<<<<<< HEAD
-                        <p>{selecteRec.recommendation}</p>
-=======
                         <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
                         <p>{selecteRec.recActivity || selecteRec.recStyle}</p>
->>>>>>> 9207541e5f044c8bbc0c9160ef8f8c4d9a2f76cd
                         <button onClick={closeModal}>Close</button>
                     </div>
                 </div>
