@@ -34,8 +34,28 @@
     font-size: 14px;
 }
 
-.ul{
+.rec_list{
+    list-style-type: none;
+    line-height: 250%;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #7DCAEA;
     color: white;
-    border-color: black;
-    
+    font-weight: bold;
+    border-color: #7DCAEA;
 }

@@ -375,9 +375,9 @@ function WeatherChart({ userData }) {
                 {sun && (
                     <div className="sun-times">
                         <img src={sunriseIcon} ></img>
-                        <p>일출: {formattedSunrise}</p>
+                        <p>{formattedSunrise}</p>
                         <img src={sunsetIcon} ></img>
-                        <p>일몰: {formattedSunset}</p>
+                        <p>{formattedSunset}</p>
                     </div>
                 )}
 
