@@ -77,20 +77,19 @@ function dashboard() {
 
             <br/> 
             <p>
-                {error ? (
-                    <p>{error}</p>
+            {error ? (
+                    <div>{error}</div>
                 ) : userInfo ? (
                     <div>
-                        <strong>안녕하세요</strong> {userInfo.social_nickname ? userInfo.social_nickname : userInfo.username}님
-                        <strong>안녕하세요</strong> {userInfo.social_userId}님
+                        <strong>안녕하세요</strong> {userInfo.social_nickname ? userInfo.social_nickname : userInfo.nickname}님
+                        <br/>
+                        <strong>안녕하세요</strong> {userInfo.social_userId ? userInfo.social_userId : userInfo.userId}님
                     </div>
                 ) : (
-                    <p>Loading user information...</p>
+                    <div>Loading user information...</div>
                 )}
             </p>
 
-            {/* <ChatgptApi weatherData={currentWeather} /> */}
-           
         </>
     );
 }

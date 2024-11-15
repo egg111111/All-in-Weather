@@ -10,7 +10,7 @@ function myPage() {
     const navigate = useNavigate();
     const [homeUserData, setHomeUserData] = useState({
         userId: "",
-        username: "",
+        nickname: "",
         email: "",
         age: "",
     });
@@ -122,7 +122,7 @@ function myPage() {
 
                     // 로컬 스토리지 업데이트
                     localStorage.setItem('userId', homeUserData.userId);
-                    localStorage.setItem('username', homeUserData.username);
+                    localStorage.setItem('nickname', homeUserData.nickname);
                     localStorage.setItem('email', homeUserData.email); // 이메일 업데이트
                     localStorage.setItem('age', homeUserData.age); // 나이 업데이트
                 }
@@ -220,8 +220,8 @@ function myPage() {
                             <label>UserId: </label>
                             <input type="text" name="userId" value={homeUserData.userId} onChange={handleChange} />
                             <br />
-                            <label>Username: </label>
-                            <input type="text" name="username" value={homeUserData.username} onChange={handleChange} />
+                            <label>nickname: </label>
+                            <input type="text" name="username" value={homeUserData.nickname} onChange={handleChange} />
                             <br />
                             <label>Email: </label>
                             <input type="email" name="email" value={homeUserData.email} onChange={handleChange} />
@@ -235,7 +235,7 @@ function myPage() {
                     ) : (
                         <div>
                             <p><strong>UserId:</strong> {homeUserData.userId}</p>
-                            <p><strong>Username:</strong> {homeUserData.username}</p>
+                            <p><strong>nickname:</strong> {homeUserData.nickname}</p>
                             <p><strong>Email:</strong> {homeUserData.email}</p>
                             <p><strong>Age:</strong> {homeUserData.age}</p>
                             <button onClick={() => setEditMode(true)}>회원 정보 수정</button>

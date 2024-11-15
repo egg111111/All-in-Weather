@@ -6,6 +6,8 @@ import './AddUserInfo.css';
 import jwt_decode from 'jwt-decode';
 
 
+
+
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
   const [isAgeWheelEnabled, setIsAgeWheelEnabled] = useState(false);
@@ -18,14 +20,15 @@ const AddUserInfo = () => {
   const [isSocialUserComplete, setIsSocialUserComplete] = useState(false);  // 추가 정보 완료 여부
   const navigate = useNavigate();
 
+
   // 소셜 로그인 여부 확인 및 userId 업데이트
   useEffect(() => {
     // 소셜 로그인 사용자의 정보 가져오기
     axios
       .get('http://localhost:8080/api/users/social_user', { withCredentials: true })
       .then(response => {
-        const social_userId = response.data;
-        
+        const social_userId = response.data.social_userId;
+        console.log("social_userId 출력", social_userId);
         if (social_userId) {
           // 소셜 로그인 사용자일 경우
           setIsSocialLogin(true);
@@ -34,20 +37,31 @@ const AddUserInfo = () => {
           //setIsSocialUserComplete(isSocialUserComplete);  // 추가 정보 완료 여부 설정
           console.log("추가정보를 이미 입력한 소셜로그인 사용자 입니까? ",isSocialUserComplete);
         }
-        const token = document.cookie.split('; ').find(row => row.startsWith('Authorization=')).split('=')[1];
-        if (token) {
-          // 토큰 파싱
-          const decodedToken = jwt_decode(token);  // JWT 토큰을 파싱
-          const profileComplete = decodedToken.profileComplete;  // 토큰에서 profileComplete 값 추출
+        const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('Authorization='));
+        const token = tokenCookie ? tokenCookie.split('=')[1] : null;
 
-          console.log("Profile complete status from token:", profileComplete);
-          setIsSocialUserComplete(profileComplete); // 상태 업데이트
+
+        if (token) {
+          try {
+            // JWT 토큰을 디코딩
+            const decodedToken = jwt_decode(token);
+            const profileComplete = decodedToken.profileComplete;
+
+
+            console.log("Profile complete status from token:", profileComplete);
+            setIsSocialUserComplete(profileComplete); // 상태 업데이트
+          } catch (error) {
+            console.error("Error decoding JWT token:", error);
+          }
+        } else {
+          console.warn("Authorization token not found in cookies.");
         }
       })
       .catch(error => {
         console.error("Error fetching social user info:", error);
       });
   }, []); // 컴포넌트 최초 렌더링 시 한 번만 실행
+
 
   // 나이 변경 핸들러
   const handleAgeChange = (e) => {
@@ -56,6 +70,7 @@ const AddUserInfo = () => {
     if (newAge > 80) newAge = 80;
     setAge(newAge);
   };
+
 
   // 마우스 휠로 나이 변경
   const handleAgeWheel = (e) => {
@@ -68,6 +83,7 @@ const AddUserInfo = () => {
     }
   };
 
+
   // 회원가입 버튼 클릭 시
   const handleSubmit = async () => {
     // 유효성 검사
@@ -79,7 +95,7 @@ const AddUserInfo = () => {
       alert('키와 몸무게를 입력해주세요.');
       return;
     }
-  
+ 
     // 추가 사용자 정보 객체 생성
     const userInfo = {
       age,
@@ -87,10 +103,10 @@ const AddUserInfo = () => {
       height: parseFloat(height),
       weight: parseFloat(weight),
     };
-  
+ 
     try {
       let response;
-  
+ 
       // 소셜 로그인 전용 API 요청
       if (isSocialLogin && !isSocialUserComplete) {
         response = await fetch(`http://localhost:8080/api/users/addUserInfo/${socialUserId}`, {
@@ -101,12 +117,12 @@ const AddUserInfo = () => {
           credentials: 'include', // 쿠키를 포함하여 전송
           body: JSON.stringify(userInfo),
         });
-  
+ 
         if (response.ok) {
           // 소셜 로그인 정보 업데이트 후 userId 초기화
           setIsSocialLogin(false); // 소셜 로그인 상태 false로 변경
         }
-  
+ 
       } else {
         // 일반 로그인 전용 API 요청 (JWT 토큰 포함)
         const token = localStorage.getItem('token'); // JWT 토큰 가져오기
@@ -119,28 +135,19 @@ const AddUserInfo = () => {
           body: JSON.stringify(userInfo),
         });
       }
-  
-      if (response.ok) {  // 200번대 응답 확인
-        localStorage.removeItem('userId');
-        Swal.fire({
-          title: '회원 가입이 완료되었습니다.',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-  
-        // 회원가입 성공 시 대시보드로 이동
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1500);
+ 
+      if (response.ok) {  // 200번대 응답 확인      
+          navigate('/perference');
+     
       } else {
-        throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.');
+        throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error('회원가입 실패:', error);
+      console.error('추가정보 저장 실패:', error);
       alert(error.message); // 오류 메시지 출력
     }
   };
+
 
   return (
     <div className="extra-info-form">
@@ -167,6 +174,7 @@ const AddUserInfo = () => {
         </div>
       </div>
 
+
       {/* 성별 선택 */}
       <div className="form-group">
         <label>성별</label>
@@ -185,6 +193,7 @@ const AddUserInfo = () => {
           </button>
         </div>
       </div>
+
 
       {/* 키와 몸무게 입력 */}
       <div className="form-group">
@@ -205,12 +214,14 @@ const AddUserInfo = () => {
         </div>
       </div>
 
+
       {/* 회원가입 버튼 */}
       <button type="button" onClick={handleSubmit}>
-        회원가입
+        다음
       </button>
     </div>
   );
 };
+
 
 export default AddUserInfo;

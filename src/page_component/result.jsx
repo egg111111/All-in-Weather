@@ -1,7 +1,5 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import ChatgptApi from "../service/chatgptApi";
-import loading from "../header_footer/loading";
 
 function result() {
     const location = useLocation();

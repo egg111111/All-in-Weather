@@ -5,7 +5,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 import OpenAI from "openai";
 import Loading from '../header_footer/loading'
 import { useNavigate } from "react-router-dom";
-import WeatherChart from "../page_component/weatherChart";
 import Result from "../page_component/result";
 
 function chatgptApi({weatherData, userData}) {
@@ -114,9 +113,8 @@ function chatgptApi({weatherData, userData}) {
             bodyData.recActivity = recData; // recActivity 컬럼에 저장
         }
 
-
-        if(userId)
-        {try {
+        if(userId){
+        try {
             const response = await fetch(`http://localhost:8080/api/chat/save`, {
                 method: "POST",
                 headers: {
@@ -147,7 +145,10 @@ function chatgptApi({weatherData, userData}) {
                 credentials: 'include', // 쿠키를 포함하여 전송
                 body: JSON.stringify({
                     username: username,
-                    bodyData
+                    temp_high: currentWeather.high,
+                    temp_low: currentWeather.low,
+                    recStyle : bodyData.recStyle,
+                    recActivity : bodyData.recActivity
                 }),
             });
 
@@ -165,7 +166,7 @@ function chatgptApi({weatherData, userData}) {
                 <br/>
                 <br/>
                 <button onClick={call_get_activity}>활동 추천</button>
-                {/* {gptData && <div>{gptData}</div>}////// */}
+                {/* {gptData && <div>{gptData}</div>} */}
             </div>
         </>
     )

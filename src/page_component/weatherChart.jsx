@@ -107,7 +107,6 @@ function WeatherChart({ userData }) {
                         `https://api.openweathermap.org/data/3.0/onecall?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&units=metric&lang=kr`
                     );
                     const data = await response.json();// 현재 날씨 정보 가져오기
-                    console.log(data);
                     setCurrentWeather({
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
