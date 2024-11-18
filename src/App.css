@@ -1,28 +1,60 @@
+/* 모바일 화면 */
+@media (max-width: 576px) {
+  .centered-content {
+      width: 90vw;
+      height: auto;
+      padding: 5%;
+  }
+
+  .primary-button-lg {
+      width: 100%;
+      padding: 10px;
+  }
+}
+
+/* 태블릿 화면 */
+@media (min-width: 576px) and (max-width: 768px) {
+  .centered-content {
+      width: 80vw;
+      height: auto;
+      padding: 8%;
+  }
+
+  .primary-button-lg {
+      font-size: 14px;
+      padding: 8px;
+  }
+}
+
 body {
   background-color: #C1D0D4;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  /* height: 150vh; */
+  /* max-width: 600px; */
+  min-height: 100vh;
+  padding: 3%;
 }
 
 .centered-content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* flex-direction: column; */
   justify-content: center;
-  align-items: center;
   width: 100%;
   max-width: 800px;
-  background-color: #dde7e7;
+  align-items: start;
+  width: fit-content;
+  height: fit-content;
+  /* max-width: 800px; */ text-align: center;
+  /* background-color: #dde7e7; */
+  background-color: #dde7e7; 
   padding: 10%;
-  text-align: center;
 }
 
 .kakao-sign-in-button {
   width: 56px;
   height: 56px;
-  
   background-position: 50% 50%;
   background-size: 100% 100%;
   background-image : url(assets/images/kakao.png);

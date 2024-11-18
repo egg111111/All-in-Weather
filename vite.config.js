@@ -43,7 +43,7 @@ export default defineConfig({
        // isHttps가 'true'일 때만 HTTPS 설정
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL,
+        target: process.env.VITE_API_URL, // Spring Boot 서버 주소
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

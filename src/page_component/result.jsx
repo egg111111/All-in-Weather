@@ -1,0 +1,31 @@
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+function Result() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { result, imageUrl, type, loading, imageLoading } = location.state || { result: null, imageUrl: null, type: null, loading: true, imageLoading: true };
+
+    return (
+        <div style={{ textAlign: "center", padding: "20px" }}>
+            <h2>{type}</h2>
+            {loading ? (
+                <p>로딩 중입니다. 잠시만 기다려 주세요...</p>
+            ) : (
+                <>
+                    <p>{result}</p>
+                    {imageLoading ? (
+                        <p>이미지 생성 중입니다. 잠시만 기다려 주세요...</p>
+                    ) : (
+                        imageUrl && <img src={imageUrl} alt="Recommended Outfit" style={{ maxWidth: "100%", marginTop: "20px" }} />
+                    )}
+                </>
+            )}
+            <button onClick={() => navigate("/dashboard")} style={{ marginTop: "20px" }}>
+                확인
+            </button>
+        </div>
+    );
+}
+
+export default Result;

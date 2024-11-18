@@ -14,6 +14,7 @@ const Header = () => {
         localStorage.removeItem('nickname');
         localStorage.removeItem('social_userId');
         localStorage.removeItem('social_username');
+        localStorage.removeItem('userId');
         console.log('로그아웃 성공');
         navigate('/')
     }

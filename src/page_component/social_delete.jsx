@@ -5,11 +5,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function SocialDeleteUser() {
     const navigate = useNavigate();
-    const social_username = localStorage.getItem('social_username');
+    const social_userId = localStorage.getItem('social_userId');
 
     const deleteUser = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/users/delete/social_user/${social_username}`, {
+            const response = await fetch(`${API_URL}/api/users/delete/${social_userId}`, {
                 method: "DELETE",
                 headers: {
                   'Content-Type': 'application/json'

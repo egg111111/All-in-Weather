@@ -93,6 +93,7 @@ function DeleteUser() {
 
     // 비밀번호 확인 로직 (일반 로그인 사용자 전용)
     const handleVerifyPassword = async () => {
+        event.preventDefault(); // 기본 폼 제출을 방지
         try {
             const response = await fetch(`${API_URL}/api/users/verify-password`, {
                 method: "POST",
@@ -108,6 +109,7 @@ function DeleteUser() {
 
             if (response.ok) {
                 setIsPasswordValid(true);
+                console.log("비밀번호 일치");
             } else {
                 setIsPasswordValid(false);
                 Swal.fire({

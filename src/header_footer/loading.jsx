@@ -1,7 +1,7 @@
 import React from "react";
 import Spinner from "../assets/images/Spinner.gif"
 
-function londing() {
+function Loading() {
     return(
         <>
             <p>잠시만 기다려주세요</p>
@@ -10,4 +10,4 @@ function londing() {
     )
 }
 
-export default londing;
+export default Loading;
