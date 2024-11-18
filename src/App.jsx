@@ -14,8 +14,8 @@ import Delete_user from './page_component/delete';
 import SocialDeleteUser from './page_component/social_delete';
 import RecView from './page_component/recView';
 import AddUserInfo from './page_component/AddUserInfo';
-import InputBox from './sign_component/InputBox';
-import Perference_check from './page_component/preference_check';
+import PreferenceCheck from './page_component/preference_check';
+import Result from './page_component/result';
 
 import Layout from './header_footer/layout';
 import Sidebar from './header_footer/sidebar';
@@ -34,6 +34,7 @@ function App() {
               <Route path="/" element={<Home_basic />} />
               <Route path="/sign_up" element={<Signup />} />
               <Route path="/addUserInfo" element={<AddUserInfo />} />
+              <Route path="/preference_check" element={<PreferenceCheck />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />
@@ -43,7 +44,7 @@ function App() {
               <Route path="/social_delete" element={< SocialDeleteUser/>} />
               <Route path="/inputbox" element={< InputBox/>} />
               <Route path="/recView" element={<RecView/>} />
-              <Route path="/perference" element={<Perference_check/>} />
+              <Route path="/result" element={<Result/>} />
           </Routes>
           </div>
           </Layout>

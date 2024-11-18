@@ -57,7 +57,7 @@ function IdPwUpdate() {
             if (response.ok) {
                 setEditMode(false);
                 Swal.fire({
-                    title: "아이디 및 비밀번호가 변경되었습니다.",
+                    title: "비밀번호가 변경되었습니다.",
                     text: "잠시 후 메인화면으로 돌아갑니다.",
                     icon: "success",
                     showConfirmButton: false,
@@ -73,8 +73,8 @@ function IdPwUpdate() {
                 });
             }
         } catch (error) {
-            console.error("아이디 및 비밀번호 정보 수정 중 에러 발생:", error);
-            setMessage("아이디 및 비밀번호 수정 중 오류가 발생했습니다.");
+            console.error("비밀번호 정보 수정 중 에러 발생:", error);
+            setMessage(" 비밀번호 수정 중 오류가 발생했습니다.");
         }
     };
 

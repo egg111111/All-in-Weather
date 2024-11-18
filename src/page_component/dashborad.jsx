@@ -20,77 +20,75 @@ function dashboard() {
 
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
-    const [nickname, setNickname] = useState('');
-    const userId = localStorage.getItem('userId');
-    const [social_nickname, setSocial_nickname] = useState('');
-
-
-    // 사용자 정보 가져오기
+    
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
+        const social_userId = localStorage.getItem('social_userId');
 
-
-        // 일반 로그인 확인
-        if (userId && token) {
-            fetch(`${API_URL}/api/users/show/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
+        // 소셜 로그인인 경우 userId를 localStorage에 저장
+        if (!userId && !social_userId) {
+            // 소셜 로그인 사용자의 userId를 가져와서 localStorage에 저장
+            axios.get(`${API_URL}/api/users/social_user`, { withCredentials: true })
                 .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error("Failed to fetch user data");
-                })
-                .then(data => {
-                    setUserInfo(data);
+                    const userData = response.data;
+                    const social_userId = userData.social_userId;
+                    localStorage.setItem('social_userId', social_userId);
+                    fetchUserInfo(social_userId);  // 소셜 로그인 후 사용자 정보 요청
                 })
                 .catch(error => {
-                    console.error("Error fetching user data:", error);
+                    console.error("Error fetching social user info:", error);
                     setError("Failed to fetch user information");
                 });
         } else {
-            // 소셜 로그인일 경우 쿠키 기반으로 사용자 정보 요청
-            axios.get(`${API_URL}/api/users/social_user`, { withCredentials: true })
-                .then(response => {
-                    setUserInfo(response.data);
-                    const social_userId = response.data.social_username;
-                    const social_nickname = response.data.nickname;
-                    localStorage.setItem('social_userId', social_userId);
-                    localStorage.setItem('social_nickname', social_nickname);
-                })
-                .catch(error => {
-                    console.error("Error fetching user info:", error);
-                    setError("Failed to fetch user information");
-                });
-
-           // localStorage.removeItem('userId'); 
+            // 일반 로그인인 경우
+            fetchUserInfo(userId || social_userId, token);
         }
+    }, []);
 
-    }, [social_nickname]);
+    const fetchUserInfo = (userId, token = null) => {
+        const fetchOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            ...(userId && { credentials: 'include' }),  // 소셜 로그인인 경우 쿠키 포함
+        };
+
+        fetch(`${API_URL}/api/users/show/${userId}`, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user data");
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUserInfo(data);
+                console.log("User Info:", data);  // 콘솔에 출력
+            })
+            .catch(error => {
+                console.error("Error fetching user data:", error);
+                setError("Failed to fetch user information");
+            });
+    };
 
     return (
-        <>  
+        <>
             <WeatherChart userData={userInfo} />
-
-            <br/> 
-            <p>
+            <div>
                 {error ? (
-                    <p>{error}</p>
+                    <div>{error}</div>
                 ) : userInfo ? (
                     <div>
-                        <strong>안녕하세요</strong> {userInfo.social_nickname ? userInfo.social_nickname : userInfo.username}님
-                        <strong>안녕하세요</strong> {userInfo.social_userId}님
+                        <strong>안녕하세요</strong> {userInfo.nickname}님
+                        <br />
+                        <strong>사용자 ID: </strong>{userInfo.userId}
                     </div>
                 ) : (
-                    <p>Loading user information...</p>
+                    <div>Loading user information...</div>
                 )}
-            </p>
-
-            {/* <ChatgptApi weatherData={currentWeather} /> */}
-           
+            </div>
         </>
     );
 }

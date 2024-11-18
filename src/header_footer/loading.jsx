@@ -21,7 +21,7 @@ const loaderStyle = {
     color: "#fff"
 }
 
-function londing() {
+function Loading() {
     return(
         // <>
         //     <p>잠시만 기다려주세요</p>
@@ -36,4 +36,4 @@ function londing() {
     )
 }
 
-export default londing;
+export default Loading;
