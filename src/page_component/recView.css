@@ -1,5 +1,6 @@
 .recview-back{
-    background-color: #E0E7E7;
+    /* background-color: #E0E7E7; */
+    display: contents;
     padding: 10%;
     width: 60vw;
     height: 100vh;

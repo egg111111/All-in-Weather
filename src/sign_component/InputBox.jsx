@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import './style.css';
+import './input_style.css';
 
 const InputBox = forwardRef((props, ref) => {
   const { title, placeholder, type, value, isErrorMessage, buttonTitle, message, onChange, onKeyDown, onButtonClick } = props;

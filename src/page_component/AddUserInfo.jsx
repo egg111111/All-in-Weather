@@ -150,75 +150,78 @@ const AddUserInfo = () => {
 
 
   return (
-    <div className="extra-info-form">
-      {/* 나이 입력 */}
-      <div className="form-group">
-        <label>나이</label>
-        <div className="age-input-group">
-          <input
-            type="number"
-            value={age}
-            min="10"
-            max="80"
-            onChange={handleAgeChange}
-            onWheel={handleAgeWheel}
-          />
-          <label>
+    <div>
+      <p> 개인 정보를 입력해주세요 </p>
+      <div className="extra-info-form">
+        {/* 나이 입력 */}
+        <div className="form-group">
+          <label>나이</label>
+          <div className="age-input-group">
             <input
-              type="checkbox"
-              checked={isAgeWheelEnabled}
-              onChange={() => setIsAgeWheelEnabled(!isAgeWheelEnabled)}
+              type="number"
+              value={age}
+              min="10"
+              max="80"
+              onChange={handleAgeChange}
+              onWheel={handleAgeWheel}
             />
-            마우스 휠 사용
-          </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={isAgeWheelEnabled}
+                onChange={() => setIsAgeWheelEnabled(!isAgeWheelEnabled)}
+              />
+              마우스 휠 사용
+            </label>
+          </div>
         </div>
-      </div>
 
 
-      {/* 성별 선택 */}
-      <div className="form-group">
-        <label>성별</label>
-        <div className="gender-buttons">
-          <button
-            className={gender === 'male' ? 'active' : ''}
-            onClick={() => setGender('male')}
-          >
-            남자
-          </button>
-          <button
-            className={gender === 'female' ? 'active' : ''}
-            onClick={() => setGender('female')}
-          >
-            여자
-          </button>
+        {/* 성별 선택 */}
+        <div className="form-group">
+          <label>성별</label>
+          <div className="gender-buttons">
+            <button
+              className={gender === 'male' ? 'active' : ''}
+              onClick={() => setGender('male')}
+            >
+              남자
+            </button>
+            <button
+              className={gender === 'female' ? 'active' : ''}
+              onClick={() => setGender('female')}
+            >
+              여자
+            </button>
+          </div>
         </div>
-      </div>
 
 
-      {/* 키와 몸무게 입력 */}
-      <div className="form-group">
-        <label>키와 몸무게</label>
-        <div className="height-weight-group">
-          <input
-            type="number"
-            placeholder="키 (cm)"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="몸무게 (kg)"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
+        {/* 키와 몸무게 입력 */}
+        <div className="form-group">
+          <label>키와 몸무게</label>
+          <div className="height-weight-group">
+            <input
+              type="number"
+              placeholder="키 (cm)"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="몸무게 (kg)"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            />
+          </div>
         </div>
+
+
+        {/* 회원가입 버튼 */}
+        <button type="button" onClick={handleSubmit}>
+          다음
+        </button>
       </div>
-
-
-      {/* 회원가입 버튼 */}
-      <button type="button" onClick={handleSubmit}>
-        다음
-      </button>
     </div>
   );
 };

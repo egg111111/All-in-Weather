@@ -35,6 +35,7 @@ function App() {
               <Route path="/" element={<Home_basic />} />
               <Route path="/sign_up" element={<Signup />} />
               <Route path="/addUserInfo" element={<AddUserInfo />} />
+              <Route path="/perference" element={<Perference_check/>} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/myPage" element={<MyPage />} />
@@ -44,7 +45,6 @@ function App() {
               <Route path="/social_delete" element={< SocialDeleteUser/>} />
               <Route path="/inputbox" element={< InputBox/>} />
               <Route path="/recView" element={<RecView/>} />
-              <Route path="/perference" element={<Perference_check/>} />
               <Route path="/result" element={<Result/>} />
           </Routes>
           </div>

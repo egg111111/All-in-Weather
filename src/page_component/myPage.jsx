@@ -6,6 +6,7 @@ import naverImage from '/src/assets/images/naver.png';
 import kakaoImage from '/src/assets/images/kakao.png';
 const API_URL = import.meta.env.VITE_API_URL;
 
+
 function myPage() {
     const navigate = useNavigate();
     const [homeUserData, setHomeUserData] = useState({
@@ -13,6 +14,9 @@ function myPage() {
         nickname: "",
         email: "",
         age: "",
+        gender: "",
+        height: "",
+        weight: "",
     });
     const [socialUserData, setSocialUserData] = useState({
         social_userId: "",
@@ -24,6 +28,7 @@ function myPage() {
     const [message, setMessage] = useState("");
     const [isSocialLogin, setIsSocialLogin] = useState(false);
 
+
     // 사용자 정보 가져오기
     useEffect(() => {
         async function fetchUserData() {
@@ -31,6 +36,7 @@ function myPage() {
             console.log("Retrieved userId:", userId);
             try {
                 let response;
+
 
                 // 일반 로그인일 경우
                 if (userId) {
@@ -46,7 +52,7 @@ function myPage() {
                         setHomeUserData(data);
                         setIsSocialLogin(false);
                     }
-                } 
+                }
                 // 소셜 로그인일 경우
                 else {
                     response = await fetch(`${API_URL}/api/users/social_user`, {
@@ -63,13 +69,18 @@ function myPage() {
                         localStorage.setItem('social_userId', data.social_userId);
                         localStorage.setItem('name', data.name);
                         localStorage.setItem('email', data.email);
+                        setIsSocialLogin(true);
                     }
                 }
             } catch (error) {
                 console.error("사용자 정보 가져오기 중 오류:", error);
             }
-        }fetchUserData();
+        }
+
+
+        fetchUserData();
     }, []);
+
 
     // 사용자 정보 수정 API 요청
     const handleSaveChanges = async () => {
@@ -85,7 +96,7 @@ function myPage() {
                     credentials: 'include', // 쿠키를 포함하여 전송
                     body: JSON.stringify(socialUserData) // 소셜 로그인 데이터
                 });
-    
+   
                 if (response.ok) {
                     setEditMode(false);
                     Swal.fire({
@@ -94,9 +105,9 @@ function myPage() {
                         showConfirmButton: false,
                         timer: 1500
                     });
-    
+   
                     // 로컬 스토리지 업데이트
-                    console.log("Updated nickname:", socialUserData.social_nickname); 
+                    console.log("Updated nickname:", socialUserData.social_nickname);
                     localStorage.setItem('social_nickname', socialUserData.social_nickname); // 닉네임 업데이트
                     localStorage.setItem('name', socialUserData.name); // 이름 업데이트
                     localStorage.setItem('email', socialUserData.email); // 이메일 업데이트
@@ -111,6 +122,7 @@ function myPage() {
                     },
                     body: JSON.stringify(homeUserData) // 일반 로그인 데이터
                 });
+   
                 if (response.ok) {
                     setEditMode(false);
                     Swal.fire({
@@ -119,15 +131,18 @@ function myPage() {
                         showConfirmButton: false,
                         timer: 1500
                     });
-
+                   
                     // 로컬 스토리지 업데이트
                     localStorage.setItem('userId', homeUserData.userId);
                     localStorage.setItem('nickname', homeUserData.nickname);
                     localStorage.setItem('email', homeUserData.email); // 이메일 업데이트
                     localStorage.setItem('age', homeUserData.age); // 나이 업데이트
+                    localStorage.setItem('gender', homeUserData.gender);
+                    localStorage.setItem('height', homeUserData.height);
+                    localStorage.setItem('weight', homeUserData.weight);
                 }
             }
-    
+   
             if (!response.ok) {
                 setMessage("회원 정보 수정에 실패했습니다.");
                 Swal.fire({
@@ -140,6 +155,8 @@ function myPage() {
             setMessage("회원 정보 수정 중 오류가 발생했습니다.");
         }
     };
+   
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -157,13 +174,13 @@ function myPage() {
             }));
         }
     };
-    
+   
     const providerImages = {
         google: googleImage,
         naver: naverImage,
         kakao: kakaoImage
     };
-    
+   
     // 소셜 로그인 사용자의 이미지 설정 함수
     const getProviderImage = () => {
         // social_username에서 제공자 키워드 찾기
@@ -173,7 +190,10 @@ function myPage() {
         // 제공자에 해당하는 이미지 반환, 기본 이미지는 defaultImage 사용
         return provider ? providerImages[provider] : defaultImage;
     };
-    
+   
+
+
+
 
     return (
         <div>
@@ -182,10 +202,9 @@ function myPage() {
                 <div>
                     {editMode ? (
                         <div>
-                            <label>닉네임: </label> 
+                            <label>닉네임: </label>
                             <img src={getProviderImage()} alt={socialUserData.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
                             <input type="text" name="nickname" value={socialUserData.social_nickname} onChange={handleChange} />
-=======
                             <br />
                             <label>이름:</label>
                             <input type="text" name="name" value={socialUserData.name} onChange={handleChange} />
@@ -199,7 +218,7 @@ function myPage() {
                     ) : (
                         <div>
                             <p>
-                                <strong>닉네임: </strong> 
+                                <strong>닉네임: </strong>
                                 <img src={getProviderImage()} alt={socialUserData.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
                                 <span style={{ display: "inline" }}>{socialUserData.social_nickname}</span>
                             </p>
@@ -210,45 +229,61 @@ function myPage() {
                             <button onClick={() => navigate('/dashboard')}>확인</button>
                             <br/>
                             <button style={{ marginTop: '10px' }} onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</button>
- </div>
+                        </div>
                     )}
                 </div>
             ) : (
                 <div>
                     {editMode ? (
                         <div>
-                            <label>UserId: </label>
+                            <label>아이디: </label>
                             <input type="text" name="userId" value={homeUserData.userId} onChange={handleChange} />
                             <br />
-                            <label>nickname: </label>
-                            <input type="text" name="username" value={homeUserData.nickname} onChange={handleChange} />
+                            <label>닉네임: </label>
+                            <input type="text" name="nickname" value={homeUserData.nickname} onChange={handleChange} />
                             <br />
-                            <label>Email: </label>
+                            <label>이메일: </label>
                             <input type="email" name="email" value={homeUserData.email} onChange={handleChange} />
                             <br />
-                            <label>Age: </label>
+                            <label>나이: </label>
                             <input type="number" name="age" value={homeUserData.age} onChange={handleChange} />
+                            <br />
+                            <label>성별: </label>
+                            <input type="text" name="gender" value={homeUserData.gender} onChange={handleChange} />
+                            <br />
+                            <label>키: </label>
+                            <input type="number" name="height" value={homeUserData.height} onChange={handleChange} />
+                            <br />
+                            <label>몸무게: </label>
+                            <input type="number" name="weight" value={homeUserData.weight} onChange={handleChange} />
                             <br />
                             <button onClick={handleSaveChanges}>저장</button>
                             <button onClick={() => setEditMode(false)}>취소</button>
                         </div>
                     ) : (
                         <div>
-                            <p><strong>UserId:</strong> {homeUserData.userId}</p>
-                            <p><strong>nickname:</strong> {homeUserData.nickname}</p>
-                            <p><strong>Email:</strong> {homeUserData.email}</p>
-                            <p><strong>Age:</strong> {homeUserData.age}</p>
+                            <p><strong>아이디:</strong> {homeUserData.userId}</p>
+                            <p><strong>닉네임:</strong> {homeUserData.nickname}</p>
+                            <p><strong>이메일:</strong> {homeUserData.email}</p>
+                            <p><strong>나이:</strong> {homeUserData.age}</p>
+                            <p><strong>성별:</strong> {homeUserData.gender}</p>
+                            <p><strong>키:</strong> {homeUserData.height}</p>
+                            <p><strong>몸무게:</strong> {homeUserData.weight}</p>
                             <button onClick={() => setEditMode(true)}>회원 정보 수정</button>
                             <button onClick={() => navigate('/pwUpdate')}>비밀번호 변경</button>
                             <button onClick={() => navigate('/dashboard')}>돌아가기</button>
                             <br/>
                             <button onClick={() => { navigate('/delete'); }}>회원 탈퇴</button>
-                         </div>
+                        </div>
                     )}
                 </div>
             )}
+            {message && <p>{message}</p>}
         </div>
     );
 }
 
+
 export default myPage;
+
+

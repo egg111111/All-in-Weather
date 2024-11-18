@@ -2,9 +2,9 @@
   max-width: 400px;
   margin: 20px auto;
   padding: 20px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 8px;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
 }
 
 .form-group {
@@ -12,14 +12,18 @@
 }
 
 .age-input-group {
-  display: flex;
+  display: grid;
   align-items: center;
   gap: 10px;
+  justify-content: center;
 }
 
 .gender-buttons {
-  display: flex;
+  display: grid;
   gap: 10px;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: 90px 90px;
 }
 
 .gender-buttons button {

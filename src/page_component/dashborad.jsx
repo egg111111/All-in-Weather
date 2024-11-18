@@ -5,7 +5,7 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 import ChatgptApi from "../service/chatgptApi";
-import './dashbaord.css';
+import './dashboard.css';
 import WeatherChart from "./weatherChart";
 import Londing from "../header_footer/loading";
 
@@ -14,9 +14,9 @@ function dashboard() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [username, setUsername] = useState("");
     //const username = localStorage.getItem('username');
-    const [location, setLocation] = useState({ latitude: null, longitude: null });
-    const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
-    const [currentWeather, setCurrentWeather] = useState(null);
+    // const [location, setLocation] = useState({ latitude: null, longitude: null });
+    // const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
+    // const [currentWeather, setCurrentWeather] = useState(null);
 
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);

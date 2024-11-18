@@ -158,6 +158,7 @@ function PreferenceCheck() {
         <div className="preference-style-container">
             <h2>취향 선택</h2>
             <p>마음에 드는 옷 스타일을 3개 이상 골라주세요</p>
+            <br/>
 
 
             <div className="image-grid">
@@ -167,15 +168,14 @@ function PreferenceCheck() {
                         className={`image-item ${selectedImages.includes(key) ? "selected" : ""}`}
                         onClick={() => handleImageClick(key)}
                     >
-                        <img src={src} alt={`Style ${index + 1}`} />
+                        <img className="img-cover" src={src} alt={`Style ${index + 1}`} />
                     </div>
                 ))}
             </div>
 
 
             {showWarning && <p className="warning">최소 3개를 선택해주세요</p>}
-
-
+            <br/>
             <button
                 className="submit-button"
                 onClick={handleSubmit}

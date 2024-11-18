@@ -3,7 +3,7 @@ import InputBox from "./InputBox";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './sign_up.module.css';
-import './style.css';
+import './input_style.css';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SignUp() {
@@ -190,7 +190,7 @@ export default function SignUp() {
   return (
     <div className='sign-up-container'>
       <div className='sign-up-box' >
-          <h1 className="title-div" style={{ backgroundColor: '#96aaaa' }}>회원가입</h1>
+          <h1 className="title-div" >회원가입</h1>
           <div className='sign-up-content-box' >
             <div className='sign-up-content-sns-sign-in-box'></div>
               <div className='sign-up-content-sns-sign-in-title'>{'sns 회원가입'}</div>

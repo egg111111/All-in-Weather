@@ -50,6 +50,7 @@ body {
   /* background-color: #dde7e7; */
   background-color: #dde7e7; 
   padding: 10%;
+  border-radius: 11px;
 }
 
 .kakao-sign-in-button {
@@ -157,7 +158,6 @@ body {
   align-items: center;
 
   gap: 12px;
-  background-color: white;
 }
 
 .sign-up-content-divider{

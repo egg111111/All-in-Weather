@@ -12,6 +12,11 @@ function chatgptApi({weatherData, userData}) {
     
     const [loading, setLoading] = useState(false);
     const [currentWeather, setCurrentWeather] = useState([]);
+    const [userStyle, setUserStyle] = useState(""); // 사용자 스타일 상태 추가
+    const [gptImage, setGptImage] = useState("");
+
+
+
 
     const navigate = useNavigate();
 
@@ -39,10 +44,12 @@ function chatgptApi({weatherData, userData}) {
                 },
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
-                    messages: [ { role: "user", content: `오늘 날씨는 ${savedWeather.temp}, ${savedWeather.description}, 옷 취향은 레이어드고 실외 활동을 좋아하는 ${userData.age}세 남자의 옷 차림을 추천해줘, 간략하게` },
+                    messages: [
+                        { role: "user", content: `오늘 날씨는 ${savedWeather.temp}, ${savedWeather.description}, 옷 취향은 ${userStyle}이고 실외 활동을 좋아하는 ${userData.age}세 남자의 옷 차림을 추천해줘, 간략하게` },
                     ],
+
                     temperature: 0.5,
-                    max_tokens: 50,
+                    max_tokens: 500,
                 })
             });
             const data = await response.json();
@@ -51,7 +58,9 @@ function chatgptApi({weatherData, userData}) {
             setLoading(false);
             sendGptResult(recStyle, 'style');
 
-            navigate("/result", { state: { result: recStyle, type: "옷차림 추천" } });
+            call_generate_clothing_image(recStyle); // 텍스트를 바탕으로 이미지 생성
+
+            navigate("/result", { state: { result: recStyle, type: "옷차림 추천" , gptImage} });
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
@@ -158,6 +167,37 @@ function chatgptApi({weatherData, userData}) {
         return <Loading />;
     }
 
+    const call_generate_clothing_image = async (recStyle) => {
+        try {
+            const prompt = `A stylish outfit based on the following description: ${recStyle}, without showing the face, only the body and clothing from head to toe.`;
+           
+            const response = await fetch("https://api.openai.com/v1/images/generations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${import.meta.env.VITE_GPT_KEY}`,
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    n: 1,
+                    size: "1024x1024", // 이미지 크기 설정
+                }),
+            });
+    
+    
+            const data = await response.json();
+            console.log("DALL·E Response: ", data); // 응답 데이터 콘솔 출력
+            if (data.data && data.data[0].url) {
+                setGptImage(data.data[0].url); // 이미지 URL 저장
+            } else {
+                console.error("DALL·E 이미지 생성 실패.");
+            }
+        } catch (error) {
+            console.error("DALL·E API 호출 실패:", error);
+        }
+    };
+    
+
 
     return ( 
     <>
@@ -168,6 +208,8 @@ function chatgptApi({weatherData, userData}) {
                 <button onClick={call_get_activity}>활동 추천</button>
                 {/* {gptData && <div>{gptData}</div>} */}
             </div>
+
+            
         </>
     )
 }
