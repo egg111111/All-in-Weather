@@ -50,7 +50,7 @@ export default function SignUp() {
       });
       const isAvailable = await response.json();
       setIsIdError(isAvailable);
-      setIdMessage(isAvailable ?"이미 사용 중인 아이디입니다.": "사용 가능한 아이디입니다.");
+      setIdMessage(isAvailable ?"사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.": "사용 가능한 아이디입니다.");
       setIdCheck(!isAvailable);
     } catch (error) {
       console.error("Error checking userId:", error);
@@ -68,6 +68,7 @@ export default function SignUp() {
       setEmailError(isAvailable);
       setEmailMessage(isAvailable ?"이미 사용 중인 이메일입니다." :"사용 가능한 이메일입니다." );
       setEmailCheck(!isAvailable);
+      return isAvailable; // 중복 여부 반환
     } catch (error) {
       console.error("Error checking email:", error);
     }
@@ -104,20 +105,22 @@ export default function SignUp() {
   };
 
   const onEmailVerificationButtonClickHandler = async () => {
-    if (!isEmailCheck) {  // 기본값이 false 이므로 중복 검사를 수행
-      await checkEmail(email); // 이메일 중복 확인 호출
-      // isEmailError가 true이면 중복된 이메일
-      if (isEmailError) { 
-        alert('이메일 중복 확인을 해주세요.'); // 오류가 있을 경우 사용자에게 경고
+      // 이메일 패턴 확인
+      if (!emailPattern.test(email)) {
+        alert('올바른 이메일 형식이 아닙니다.');
         return;
       }
-    }
-    
-    // 이메일이 유효한 경우 인증 코드 전송
-    if (email && !isEmailError) { // isEmailError가 false인 경우에만 인증 코드 전송
+
+      // 이메일 중복 확인
+      const isEmailTaken = await checkEmail(email);
+      if (isEmailTaken) {
+        return;  // 중복된 이메일일 경우 인증 코드 발송을 막음
+      }
+
+      // 이메일 중복되지 않으면 인증 코드 발송
       await sendEmailVerification(email);
-    }
-  };
+  }
+  
   
   
 
