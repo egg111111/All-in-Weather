@@ -1,8 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './recView.css'
 const API_URL = import.meta.env.VITE_API_URL;
+
 function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
@@ -19,12 +20,12 @@ function recView() {
         const userId = localStorage.getItem('userId');
         const social_userId = localStorage.getItem('social_userId');
         const UserId = userId || social_userId; // userId 또는 social_userId를 동적으로 선택
-    
+
         if (!UserId) {
             console.error("userId와 social_userId 중 하나가 필요합니다.");
             return;
         }
-    
+
         try {
             const fetchOptions = {
                 method: "GET",
@@ -34,9 +35,9 @@ function recView() {
                 },
                 ...(social_userId && { credentials: 'include' }), // 소셜 로그인일 경우 쿠키 포함
             };
-    
+
             const response = await fetch(`${API_URL}/api/chat/read/${UserId}`, fetchOptions);
-    
+
             if (response.ok) {
                 const data = await response.json();
                 setView(data);
@@ -47,11 +48,10 @@ function recView() {
             console.error("사용자 정보 가져오기 중 오류:", error);
         }
     };
-    
 
     useEffect(() => {
         getRecList();
-    }, [])
+    }, []);
 
     const handleDateClick = (item) => {
         setSelecteRec(item);
@@ -161,12 +161,10 @@ function recView() {
             </div>
             <ul className="rec_list">
                 <div className="rec_background">
-                    {currentWeekData.map((item, index) => (
-                        <li
-                            key={index}
+                    {currentItems.map((item, index) => (
+                        <li key={index}
                             onClick={() => handleDateClick(item)}
-                            style={{ cursor: "pointer", color: "black" }}
-                        >
+                            style={{ cursor: "pointer", color: "black" }}>
                             {formatDate(item.createDate)}의 기록
                         </li>
                     ))}
@@ -179,9 +177,8 @@ function recView() {
                         <button
                             key={number}
                             onClick={() => handlePageChange(number)}
-                            className={number === currentPage ? "active" : ""}
-                            >
-                                {number}
+                            className={number === currentPage ? "active" : ""}>
+                            {number}
                         </button>
                     ))}
                 </div>
@@ -196,13 +193,18 @@ function recView() {
                         </div>
                         <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
                         <p>{selecteRec.recActivity || selecteRec.recStyle}</p>
-                        
+                        {/* 이미지가 존재하면 이미지 URL로 이미지를 표시 */}
+                        {selecteRec.imageUrl && (
+                            <div>
+                                <img src={selecteRec.imageUrl} alt="추천된 옷차림" style={{ maxWidth: "100%", marginTop: "20px" }} />
+                            </div>
+                        )}
+                        <button onClick={closeModal}>Close</button>
                     </div>
                 </div>
             )}
         </div>
-    )
+    );
 }
-
 
 export default recView;
