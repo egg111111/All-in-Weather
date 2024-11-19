@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'NEXON Lv1 Gothic OTF';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.rec-title{
+    font-family: 'NEXON Lv1 Gothic OTF';
+    
+}
+.recview-back{
+    /* background-color: #E0E7E7; */
+    display: contents;
+    padding: 10%;
+    width: 60vw;
+    height: 100vh;
+}
+
+.recView-text{
+    text-align: justify;    
+    text-align-last: right;
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header{
+    display: flex;
+    gap: 3%;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-button{
+    width: 5%;
+    height: 5%;
+    justify-content: center;
+}
+
+.rec_background{
+    display: grid;
+    margin-top: 10%;
+    /* background-color: #bcbcbc; */
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.rec_list{
+    list-style-type: none;
+    line-height: 250%;
+}
+
+/* .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background-color: #7DCAEA;
+    color: white;
+    font-weight: bold;
+    border-color: #7DCAEA;
+} */
