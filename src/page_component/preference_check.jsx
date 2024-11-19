@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import './preference_check.css';
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 const API_URL = import.meta.env.VITE_API_URL;
 
 const imageStyleMap = {
@@ -30,7 +31,6 @@ const imageStyleMap = {
 const femaleImages = import.meta.glob("/src/assets/images/style/female/*.{png,jpg,jpeg,svg}", { eager: true });
 const maleImages = import.meta.glob("/src/assets/images/style/male/*.{png,jpg,jpeg,svg}", { eager: true });
 
-
 function PreferenceCheck() {
     const [displayedImages, setDisplayedImages] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
@@ -38,58 +38,13 @@ function PreferenceCheck() {
     const [userGender, setUserGender] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate(); // useNavigate 훅 사용
-
-
+    
+    
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
-
-
-        // 일반 로그인 확인
-        if (userId && token) {
-            fetch(`${API_URL}/api/users/show/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error("Failed to fetch user data");
-                })
-                .then(data => {
-                    setUserGender(data.gender);
-                })
-                .catch(error => {
-                    console.error("Error fetching user data:", error);
-                    setError("Failed to fetch user information");
-                });
-        } else {
-            // 소셜 로그인일 경우 쿠키 기반으로 사용자 정보 요청
-            axios.get(`${API_URL}/api/users/social_user`, { withCredentials: true })
-                .then(response => {
-                    setUserInfo(response.data);
-                    const social_userId = response.data.social_username;
-                    const social_nickname = response.data.nickname;
-                    localStorage.setItem('social_userId', social_userId);
-                    localStorage.setItem('social_nickname', social_nickname);
-                })
-                .catch(error => {
-                    console.error("Error fetching user info:", error);
-                    setError("Failed to fetch user information");
-                });
-
-           // localStorage.removeItem('userId'); 
-        }
-
-    }, []);
-
-    useEffect(() => {
-        if(!userGender) return;
-
+        const savedGender = localStorage.getItem('gender');
+        if (!savedGender) return;
+        setUserGender(savedGender);
         const images = userGender === "female" ? femaleImages : maleImages;
-
         const shuffledKeys = Object.keys(images).sort(() => 0.5 - Math.random());
         const displayed = shuffledKeys.slice(0, 9).map((key) => ({
             key,
@@ -97,8 +52,7 @@ function PreferenceCheck() {
         }));
         setDisplayedImages(displayed);
     }, [userGender]);
-
-
+    
     const handleImageClick = (imageKey) => {
         if (selectedImages.includes(imageKey)) {
             setSelectedImages(selectedImages.filter((key) => key !== imageKey));
@@ -117,7 +71,7 @@ function PreferenceCheck() {
                 await fetchPreference();
                 Swal.fire({
                     title: "완료!",
-                    text: "취향이 성공적으로 저장되었습니다.",
+                    text: "회원가입이 완료되었습니다.",
                     icon: "success",
                     showConfirmButton: false,
                     timer: 1500,
@@ -134,24 +88,29 @@ function PreferenceCheck() {
     const fetchPreference = async () => {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
+         const social_userId = localStorage.getItem("social_userId");
         const selectedStyles = selectedImages.map((key) => imageStyleMap[key]);
         const requestBody = {
-            userId,
+            ...(userId ? { userId } : { social_userId }),
             preferences: selectedStyles,
         };
 
-
-        const response = await fetch("http://localhost:8080/api/users/style", {
+        const fetchOptions = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                ...(userId ? { Authorization: `Bearer ${token}` } : {}), // userId가 있으면 Authorization 헤더 추가
             },
             body: JSON.stringify(requestBody),
-        });
+            ...(social_userId && { credentials: 'include' }), // 소셜 로그인 사용자는 credentials 설정
+        };
+
+        const response = await fetch("http://localhost:8080/api/users/style", fetchOptions);
+
         if (!response.ok) {
             throw new Error("Failed to save preferences");
         }
+        
     };
     
     return (
@@ -186,6 +145,5 @@ function PreferenceCheck() {
         </div>
     );
 }
-
 
 export default PreferenceCheck;

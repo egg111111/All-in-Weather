@@ -17,41 +17,37 @@ function recView() {
 
     const getRecList = async () => {
         const userId = localStorage.getItem('userId');
-        const username = localStorage.getItem('social_username');
+        const social_userId = localStorage.getItem('social_userId');
+        const UserId = userId || social_userId; // userId 또는 social_userId를 동적으로 선택
+    
+        if (!UserId) {
+            console.error("userId와 social_userId 중 하나가 필요합니다.");
+            return;
+        }
+    
         try {
-            let response;
-            // 일반 로그인일 경우
-            if (userId) {
-                response = await fetch(`${API_URL}/api/chat/read/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setView(data);
-                    createFixedWeeks(data);
-                }
-            }
-            else {
-                response = await fetch(`${API_URL}/api/chat/read/social/${username}`, {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include', // JWT 쿠키를 전송
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setView(data);
-                }
+            const fetchOptions = {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(userId && { Authorization: `Bearer ${localStorage.getItem('token')}` }), // 일반 로그인일 경우 토큰 추가
+                },
+                ...(social_userId && { credentials: 'include' }), // 소셜 로그인일 경우 쿠키 포함
+            };
+    
+            const response = await fetch(`${API_URL}/api/chat/read/${UserId}`, fetchOptions);
+    
+            if (response.ok) {
+                const data = await response.json();
+                setView(data);
+            } else {
+                console.error(`데이터 가져오기 실패: ${response.statusText}`);
             }
         } catch (error) {
             console.error("사용자 정보 가져오기 중 오류:", error);
         }
-    }
+    };
+    
 
     useEffect(() => {
         getRecList();

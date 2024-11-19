@@ -39,15 +39,11 @@ const AddUserInfo = () => {
         }
         const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('Authorization='));
         const token = tokenCookie ? tokenCookie.split('=')[1] : null;
-
-
-        if (token) {
+     if (token) {
           try {
             // JWT 토큰을 디코딩
             const decodedToken = jwt_decode(token);
             const profileComplete = decodedToken.profileComplete;
-
-
             console.log("Profile complete status from token:", profileComplete);
             setIsSocialUserComplete(profileComplete); // 상태 업데이트
           } catch (error) {
@@ -136,9 +132,9 @@ const AddUserInfo = () => {
         });
       }
  
-      if (response.ok) {  // 200번대 응답 확인      
+      if (response.ok) {  // 200번대 응답 확인   
+        localStorage.setItem('gender', gender);   
           navigate('/perference');
-     
       } else {
         throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
       }
@@ -215,8 +211,6 @@ const AddUserInfo = () => {
             />
           </div>
         </div>
-
-
         {/* 회원가입 버튼 */}
         <button type="button" onClick={handleSubmit}>
           다음
