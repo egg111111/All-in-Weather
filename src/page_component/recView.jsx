@@ -1,8 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './recView.css'
 const API_URL = import.meta.env.VITE_API_URL;
+
 function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
@@ -17,12 +18,12 @@ function recView() {
         const userId = localStorage.getItem('userId');
         const social_userId = localStorage.getItem('social_userId');
         const UserId = userId || social_userId; // userId 또는 social_userId를 동적으로 선택
-    
+
         if (!UserId) {
             console.error("userId와 social_userId 중 하나가 필요합니다.");
             return;
         }
-    
+
         try {
             const fetchOptions = {
                 method: "GET",
@@ -32,9 +33,9 @@ function recView() {
                 },
                 ...(social_userId && { credentials: 'include' }), // 소셜 로그인일 경우 쿠키 포함
             };
-    
+
             const response = await fetch(`${API_URL}/api/chat/read/${UserId}`, fetchOptions);
-    
+
             if (response.ok) {
                 const data = await response.json();
                 setView(data);
@@ -45,11 +46,10 @@ function recView() {
             console.error("사용자 정보 가져오기 중 오류:", error);
         }
     };
-    
 
     useEffect(() => {
         getRecList();
-    }, [])
+    }, []);
 
     const handleDateClick = (item) => {
         setSelecteRec(item);
@@ -63,7 +63,7 @@ function recView() {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        const month = date.getMonth() +1;
+        const month = date.getMonth() + 1;
         const day = date.getDate();
         const hours = date.getHours();
         const minutes = date.getMinutes().toString();
@@ -81,12 +81,12 @@ function recView() {
     const indexOfFirstItem = indexOfLastItem - itemPerPage;
     const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
 
-    const handlePageChange = (pageNumber) =>{
+    const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     }
 
     const totalPages = Math.ceil(filteredView.length / itemPerPage);
-    const pageNumbers = Array.from({length:totalPages}, (_, index)=> index + 1 );
+    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     return (
         <div className="recview-back">
@@ -94,7 +94,7 @@ function recView() {
             <p> 기록은 최대 30일까지 볼 수 있습니다.</p>
 
             <div className="filter-options">
-            <label>
+                <label>
                     <input
                         type="radio"
                         value="style"
@@ -115,13 +115,13 @@ function recView() {
             </div>
             <ul className="rec_list">
                 <div className="rec_background">
-                {currentItems.map((item, index) => (
-                    <li key={index} 
-                        onClick={() => handleDateClick(item)} 
-                        style={{ cursor: "pointer", color: "black" }}>
-                        {formatDate(item.createDate)}의 기록 
-                    </li>
-                ))}
+                    {currentItems.map((item, index) => (
+                        <li key={index}
+                            onClick={() => handleDateClick(item)}
+                            style={{ cursor: "pointer", color: "black" }}>
+                            {formatDate(item.createDate)}의 기록
+                        </li>
+                    ))}
                 </div>
             </ul>
 
@@ -131,9 +131,8 @@ function recView() {
                         <button
                             key={number}
                             onClick={() => handlePageChange(number)}
-                            className={number === currentPage ? "active" : ""}
-                            >
-                                {number}
+                            className={number === currentPage ? "active" : ""}>
+                            {number}
                         </button>
                     ))}
                 </div>
@@ -145,13 +144,18 @@ function recView() {
                         <h3>{formatDate(selecteRec.createDate)}의 기록</h3>
                         <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
                         <p>{selecteRec.recActivity || selecteRec.recStyle}</p>
+                        {/* 이미지가 존재하면 이미지 URL로 이미지를 표시 */}
+                        {selecteRec.imageUrl && (
+                            <div>
+                                <img src={selecteRec.imageUrl} alt="추천된 옷차림" style={{ maxWidth: "100%", marginTop: "20px" }} />
+                            </div>
+                        )}
                         <button onClick={closeModal}>Close</button>
                     </div>
                 </div>
             )}
         </div>
-    )
+    );
 }
-
 
 export default recView;
