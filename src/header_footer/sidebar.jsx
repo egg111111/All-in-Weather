@@ -21,6 +21,12 @@ const sidebar = ({ width=280, children }) =>{
         }
     }
 
+    const handleMenuClick = () => {
+        setxPosition(-width);
+        setOpen(false);
+    }
+
+
     useEffect(() => {
         window.addEventListener('click', handleClose);
         return () => {
@@ -37,7 +43,7 @@ const sidebar = ({ width=280, children }) =>{
                     <span> X </span> : <span> ☰ </span>
                     }
                 </button>
-                    <div className={styles.content}> {children} </div>
+                    <div className={styles.content} onClick={() => handleMenuClick()}> {children} </div>
             </div>
         </div>
     )

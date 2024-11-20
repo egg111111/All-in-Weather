@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Result from "../page_component/result";
 import WeatherChart from "../page_component/weatherChart";
 
+import './chatgptApi.css'
+
 function chatgptApi({weatherData, userData}) {
     const [gptData, setGptData] = useState("")
     const [gptImage, setGptImage] = useState(""); 
@@ -302,6 +304,7 @@ function chatgptApi({weatherData, userData}) {
                 ) : (
                     !loading && <div></div>  // 이미지가 없을 때 로딩 상태 표시
                 )}
+                
             </div>
 
             

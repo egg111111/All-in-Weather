@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import './preference_check.css';
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
 const API_URL = import.meta.env.VITE_API_URL;
 
 const imageStyleMap = {

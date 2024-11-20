@@ -293,7 +293,7 @@ function WeatherChart({ userData }) {
     };
 
     return (
-        <div>
+        <div className="weatherChart-container">
             <div className="first-container">
 
                 {currentWeather && (

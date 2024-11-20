@@ -1,3 +1,24 @@
+@font-face {
+  font-family: 'NEXON Lv1 Gothic OTF';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.weatherChart-container{
+  display: grid;
+  justify-content: center;
+  align-self: center;
+  justify-items: center;
+}
+
 .first-container {
   display: grid;
   grid-template-columns: 1fr 0.5fr;
@@ -5,6 +26,7 @@
   /* padding-left: 1.5%; */
   /* width: 89vw;
   height: 20vh; */
+  font-family: 'NEXON Lv1 Gothic OTF';
 }
 
 .weather-chart-container {
@@ -197,6 +219,8 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  background-color: #ffffff;
+  width: fit-content;
 }
 
 
@@ -247,7 +271,6 @@
     padding: 8px; 
     border-radius: 5px; /* 둥근 모서리 */
     font-size: 14px;    /* 글씨 크기 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   }
 
   .sun-times{

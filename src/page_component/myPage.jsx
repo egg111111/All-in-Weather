@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import './myPage.css'
+import Loading from '../header_footer/loading.jsx';
+
 import googleImage from '/src/assets/images/google.png';
 import naverImage from '/src/assets/images/naver.png';
 import kakaoImage from '/src/assets/images/kakao.png';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -83,7 +87,7 @@ function myPage() {
         try {
             const social_userId = localStorage.getItem('social_userId');
             const token = localStorage.getItem('token');
-    
+
             const fetchOptions = {
                 method: "PUT",
                 headers: {
@@ -93,12 +97,12 @@ function myPage() {
                 body: JSON.stringify(userInfo), // 수정된 사용자 정보
                 ...(social_userId && { credentials: 'include' }), // 소셜 로그인인 경우 쿠키 사용
             };
-    
+
             const response = await fetch(
                 `${API_URL}/api/users/update/${userInfo.userId}`,
                 fetchOptions
             );
-    
+
             if (response.ok) {
                 setEditMode(false);
                 Swal.fire({
@@ -136,7 +140,7 @@ function myPage() {
             [name]: value, // 동적으로 필드 업데이트
         }));
     };
-   
+
     const providerImages = {
         google: googleImage,
         naver: naverImage,
@@ -144,9 +148,9 @@ function myPage() {
     };
 
     if (loading) {
-        return <p>로딩 중...</p>;
+        return <Loading />;
     }
-    
+
     // 소셜 로그인 사용자의 이미지 설정 함수
     const getProviderImage = () => {
         // userId 에서 제공자 키워드 찾기
@@ -157,16 +161,18 @@ function myPage() {
         return provider ? providerImages[provider] : defaultImage;
     };
 
+
     return (
-        <div>
-            <h2>회원 정보</h2>
+        <div className="myPage-all-container">
+            <h2 className="myPage-title">회원정보</h2>
             {userInfo ? ( // userInfo가 null이 아닐 때 렌더링
                 isSocialLogin ? (
-                    <div>
+                    <div className="myPage-container">
                         {editMode ? (
                             <div>
-                                <label>닉네임: </label> 
+                                <label>닉네임: </label>
                                 <img src={getProviderImage()} alt={userInfo.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
+                                <br />
                                 <input type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
                                 <br />
                                 <label>이메일 주소:</label>
@@ -188,21 +194,23 @@ function myPage() {
                                 <button onClick={() => setEditMode(false)}>취소</button>
                             </div>
                         ) : (
-                            <div>
+                            <div >
                                 <p>
-                                    <strong>닉네임: </strong> 
+                                    <strong className="myPage-container-title">닉네임 </strong>
+                                    <br />
                                     <img src={getProviderImage()} alt={userInfo.userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
-                                    <span style={{ display: "inline" }}>{userInfo.nickname}</span>
+                                    <span className="myPage-container-content" style={{ display: "inline" }}>{userInfo.nickname}</span>
                                 </p>
-                                <p><strong>이메일 주소:</strong> {userInfo.email}</p>
-                                <p><strong>나이:</strong> {userInfo.age}</p>
-                                <p><strong>성별:</strong> {userInfo.gender}</p>
-                                <p><strong>키:</strong> {userInfo.height}</p>
-                                <p><strong>몸무게:</strong> {userInfo.weight}</p>
-                                <button style={{ marginRight: '10px' }} onClick={() => setEditMode(true)}>회원 정보 수정</button>
-                                <button onClick={() => navigate('/dashboard')}>확인</button>
+                                <strong className="myPage-container-title">이메일 주소</strong> <br/><span className="myPage-container-content">{userInfo.email}</span> <br/>
+                                <strong className="myPage-container-title">나이</strong> <br/> <span className="myPage-container-content">{userInfo.age}</span><br/>
+                                <strong className="myPage-container-title">성별</strong> <br/> <span className="myPage-container-content">{userInfo.gender}</span><br/>
+                                <strong className="myPage-container-title">키</strong> <br/> <span className="myPage-container-content">{userInfo.height}</span><br/>
+                                <strong className="myPage-container-title">몸무게</strong> <br/> <span className="myPage-container-content">{userInfo.weight}</span><br/>
                                 <br/>
+                                <button style={{ marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
                                 <button style={{ marginTop: '10px' }} onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</button>
+                                <br />
+                                {/* <button onClick={() => navigate('/dashboard')}>확인</button> */}
                             </div>
                         )}
                     </div>
@@ -210,50 +218,57 @@ function myPage() {
                     <div>
                         {editMode ? (
                             <div>
-                                <label>아이디: </label>
-                                <input type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
+                                <label className="myPage-container-title">아이디 </label>
+                                <br/>
+                                <input className="myPage-container-content" type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
                                 <br />
-                                <label>닉네임: </label>
-                                <input type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
+                                <label className="myPage-container-title">닉네임</label>
+                                <br/>
+                                <input className="myPage-container-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
                                 <br />
-                                <label>이메일: </label>
-                                <input type="email" name="email" value={userInfo.email} onChange={handleChange} />
+                                <label  className="myPage-container-title">이메일</label>
+                                <br/>
+                                <input className="myPage-container-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
                                 <br />
-                                <label>나이: </label>
-                                <input type="number" name="age" value={userInfo.age} onChange={handleChange} />
+                                <label className="myPage-container-title">나이 </label>
+                                <br/>
+                                <input className="myPage-container-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
                                 <br />
-                                <label>성별: </label>
-                                <input type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
+                                <label className="myPage-container-title">성별</label>
+                                <br/>
+                                <input className="myPage-container-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
                                 <br />
-                                <label>키: </label>
-                                <input type="number" name="height" value={userInfo.height} onChange={handleChange} />
+                                <label className="myPage-container-title">키</label>
+                                <br/>
+                                <input className="myPage-container-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
                                 <br />
-                                <label>몸무게: </label>
-                                <input type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
+                                <label className="myPage-container-title">몸무게</label>
+                                <br/>
+                                <input className="myPage-container-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
                                 <br />
                                 <button onClick={handleSaveChanges}>저장</button>
                                 <button onClick={() => setEditMode(false)}>취소</button>
                             </div>
                         ) : (
                             <div>
-                                <p><strong>아이디:</strong> {userInfo.userId}</p>
-                                <p><strong>닉네임:</strong> {userInfo.nickname}</p>
-                                <p><strong>이메일:</strong> {userInfo.email}</p>
-                                <p><strong>나이:</strong> {userInfo.age}</p>
-                                <p><strong>성별:</strong> {userInfo.gender}</p>
-                                <p><strong>키:</strong> {userInfo.height}</p>
-                                <p><strong>몸무게:</strong> {userInfo.weight}</p>
-                                <button onClick={() => setEditMode(true)}>회원 정보 수정</button>
+                                <p><strong>아이디:</strong> {userInfo.userId} <br/> </p>
+                                <p><strong>닉네임:</strong> {userInfo.nickname}<br/></p>
+                                <p><strong>이메일:</strong> {userInfo.email}<br/></p>
+                                <p><strong>나이:</strong> {userInfo.age}<br/></p>
+                                <p><strong>성별:</strong> {userInfo.gender}<br/></p>
+                                <p><strong>키:</strong> {userInfo.height}<br/></p>
+                                <p><strong>몸무게:</strong> {userInfo.weight}<br/></p>
+                                <button onClick={() => setEditMode(true)}>정보 수정</button>
                                 <button onClick={() => navigate('/pwUpdate')}>비밀번호 변경</button>
-                                <button onClick={() => navigate('/dashboard')}>돌아가기</button>
-                                <br/>
+
+                                <br />
                                 <button onClick={() => { navigate('/delete'); }}>회원 탈퇴</button>
                             </div>
                         )}
                     </div>
                 )
             ) : (
-                <p>로딩 중...</p> // userInfo가 null일 때 로딩 상태 표시
+                <Loading />
             )}
             {message && <p>{message}</p>}
         </div>

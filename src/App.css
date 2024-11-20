@@ -27,7 +27,11 @@
 }
 
 body {
-  background-color: #C1D0D4;
+  /* background-color: #ffffff; */
+  background-image: url(./assets/images/background.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   display: grid;
   justify-content: center;
   align-items: center;
@@ -48,7 +52,7 @@ body {
   height: fit-content;
   /* max-width: 800px; */ text-align: center;
   /* background-color: #dde7e7; */
-  background-color: #dde7e7; 
+  background-color: #ffffffa8;
   padding: 10%;
   border-radius: 11px;
 }

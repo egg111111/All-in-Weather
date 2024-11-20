@@ -4,7 +4,7 @@ import './App.css'
 import Signup from './sign_component/sign_up'
 import Home_basic from './sign_component/home_basic'
 import Login from './sign_component/login';
-import Dashboard from './page_component/dashborad';
+import Dashboard from './page_component/dashboard';
 import MyPage from './page_component/myPage';
 
 import Id_pw_update from './page_component/Id_pw_update';

@@ -9,6 +9,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'NEXON Lv2 Gothic';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .rec-title{
     font-family: 'NEXON Lv1 Gothic OTF';
     font-weight: 900;
@@ -23,25 +30,12 @@
 }
 
 .recView-text{
-    font-family: 'NEXON Lv1 Gothic OTF';
+    font-family: 'NEXON Lv2 Gothic';
     text-align: justify;    
     text-align-last: right;
     font-weight: 300;
 }
 
-
-.modal-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
 
 .modal-background {
     position: fixed;
@@ -60,9 +54,13 @@
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    width: 80%;
+    width: 75%;
     max-width: 300px;
+    max-height: 80vh;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'NEXON Lv2 Gothic';
+    font-weight: 200;
+    overflow-y: auto;
 }
 
 .modal-header{
@@ -78,18 +76,30 @@
     justify-content: center;
 }
 
+.modal-title{
+    font-family: 'NEXON Lv1 Gothic OTF';
+}
+
 .rec_background{
     display: grid;
     margin-top: 10%;
     /* background-color: #bcbcbc; */
     color: #ffffff;
     font-size: 14px;
+    font-family: 'NEXON Lv1 Gothic OTF';
 }
 
 .rec_list{
     list-style-type: none;
     line-height: 250%;
 }
+
+hr.hr-2 {
+    border: 0;
+    border-bottom: 2px dashed #eee;
+    background: #999;
+  }
+  
 
 /* .pagination {
     display: flex;

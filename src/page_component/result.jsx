@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Loading from "../header_footer/loading";
 
 function Result() {
     const location = useLocation();
@@ -10,7 +11,7 @@ function Result() {
         <div style={{ textAlign: "center", padding: "20px" }}>
             <h2>{type}</h2>
             {loading ? (
-                <p>로딩 중입니다. 잠시만 기다려 주세요...</p>
+                <Loading/>
             ) : (
                 <>
                     <p>{result}</p>

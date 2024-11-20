@@ -7,7 +7,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 import ChatgptApi from "../service/chatgptApi";
 import './dashboard.css';
 import WeatherChart from "./weatherChart";
-import Londing from "../header_footer/loading";
 
 function dashboard() {
     const navigate = useNavigate();
@@ -25,6 +24,7 @@ function dashboard() {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
         const social_userId = localStorage.getItem('social_userId');
+        const nickname = localStorage.getItem('nickname');
 
         // 소셜 로그인인 경우 userId를 localStorage에 저장
         if (!userId && !social_userId) {
@@ -55,6 +55,7 @@ function dashboard() {
             },
             ...(userId && { credentials: 'include' }),  // 소셜 로그인인 경우 쿠키 포함
         };
+        
 
         fetch(`${API_URL}/api/users/show/${userId}`, fetchOptions)
             .then(response => {
