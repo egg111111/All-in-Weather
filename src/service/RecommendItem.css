@@ -1,38 +1,53 @@
 /* recommendation-container 안의 모든 요소들을 가로로 배치 */
 .recommendation-container {
-  display: flex; /* 가로 정렬을 위해 flex 사용 */
-  align-items: center; /* 수직 중앙 정렬 */
-  justify-content: space-around; /* 자식 요소들을 균등하게 배치 */
-  flex-wrap: nowrap; /* 요소들이 넘칠 경우 줄바꿈 */
-  padding: 10px; /* 패딩 추가 */
-  background-color: white; /* 배경색 추가 (원하는 경우) */
+  display: grid;
+  width: 90vw;
+  max-width: 610px;
+  height: 30vh;
+  max-height: 200px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
 
 .recommendations {
-  display: flex;
-  flex-direction: column; /* 내부 아이템들은 세로로 정렬 */
-  align-items: center; /* 가운데 정렬 */
-  margin-right: 20px; /* 오른쪽 간격 추가 */
+  display: grid;
+  /* 내부 아이템들은 세로로 정렬 */
+  align-items: center;
+  /* 가운데 정렬 */
+  margin-right: 20px;
+  /* 오른쪽 간격 추가 */
 }
 
 .recommendation-list {
-  display: flex; /* 리스트를 가로로 나열하기 위해 flex 사용 */
-  list-style-type: none; /* 기본 리스트 스타일 제거 */
-  padding: 4; /* 패딩 제거 */
-  margin: 4; /* 마진 제거 */
+  display: flex;
+  /* 리스트를 가로로 나열하기 위해 flex 사용 */
+  list-style-type: none;
+  /* 기본 리스트 스타일 제거 */
+  padding: 4;
+  /* 패딩 제거 */
+  margin: 4;
+  /* 마진 제거 */
 }
 
 .recommendations-right {
   display: flex;
   flex-direction: column;
-  padding-left: 80px; /* 오른쪽으로 적당한 간격을 유지하기 위한 패딩 추가 */
+  padding-left: 80px;
+  /* 오른쪽으로 적당한 간격을 유지하기 위한 패딩 추가 */
 }
 
 .recommendation-item {
-  display: flex;
-  flex-direction: column; /* 아이템 내부에서는 세로로 정렬 */
-  align-items: center; /* 이미지와 텍스트를 가운데 정렬 */
-  margin-right: 15px; /* 아이템 간 간격 추가 */
+  display: grid;
+  flex-direction: column;
+  /* 아이템 내부에서는 세로로 정렬 */
+  align-items: center;
+  /* 이미지와 텍스트를 가운데 정렬 */
+  margin-right: 15px;
+  /* 아이템 간 간격 추가 */
 }
 
 .rain-details-table {
@@ -42,7 +57,8 @@
   margin-top: 10px;
 }
 
-.rain-details-table td, .rain-details-table th {
+.rain-details-table td,
+.rain-details-table th {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -63,7 +79,8 @@
   vertical-align: middle;
 }
 
-.custom-table .precipitation-cell, .custom-table .rainfall-cell {
+.custom-table .precipitation-cell,
+.custom-table .rainfall-cell {
   width: 20%;
   vertical-align: middle;
 }
@@ -78,11 +95,14 @@
 }
 
 .snow-icon {
-  width: 80px; /* 원하는 너비로 변경 */
-  height: 80px; /* 원하는 높이로 변경 */
+  width: 80px;
+  /* 원하는 너비로 변경 */
+  height: 80px;
+  /* 원하는 높이로 변경 */
 }
 
 .rain-icon {
-  width: 60px; /* 동일한 크기 설정 */
+  width: 60px;
+  /* 동일한 크기 설정 */
   height: 60px;
 }

@@ -352,6 +352,7 @@ function WeatherChart({ userData }) {
                         <ChatgptApi weatherData={currentWeather} userData={userData} />
                     )}
                 </div>
+                <br/>
                 <div>
                     {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData}/>}
                 </div>
