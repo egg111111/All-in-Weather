@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './recView.css'
+import Loading from "../header_footer/loading";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function recView() {
@@ -12,11 +13,13 @@ function recView() {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedWeek, setSelectedWeek] = useState(1);
     const [weeks, setWeeks] = useState([]);
+    const [loading, setLoading] = useState(false); // 로딩 상태 추가
     const itemPerPage = 7;
 
     const navigate = useNavigate();
 
     const getRecList = async () => {
+        setLoading(true);
         const userId = localStorage.getItem('userId');
         const social_userId = localStorage.getItem('social_userId');
         const UserId = userId || social_userId; // userId 또는 social_userId를 동적으로 선택
@@ -41,6 +44,8 @@ function recView() {
             if (response.ok) {
                 const data = await response.json();
                 setView(data);
+                createFixedWeeks(data);
+                setLoading(false);
             } else {
                 console.error(`데이터 가져오기 실패: ${response.statusText}`);
             }
@@ -105,16 +110,16 @@ function recView() {
         return false;
     });
 
-    // const indexOfLastItem = currentPage * itemPerPage;
-    // const indexOfFirstItem = indexOfLastItem - itemPerPage;
-    // const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
+    const indexOfLastItem = currentPage * itemPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemPerPage;
+    const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
 
-    // const handlePageChange = (pageNumber) => {
-    //     setCurrentPage(pageNumber);
-    // }
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    }
 
-    // const totalPages = Math.ceil(filteredView.length / itemPerPage);
-    // const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+    const totalPages = Math.ceil(filteredView.length / itemPerPage);
+    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
 
     return (
@@ -139,7 +144,9 @@ function recView() {
                 </select>
             </div>
 
-            <div className="filter-options">
+            <hr class="hr-2"></hr>
+
+            {/* <div className="filter-options">
                 <label>
                     <input
                         type="radio"
@@ -158,18 +165,19 @@ function recView() {
                     />
                     활동
                 </label>
-            </div>
-            <ul className="rec_list">
+            </div> */}
+
                 <div className="rec_background">
-                    {currentItems.map((item, index) => (
-                        <li key={index}
+                    {currentWeekData.map((item, index) => (
+                        <p
+                            key={index}
                             onClick={() => handleDateClick(item)}
-                            style={{ cursor: "pointer", color: "black" }}>
+                            style={{ cursor: "pointer", color: "black" }}
+                        >
                             {formatDate(item.createDate)}의 기록
-                        </li>
+                        </p>
                     ))}
                 </div>
-            </ul>
 
             {/* {totalPages > 1 && (
                 <div className="pagination">
@@ -185,24 +193,35 @@ function recView() {
             )} */}
 
             {showModal && selecteRec && (
-                <div className="modal-background">
-                    <div className="modal-content">
+                <div className="modal-background"  onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
-                        <h3>{formatDate(selecteRec.createDate)}의 기록</h3>
-                        <button className="modal-button" onClick={closeModal}>X</button>
+                            <h3 className="modal-title">{formatDate(selecteRec.createDate)}의 기록</h3>
+                            <button className="modal-button" onClick={closeModal}>X</button>
                         </div>
                         <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
-                        <p>{selecteRec.recActivity || selecteRec.recStyle}</p>
+                        <br/>
+
+                        <div>
+                            {(selecteRec.recActivity || selecteRec.recStyle)
+                                .replace(/\. /g, '.\n') 
+                                .split('\n') 
+                                .map((line, index) => (
+                                    <p key={index}>{line}</p> 
+                                ))}
+                        </div>
+
                         {/* 이미지가 존재하면 이미지 URL로 이미지를 표시 */}
                         {selecteRec.imageUrl && (
                             <div>
                                 <img src={selecteRec.imageUrl} alt="추천된 옷차림" style={{ maxWidth: "100%", marginTop: "20px" }} />
                             </div>
                         )}
-                        <button onClick={closeModal}>Close</button>
                     </div>
                 </div>
             )}
+
+            {loading ? <Loading/> : null}
         </div>
     );
 }

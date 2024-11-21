@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 const API_URL = import.meta.env.VITE_API_URL;
 
 function DeleteUser() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
         userId: "",
-        username: "",
-        email: "",
-        age: "",
     });
     const [inputPassword, setInputPassword] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -19,19 +17,11 @@ function DeleteUser() {
     useEffect(() => {
         async function fetchUserData() {
             const userId = localStorage.getItem('userId');
-            const username = localStorage.getItem('username');
             try {
-                const response = await fetch(`${API_URL}/api/users/show/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                setUserData(data);
+                const response = await generalApiClient.get(`/api/users/show/${userId}`);
+                setUserData(response.data);
 
-                setIsSocialLogin(data.isSocialLogin); // 소셜 로그인 여부 확인
+                setIsSocialLogin(response.data.isSocialLogin); // 소셜 로그인 여부 확인
             } catch (error) {
                 console.error("사용자 정보 가져오기 실패:", error);
             }
@@ -42,31 +32,12 @@ function DeleteUser() {
     // 회원 정보 탈퇴 로직
     const deleteUser = async () => {
         const userId = localStorage.getItem('userId');
-        const username = localStorage.getItem('username');
 
         try {
-            let response;
-            if (isSocialLogin) {
-                // 소셜 로그인 사용자 삭제 API 호출
-                response = await fetch(`${API_URL}/api/users/delete/social_user/${username}`, {
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-            } else {
-                // 일반 사용자 삭제 API 호출
-                response = await fetch(`${API_URL}/api/users/delete/${userId}`, {
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-            }
-
-            if (response.ok) {
+            // 일반 사용자 삭제 API 호출
+            const response = await generalApiClient.delete(`/api/users/delete/${userId}`);
+        
+            if (response.status === 204) {
                 Swal.fire({
                     title: "회원 탈퇴가 완료되었습니다.",
                     icon: "success",
@@ -75,7 +46,6 @@ function DeleteUser() {
                 });
                 localStorage.removeItem('token');
                 localStorage.removeItem('userId');
-                localStorage.removeItem('username');
                 navigate('/');
             } else {
                 Swal.fire({
@@ -93,22 +63,15 @@ function DeleteUser() {
     };
 
     // 비밀번호 확인 로직 (일반 로그인 사용자 전용)
-    const handleVerifyPassword = async () => {
+    const handleVerifyPassword = async (event) => {
         event.preventDefault(); // 기본 폼 제출을 방지
         try {
-            const response = await fetch(`${API_URL}/api/users/verify-password`, {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userId: userData.userId,
-                    password: inputPassword
-                })
+            const response = await generalApiClient.post(`/api/users/verify-password`, {
+                userId: userData.userId,
+                password: inputPassword
             });
 
-            if (response.ok) {
+            if (response.status === 200) {
                 setIsPasswordValid(true);
                 console.log("비밀번호 일치");
             } else {
@@ -130,7 +93,7 @@ function DeleteUser() {
     return (
         <>
             <h2>회원 탈퇴</h2>
-            <p>회원 탈퇴를 진행할 시 여태까지의 기록이 전부 삭제됩니다.</p>
+            <p>회원 탈퇴 시 이용자의 모든 개인정보가 즉시 삭제됩니다.</p>
             <p>회원 탈퇴를 진행하시겠습니까?</p>
 
             {isSocialLogin ? (
@@ -149,8 +112,8 @@ function DeleteUser() {
                         value={inputPassword}
                         onChange={(e) => setInputPassword(e.target.value)}
                     />
-                    <button onClick={handleVerifyPassword}>비밀번호 확인</button>
-                    <button onClick={deleteUser} disabled={!isPasswordValid}>회원 탈퇴</button>
+                    <button style={{ marginLeft: '10px', marginBottom: '10px' }} onClick={handleVerifyPassword}>비밀번호 확인</button>
+                    <button style={{ marginRight: '10px' }} onClick={deleteUser} disabled={!isPasswordValid}>회원 탈퇴</button>
                     <button onClick={() => navigate('/myPage')}>취소</button>
                 </form>
             )}

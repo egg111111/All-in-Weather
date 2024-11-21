@@ -10,6 +10,8 @@ const Header = () => {
 
     function handleLogout() {
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('tokenExpiry');
         localStorage.removeItem('name');
         localStorage.removeItem('nickname');
         localStorage.removeItem('social_userId');
