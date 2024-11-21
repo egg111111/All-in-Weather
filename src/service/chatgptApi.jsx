@@ -21,6 +21,7 @@ function chatgptApi({weatherData, userData}) {
         if (savedWeather) {
             setCurrentWeather(JSON.parse(savedWeather));
             console.log("useEffect weather", savedWeather);
+            console.log("props weather", weatherData);
         }
     }, []);
 
@@ -65,6 +66,46 @@ function chatgptApi({weatherData, userData}) {
         }
     };
     
+    const extractItems = (response) => {
+        console.log("추출 텍스트 값 : ", response);
+        const items = {
+            outerwear: [],
+            top: [],
+            bottom: [],
+            shoes: []
+        };
+    
+        // 정규식 수정: `1. **아우터**:` 형식을 포함한 각 항목을 추출
+        const outerwearPattern = /1\.\s?\*\*아우터\*\*:\s*(.+?)(?=\s*2\.)/gs;
+        const topPattern = /2\.\s?\*\*상의\*\*:\s*(.+?)(?=\s*3\.)/gs;
+        const bottomPattern = /3\.\s?\*\*하의\*\*:\s*(.+?)(?=\s*4\.)/gs;
+        const shoesPattern = /4\.\s?\*\*신발\*\*:\s*(.+?)(?=\s*$)/gs;
+    
+        // 정규식으로 항목을 추출하고 배열로 저장
+        const outerwearMatches = [...response.matchAll(outerwearPattern)];
+        const topMatches = [...response.matchAll(topPattern)];
+        const bottomMatches = [...response.matchAll(bottomPattern)];
+        const shoesMatches = [...response.matchAll(shoesPattern)];
+    
+        // 디버깅: 추출된 항목 확인
+        console.log("Outerwear Matches:", outerwearMatches);
+        console.log("Top Matches:", topMatches);
+        console.log("Bottom Matches:", bottomMatches);
+        console.log("Shoes Matches:", shoesMatches);
+    
+        // 추출된 값을 각 항목에 넣기, 쉼표로 나누어 배열로 저장
+        items.outerwear = outerwearMatches.length > 0 ? outerwearMatches[0][1].split(', ') : ["Default Outerwear"];  // 쉼표로 구분하여 배열에 저장
+        items.top = topMatches.length > 0 ? topMatches[0][1].split(', ') : ["Default Top"];  // 쉼표로 구분하여 배열에 저장
+        items.bottom = bottomMatches.length > 0 ? bottomMatches[0][1].split(', ') : ["Default Bottom"];  // 쉼표로 구분하여 배열에 저장
+        items.shoes = shoesMatches.length > 0 ? shoesMatches[0][1].split(', ') : ["Default Shoes"];  // 쉼표로 구분하여 배열에 저장
+    
+        // 디버깅: 최종 추출된 항목
+        console.log("Extracted Items:", items);
+    
+        return items;
+    };
+    
+    
 
     //gpt 출력 로직(옷차림)
     const call_get_style = async () => {
@@ -86,7 +127,18 @@ function chatgptApi({weatherData, userData}) {
             const messages = [
                 {
                     role: "user",
-                    content: `오늘 날씨는 ${currentWeather.temp}°C 이고, ${currentWeather.weather}, 옷 취향은 ${style}이고 실외 활동을 좋아하는 ${userData.age}세 ${gender}의 옷 차림을 추천해줘, 간략하게`
+                    content: `
+                        오늘 날씨는 ${currentWeather.temp}°C이고, ${currentWeather.weather}입니다. 
+                        옷 취향은 ${style}이며 실외 활동을 좋아하는 ${userData.age}세 ${gender}의 옷 차림을 추천해주세요.
+        
+                        다음 항목에 대한 옷을 추천해주세요. 각 항목에 대해 여러 가지 스타일을 고민하고, 추천 항목만 간단하게 나열해주세요:
+                        1. **아우터**: 날씨에 맞는 외투나 자켓을 추천해주세요. (예: 코트, 자켓, 패딩, 트렌치코트 등 여러 가지 옵션을 고려해주세요)
+                        2. **상의**: 상의는 어떤 스타일을 선호하시나요? (예: 터틀넥, 스웨터, 셔츠, 후드티 등 다양한 스타일을 추천해주세요)
+                        3. **하의**: 하의는 어떤 스타일이 좋을까요? (예: 레깅스, 청바지, 슬랙스, 트라우저 등 여러 가지 옵션을 고려해주세요)
+                        4. **신발**: 활동적인 날씨에 어울리는 편안한 신발을 추천해주세요. (예: 운동화, 부츠, 샌들 등 다양한 스타일을 추천해주세요)
+                        
+                        스타일을 선택할 때, 날씨와 실외 활동에 적합한 옷차림을 고려해주세요. 또한, 추천 항목은 간단하게 나열해주세요.
+                    `
                 }
             ];
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -106,11 +158,18 @@ function chatgptApi({weatherData, userData}) {
             const data = await response.json();
             const recStyle = data.choices[0].message.content;
     
+            const items = extractItems(recStyle);
+            const translatedItems = {
+                outerwear: await translateToEnglish(items.outerwear.join(", ")),
+                top: await translateToEnglish(items.top.join(", ")),
+                bottom: await translateToEnglish(items.bottom.join(", ")),
+                shoes: await translateToEnglish(items.shoes.join(", "))
+            };
+
             navigate("/result", { state: { result: recStyle, imageUrl: null, type: "옷차림 추천", loading: false, imageLoading: true } });
-            const TranslatedRecStyle = await translateToEnglish(recStyle);
     
             // 이미지 생성
-            const gptImageUrl = await call_generate_clothing_image(TranslatedRecStyle, gender, style);
+            const gptImageUrl = await call_generate_clothing_image(translatedItems, gender, style);
     
             // 결과값 전송
             sendGptResult(recStyle, "style", gptImageUrl);
@@ -159,23 +218,24 @@ function chatgptApi({weatherData, userData}) {
         }
     };
 
-    const call_generate_clothing_image = async (recStyle, gender, userStyle) => {
+    const call_generate_clothing_image = async (translatedItems, gender, userStyle) => {
         try {
             const engGender = await translateToEnglish(gender); // '남자' -> 'male', '여자' -> 'female'
             const engWeather = await translateToEnglish(currentWeather.weather); // '맑음' -> 'clear', '흐림' -> 'cloudy', 등
             const engUserStyle = await translateToEnglish(userStyle);
 
             const prompt = `
-                A ${engUserStyle} style outfit for a ${engGender}, suitable for ${currentWeather.temp}°C (${engWeather} weather).
-                The outfit includes: ${recStyle}.
-                The image should showcase the entire body outfit without showing the face. Focus on the clothing and body details, ensuring the face is cropped or excluded from the image.
-            `.trim(); 
-            console.log("Generated Prompt for DALL·E:", prompt);
-            console.log("dall e print userStyle : ", engUserStyle );
-            console.log("dall e print gender : ", engGender );
-            console.log("dall e print temp : ", currentWeather.temp );
-            console.log("dall e print weather : ", engWeather );
+                Create a ${engUserStyle} style outfit for a ${engGender}, suitable for ${currentWeather.temp}°C (${engWeather} weather).
+                Please ensure that the image does not show the head, face, or any facial features. Focus solely on the body and clothing.The image should only show the full body from the neck down with clothing details visible.
+                The outfit includes:
+                - Outerwear: ${translatedItems.outerwear}.
+                - Top: ${translatedItems.top}.
+                - Bottom: ${translatedItems.bottom}.
+                - Shoes: ${translatedItems.shoes}.
+                `.trim();//  프롬프트는 1000자 이내로
 
+            console.log("Generated Prompt for DALL·E:", prompt);
+    
             const response = await fetch("https://api.openai.com/v1/images/generations", {
                 method: "POST",
                 headers: {

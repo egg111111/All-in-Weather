@@ -17,6 +17,7 @@ import RecView from './page_component/recView';
 import AddUserInfo from './page_component/AddUserInfo';
 import PreferenceCheck from './page_component/preference_check';
 import Result from './page_component/result';
+import RecommendItem from './service/RecommendItem';
 
 import Layout from './header_footer/layout';
 
@@ -46,6 +47,7 @@ function App() {
               <Route path="/recList" element={<RecList/>} />
               <Route path="/recView" element={<RecView/>} />
               <Route path="/result" element={<Result/>} />
+              <Route path="/recItem" element={<RecommendItem/>} />
           </Routes>
           </div>
           </Layout>

@@ -21,6 +21,7 @@ import cloudyIcon from '../icon/cloudy.png';
 import sunnyIcon from '../icon/sunshine.png';
 import sunriseIcon from '../icon/sunrise.png';
 import sunsetIcon from '../icon/sunset.png';
+import RecommendItem from "../service/RecommendItem";
 
 
 
@@ -112,6 +113,7 @@ function WeatherChart({ userData }) {
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
                         weather: data.current.weather[0].description,
+                        rainProbability: Math.round(data.hourly[0]?.pop * 100),
                     });
 
                     setLike_hum({
@@ -145,6 +147,8 @@ function WeatherChart({ userData }) {
                         }).replace('오후', '오후 ').replace('오전', '오전 '),
                         temp: Math.round(hour.temp),
                         precipitation: Math.round(hour.pop * 100),
+                        rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
+                        snow: hour.snow ? hour.snow["1h"] : 0   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
                     }));
                     setHourlyData(forecastData);
                 } catch (error) {
@@ -307,8 +311,8 @@ function WeatherChart({ userData }) {
                         </div>
                         <h3 className="current-temp">{currentWeather.temp}°C</h3>
                         <div className="weather-feels-container">
-                            <p> 체감온도 {like_hum?.feels_like}</p>
-                            <p> 습도 {like_hum?.humidity}</p>
+                            <p> 체감온도 {like_hum?.feels_like}°</p>
+                            <p> 습도 {like_hum?.humidity}%</p>
                         </div>
                     </div>
                 )}
@@ -316,6 +320,9 @@ function WeatherChart({ userData }) {
                     {currentWeather && (
                         <ChatgptApi weatherData={currentWeather} userData={userData} />
                     )}
+                </div>
+                <div>
+                    {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData}/>}
                 </div>
             </div>
 
