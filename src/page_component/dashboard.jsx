@@ -1,40 +1,27 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
-
-import ChatgptApi from "../service/chatgptApi";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import './dashboard.css';
+import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
+import socialApiClient from '../service/socialApiClient';   // 소셜 로그인용 API 클라이언트
 import WeatherChart from "./weatherChart";
 
-function dashboard() {
+function Dashboard() {
     const navigate = useNavigate();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [username, setUsername] = useState("");
-    //const username = localStorage.getItem('username');
-    // const [location, setLocation] = useState({ latitude: null, longitude: null });
-    // const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
-    // const [currentWeather, setCurrentWeather] = useState(null);
-
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
     
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
-        const social_userId = localStorage.getItem('social_userId');
-        const nickname = localStorage.getItem('nickname');
+        const socialUserId = localStorage.getItem('social_userId');
 
-        // 소셜 로그인인 경우 userId를 localStorage에 저장
-        if (!userId && !social_userId) {
-            // 소셜 로그인 사용자의 userId를 가져와서 localStorage에 저장
-            axios.get(`${API_URL}/api/users/social_user`, { withCredentials: true })
+        if (!userId && !socialUserId) {
+            // 소셜 로그인인 경우 userId를 localStorage에 저장
+            socialApiClient.get('/api/users/social_user', { withCredentials: true })
                 .then(response => {
                     const userData = response.data;
                     const social_userId = userData.social_userId;
                     localStorage.setItem('social_userId', social_userId);
-                    fetchUserInfo(social_userId);  // 소셜 로그인 후 사용자 정보 요청
+                    fetchUserInfo(social_userId, true);  // 소셜 로그인 후 사용자 정보 요청
                 })
                 .catch(error => {
                     console.error("Error fetching social user info:", error);
@@ -42,31 +29,18 @@ function dashboard() {
                 });
         } else {
             // 일반 로그인인 경우
-            fetchUserInfo(userId || social_userId, token);
+            fetchUserInfo(userId || socialUserId, !!socialUserId);
         }
     }, []);
 
-    const fetchUserInfo = (userId, token = null) => {
-        const fetchOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            ...(userId && { credentials: 'include' }),  // 소셜 로그인인 경우 쿠키 포함
-        };
-        
+    const fetchUserInfo = (userId, isSocialLogin) => {
+        // 로그인 타입에 따라 적절한 API 클라이언트 선택
+        const apiClient = isSocialLogin ? socialApiClient : generalApiClient;
 
-        fetch(`${API_URL}/api/users/show/${userId}`, fetchOptions)
+        apiClient.get(`/api/users/show/${userId}`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch user data");
-                }
-                return response.json();
-            })
-            .then(data => {
-                setUserInfo(data);
-                console.log("User Info:", data);  // 콘솔에 출력
+                setUserInfo(response.data);
+                console.log("User Info:", response.data);  // 콘솔에 출력
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
@@ -77,23 +51,21 @@ function dashboard() {
     return (
         <>
             <WeatherChart userData={userInfo} />
-            <br/> 
-            <p>
-            {error ? (
+            <div>
+                {error ? (
                     <div>{error}</div>
                 ) : userInfo ? (
                     <div>
-                        <strong>안녕하세요</strong> {userInfo.social_nickname ? userInfo.social_nickname : userInfo.nickname}님
-                        <br/>
-                        <strong>안녕하세요</strong> {userInfo.social_userId ? userInfo.social_userId : userInfo.userId}님
+                        <strong>안녕하세요</strong> {userInfo.nickname}님
+                        <br />
+                        <strong>사용자 ID: </strong>{userInfo.userId}
                     </div>
                 ) : (
                     <div>Loading user information...</div>
                 )}
-
-            </p>
+            </div>
         </>
     );
 }
 
-export default dashboard;
+export default Dashboard;

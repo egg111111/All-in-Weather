@@ -123,7 +123,7 @@ function IdPwUpdate() {
                 <br />
                 <br />
 
-                <button type="submit">저장</button>
+                <button style={{ marginRight: '10px' }} type="submit">저장</button>
                 <button onClick={() => navigate('/myPage')}>취소</button>
             </form>
         </div>

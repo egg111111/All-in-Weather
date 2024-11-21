@@ -34,7 +34,7 @@ export default function SignUp() {
   const [isIdCheck, setIdCheck] = useState(false);
   const [isEmailCheck, setEmailCheck] = useState(false);
 
-  const signUpButtonClass = id && password && passwordCheck && email ? 'primary-button-lg' : 'disable-button-lg';
+  const signUpButtonClass = id && password && passwordCheck && email && verificationCode ? 'primary-button-lg' : 'disable-button-lg';
 
   const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
   const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$/;
@@ -91,18 +91,25 @@ export default function SignUp() {
 
   const verifyCode = async (userId, email, code) => {
     try {
-      const response = await fetch(`${API_URL}/api/users/verify-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: userId, email, certificationNumber: code }),
-      });
-      const isVerified = await response.json();
-      setVerificationError(!isVerified);
-      setVerificationMessage(isVerified ? "인증이 완료되었습니다." : "인증 코드가 일치하지 않습니다.");
+        const response = await fetch(`${API_URL}/api/users/verify-code`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userId, email, certificationNumber: code }),
+        });
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            setVerificationError(true);
+            setVerificationMessage(errorMessage);
+            return;
+        }
+        const successMessage = await response.text();
+        setVerificationError(false);
+        setVerificationMessage(successMessage);
     } catch (error) {
-      console.error("Error verifying code:", error);
+        console.error("Error verifying code:", error);
     }
   };
+
 
   const onEmailVerificationButtonClickHandler = async () => {
       // 이메일 패턴 확인
@@ -121,11 +128,8 @@ export default function SignUp() {
       await sendEmailVerification(email);
   }
   
-  
-  
-
   const onSignUpButtonClickHandler = async () => {
-    if (!id || !password || !passwordCheck || !email) return;
+    if (!id || !password || !passwordCheck || !email || !verificationCode) return;
     if (!isIdCheck) {
       alert('ID 중복 확인은 필수입니다.');
       return;
@@ -143,6 +147,10 @@ export default function SignUp() {
     if (password !== passwordCheck) {
       setPasswordCheckError(true);
       setPasswordCheckMessage('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (!verificationCode) {
+      alert('이메일 인증 코드를 입력해주세요.');
       return;
     }
 
@@ -165,11 +173,15 @@ export default function SignUp() {
         // 응답에서 토큰 받기
         const responseBody = await response.json();
         const token = responseBody.token;  // 서버에서 반환한 토큰을 받음
-        const userId = responseBody.user.userId;  // 서버에서 반환한 토큰을 받음
-
+        const userId = responseBody.user.userId; 
+        const refreshToken = responseBody.refreshToken; // 서버에서 반환한 리프레시 토큰
+        const tokenExpiry = responseBody.tokenExpiry; // 서버에서 반환한 토큰 만료 시간
+        
         // 토큰을 localStorage에 저장
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('tokenExpiry', tokenExpiry);
 
         // 회원가입 완료 후 /addUserInfo로 리다이렉트
         navigate('/addUserInfo');
@@ -250,7 +262,7 @@ export default function SignUp() {
                 <InputBox
                   ref={verificationCodeRef}
                   title='인증 코드'
-                  placeholder='인증 코드를 입력해주세요'
+                  placeholder='인증 코드 4자리를 입력해주세요'
                   type='text'
                   value={verificationCode}
                   onChange={(e) => { setVerificationCode(e.target.value); setVerificationMessage(''); }}

@@ -26,6 +26,12 @@ function Login() {
             return;
         }
         e.preventDefault();
+
+        // 기존 토큰 삭제
+        // localStorage.removeItem('token');
+        // localStorage.removeItem('refreshToken');
+        // localStorage.removeItem('tokenExpiry');
+
         const loginData = { userId, password };
 
         try {
@@ -40,11 +46,15 @@ function Login() {
             if (response.ok) {
                 const data = await response.json();
                 const token = data.token;
+                const refreshToken = data.refreshToken;
+                const tokenExpiry = data.tokenExpiry;
                 console.log('로그인 성공:', data);
 
                 // 로그인 성공 시 토큰, 유저아이디 저장 
                 localStorage.setItem('token', token);
+                localStorage.setItem('refreshToken', refreshToken);
                 localStorage.setItem('userId', userId);
+                localStorage.setItem('tokenExpiry', tokenExpiry);
 
                 navigate('/dashboard');
             } else {
@@ -83,6 +93,7 @@ function Login() {
     const handleKakaoLogin = () => {
         window.location.href = `${API_URL}/oauth2/authorization/kakao`;
     };
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -132,8 +143,8 @@ function Login() {
                         </div>
                     </div>
                 </div>
-            </div> 
-            </>
+            </div>    
+        </>
     );
 }
 

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 import './AddUserInfo.css';
 import jwt_decode from 'jwt-decode';
-
-
-
 
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
@@ -19,7 +15,6 @@ const AddUserInfo = () => {
   const [socialUserId, setSocialUserId] = useState(null);  // 소셜 로그인 시 userId 저장
   const [isSocialUserComplete, setIsSocialUserComplete] = useState(false);  // 추가 정보 완료 여부
   const navigate = useNavigate();
-
 
   // 소셜 로그인 여부 확인 및 userId 업데이트
   useEffect(() => {
@@ -46,6 +41,10 @@ const AddUserInfo = () => {
             const profileComplete = decodedToken.profileComplete;
             console.log("Profile complete status from token:", profileComplete);
             setIsSocialUserComplete(profileComplete); // 상태 업데이트
+            if (profileComplete) {
+              // 추가 정보가 이미 입력된 사용자라면 social_userId를 localStorage에서 삭제
+              localStorage.removeItem('social_userId');
+            }
           } catch (error) {
             console.error("Error decoding JWT token:", error);
           }
@@ -58,7 +57,6 @@ const AddUserInfo = () => {
       });
   }, []); // 컴포넌트 최초 렌더링 시 한 번만 실행
 
-
   // 나이 변경 핸들러
   const handleAgeChange = (e) => {
     let newAge = parseInt(e.target.value);
@@ -66,7 +64,6 @@ const AddUserInfo = () => {
     if (newAge > 80) newAge = 80;
     setAge(newAge);
   };
-
 
   // 마우스 휠로 나이 변경
   const handleAgeWheel = (e) => {
@@ -78,7 +75,6 @@ const AddUserInfo = () => {
       }
     }
   };
-
 
   // 회원가입 버튼 클릭 시
   const handleSubmit = async () => {
@@ -120,20 +116,11 @@ const AddUserInfo = () => {
         }
  
       } else {
-        // 일반 로그인 전용 API 요청 (JWT 토큰 포함)
-        const token = localStorage.getItem('token'); // JWT 토큰 가져오기
-        response = await fetch(`http://localhost:8080/api/users/addUserInfo/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(userInfo),
-        });
+        // 일반 로그인 전용 API 요청 (generalApiClient 사용)
+        response = await generalApiClient.put(`/api/users/addUserInfo/${userId}`, userInfo);
       }
- 
-      if (response.ok) {  // 200번대 응답 확인   
-        localStorage.setItem('gender', gender);   
+        if (response.ok) {  // 200번대 응답 확인   
+          localStorage.setItem('gender', gender); 
           navigate('/perference');
       } else {
         throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
@@ -143,7 +130,6 @@ const AddUserInfo = () => {
       alert(error.message); // 오류 메시지 출력
     }
   };
-
 
   return (
     <div>
@@ -172,7 +158,6 @@ const AddUserInfo = () => {
           </div>
         </div>
 
-
         {/* 성별 선택 */}
         <div className="form-group">
           <label>성별</label>
@@ -191,7 +176,6 @@ const AddUserInfo = () => {
             </button>
           </div>
         </div>
-
 
         {/* 키와 몸무게 입력 */}
         <div className="form-group">
@@ -219,6 +203,5 @@ const AddUserInfo = () => {
     </div>
   );
 };
-
 
 export default AddUserInfo;
