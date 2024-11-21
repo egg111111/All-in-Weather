@@ -9,7 +9,7 @@ const modalStyle = {
     left: 0,
     width: "100vw",
     height: "120vh",
-    backgroundColor: "rgb(30 41 65 / 50%)",
+    backgroundColor: "rgb(30 41 65 / 60%)",
     display: "grid",
     justifyContent: "center",
     alignItems: "center",

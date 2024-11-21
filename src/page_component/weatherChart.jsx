@@ -12,9 +12,12 @@ import {
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 플러그인
 import ChatgptApi from "../service/chatgptApi"; import annotationPlugin from "chartjs-plugin-annotation";
+// import { ResponsiveRad/ialBar } from '@nivo/radial-bar';
 
 import { useMediaQuery } from "react-responsive";
 
+import weatherDescKo from "../service/weatherDescKo";
+{/* <ResponsiveRad /> */}
 import "./weatherChart.css";
 import rainyIcon from '../icon/rainy.png';
 import cloudyIcon from '../icon/cloudy.png';
@@ -22,6 +25,28 @@ import sunnyIcon from '../icon/sunshine.png';
 import sunriseIcon from '../icon/sunrise.png';
 import sunsetIcon from '../icon/sunset.png';
 
+import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
+import T_clouys from '/src/assets/images/weatherChart_icon/cloudy.gif';
+import T_rain from '/src/assets/images/weatherChart_icon/rain.gif';
+import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
+import T_sunny from '/src/assets/images/weatherChart_icon/sun.gif';
+import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
+
+const weatherIcon_Map =(weather_Id)=> {
+    if(weather_Id >= 200 && weather_Id < 300){
+        return T_storm;
+    } else if (weather_Id >= 300 && weather_Id < 600){
+        return T_rain;
+    } else if (weather_Id >= 600 && weather_Id < 700){
+        return T_snow;
+    } else if (weather_Id >= 700 && weather_Id < 800){
+        return T_clounds;
+    } else if (weather_Id == 800){
+        return T_sunny;
+    } else if (weather_Id >= 800 && weather_Id < 900){
+        return T_clouys;
+    }
+}
 
 
 // Chart.js 구성 요소 등록
@@ -107,11 +132,13 @@ function WeatherChart({ userData }) {
                         `https://api.openweathermap.org/data/3.0/onecall?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&units=metric&lang=kr`
                     );
                     const data = await response.json();// 현재 날씨 정보 가져오기
+                    console.log(data)
                     setCurrentWeather({
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
-                        weather: data.current.weather[0].description,
+                        id:data.current.weather[0].id,
+                        weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
                     });
 
                     setLike_hum({
@@ -292,24 +319,29 @@ function WeatherChart({ userData }) {
         },
     };
 
+    
     return (
         <div className="weatherChart-container">
             <div className="first-container">
 
                 {currentWeather && (
                     <div className="current-weather">
-                        <h4 className="current-location"> 📍 {address}</h4>
+                        {/* <h4 className="current-location"> 📍 {address}</h4> */}
+                        <img src={weatherIcon_Map(currentWeather.id)}
+                             alt="Weather Icon" 
+                             className="weather-icon"/>
                         <div className="weather-info">
+                        <h3 className="current-temp">{currentWeather.temp}°C</h3>
                             <div className="temp-details">
                                 <h4 className="high-low">{currentWeather.high}°C / {currentWeather.low}°C</h4>
                             </div>
                             <p className="weather-status">{currentWeather.weather}</p>
                         </div>
-                        <h3 className="current-temp">{currentWeather.temp}°C</h3>
-                        <div className="weather-feels-container">
+                        
+                        {/* <div className="weather-feels-container"> */}
                             <p> 체감온도 {like_hum?.feels_like}</p>
                             <p> 습도 {like_hum?.humidity}</p>
-                        </div>
+                        {/* </div> */}
                     </div>
                 )}
                 <div className="chatgpt-button">

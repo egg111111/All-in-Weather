@@ -170,28 +170,30 @@ function myPage() {
                     <div className="myPage-container">
                         {editMode ? (
                             <div>
-                                <label>닉네임: </label>
-                                <img src={getProviderImage()} alt={userInfo.social_userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
+                                <label className="myPage-container-title">닉네임</label> <br/>
+                                <img src={getProviderImage()} alt={userInfo.social_userId} style={{ width: "20px", marginRight: "5px", height: "20px", display: "inline" }} />
+                                <input className="myPage-container-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
                                 <br />
-                                <input type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
+                                <label className="myPage-container-title">이메일 주소</label> <br/>
+                                <input className="myPage-container-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
                                 <br />
-                                <label>이메일 주소:</label>
-                                <input type="email" name="email" value={userInfo.email} onChange={handleChange} />
+                                <label className="myPage-container-title">나이</label> <br/>
+                                <input className="myPage-container-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
                                 <br />
-                                <label>나이: </label>
-                                <input type="number" name="age" value={userInfo.age} onChange={handleChange} />
+                                <label className="myPage-container-title">성별</label> <br/>
+                                <input className="myPage-container-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
                                 <br />
-                                <label>성별: </label>
-                                <input type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
+                                <label className="myPage-container-title">키</label> <br/>
+                                <input className="myPage-container-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
                                 <br />
-                                <label>키: </label>
-                                <input type="number" name="height" value={userInfo.height} onChange={handleChange} />
+                                <label className="myPage-container-title">몸무게</label> <br/>
+                                <input className="myPage-container-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
                                 <br />
-                                <label>몸무게: </label>
-                                <input type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
-                                <br />
+                                <br/>
+                                <div className="myPage-container-button">
                                 <button onClick={handleSaveChanges}>확인</button>
                                 <button onClick={() => setEditMode(false)}>취소</button>
+                                </div>
                             </div>
                         ) : (
                             <div >
@@ -207,15 +209,17 @@ function myPage() {
                                 <strong className="myPage-container-title">키</strong> <br/> <span className="myPage-container-content">{userInfo.height}</span><br/>
                                 <strong className="myPage-container-title">몸무게</strong> <br/> <span className="myPage-container-content">{userInfo.weight}</span><br/>
                                 <br/>
-                                <button style={{ marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
-                                <button style={{ marginTop: '10px' }} onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</button>
+                                <hr/>
+                                <p  onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</p>
+                                <button style={{ marginLeft:'10%', marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
+                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate('/dashboard'); }}>취소</button>
                                 <br />
                                 {/* <button onClick={() => navigate('/dashboard')}>확인</button> */}
                             </div>
                         )}
                     </div>
                 ) : (
-                    <div>
+                    <div className="myPage-container">
                         {editMode ? (
                             <div>
                                 <label className="myPage-container-title">아이디 </label>
@@ -246,23 +250,27 @@ function myPage() {
                                 <br/>
                                 <input className="myPage-container-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
                                 <br />
-                                <button onClick={handleSaveChanges}>저장</button>
-                                <button onClick={() => setEditMode(false)}>취소</button>
+                                <br/>
+                                <div className="myPage-container-button">
+                                    <button onClick={handleSaveChanges}>저장</button>
+                                    <button onClick={() => setEditMode(false)}>취소</button>
+                                </div>
                             </div>
                         ) : (
-                            <div>
-                                <p><strong>아이디:</strong> {userInfo.userId} <br/> </p>
-                                <p><strong>닉네임:</strong> {userInfo.nickname}<br/></p>
-                                <p><strong>이메일:</strong> {userInfo.email}<br/></p>
-                                <p><strong>나이:</strong> {userInfo.age}<br/></p>
-                                <p><strong>성별:</strong> {userInfo.gender}<br/></p>
-                                <p><strong>키:</strong> {userInfo.height}<br/></p>
-                                <p><strong>몸무게:</strong> {userInfo.weight}<br/></p>
-                                <button onClick={() => setEditMode(true)}>정보 수정</button>
-                                <button onClick={() => navigate('/pwUpdate')}>비밀번호 변경</button>
-
+                            <div >
+                                <strong className="myPage-container-title">아이디</strong> <br/> <span className="myPage-container-content" >{userInfo.userId} <br/> </span>
+                                <strong className="myPage-container-title">닉네임</strong><br/> <span className="myPage-container-content" >{userInfo.nickname}<br/></span>
+                                <strong className="myPage-container-title">이메일</strong><br/> <span className="myPage-container-content" >{userInfo.email}<br/></span>
+                                <strong className="myPage-container-title">나이</strong><br/> <span className="myPage-container-content" >{userInfo.age}<br/></span>
+                                <strong className="myPage-container-title">성별</strong><br/> <span className="myPage-container-content" >{userInfo.gender}<br/></span>
+                                <strong className="myPage-container-title">키</strong><br/> <span className="myPage-container-content" >{userInfo.height}<br/></span>
+                                <strong className="myPage-container-title">몸무게</strong><br/> <span className="myPage-container-content" >{userInfo.weight}<br/></span>
+                                <br/>
+                                <hr/>
+                                <p  onClick={() => { navigate('/delete'); }}>회원 탈퇴</p>
+                                <button style={{ marginLeft:'10%', marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
+                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate('/dashboard'); }}>취소</button>
                                 <br />
-                                <button onClick={() => { navigate('/delete'); }}>회원 탈퇴</button>
                             </div>
                         )}
                     </div>

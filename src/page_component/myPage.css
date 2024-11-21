@@ -48,3 +48,8 @@
   padding-right: 5%;
 }
 
+.myPage-container-button{
+  display: flex;
+  column-gap: 10px;
+  margin-left: 15%;
+}

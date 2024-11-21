@@ -12,7 +12,7 @@
   font-style: normal;
 }
 
-.weatherChart-container{
+.weatherChart-container {
   display: grid;
   justify-content: center;
   align-self: center;
@@ -21,12 +21,14 @@
 
 .first-container {
   display: grid;
-  grid-template-columns: 1fr 0.5fr;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0.2fr;
   align-content: center;
   /* padding-left: 1.5%; */
   /* width: 89vw;
   height: 20vh; */
   font-family: 'NEXON Lv1 Gothic OTF';
+  column-gap: 10px;
 }
 
 .weather-chart-container {
@@ -60,6 +62,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .weather-hour {
   text-align: center;
   min-width: 5vh;
@@ -70,8 +73,9 @@
   font-size: 5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.weather-hour-time, .weather-hour-precipitation 
+
 .weather-hour-time,
+.weather-hour-precipitation .weather-hour-time,
 .weather-hour-precipitation {
   margin: 5px 0;
   font-size: 10px;
@@ -103,10 +107,12 @@
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.1);
 }
+
 .prev-button {
   left: 5px;
   /* 왼쪽 버튼 위치 조정 */
 }
+
 .next-button {
   right: 5px;
   /* 오른쪽 버튼 위치 조정 */
@@ -133,8 +139,9 @@
   display: grid;
   align-items: center;
   justify-content: center;
-  width: 50vh;
-  height: 20vh;
+  justify-items: center;
+  width: 55vw;
+  height: 40vh;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #e0e0e0;
@@ -144,9 +151,7 @@
   gap: -10px;
   column-gap: 5px;
   grid-template-columns: 1.5fr 1fr;
-  /* grid-column: 1/ span 2;
-  grid-row: 1/span 3; */
-  grid-template-rows: 60px 1.5fr;
+  grid-template-rows: 2fr 1.5fr;
 }
 
 .weather-info {
@@ -156,8 +161,8 @@
 
 .current-temp {
   font-size: 30px;
-  font-weight: bold;
-  margin-right: 20px;
+  font-weight: 700;
+  /* margin-right: 20px; */
   height: 100%;
 }
 
@@ -235,7 +240,7 @@
   /* 글씨 크기 */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   display: grid;
-  
+
   grid-template-columns: 1fr 1fr;
   width: 80vw;
   max-width: 600px;
@@ -251,35 +256,43 @@
   align-items: center;
 }
 
+.weather-icon{
+}
+
 @media (max-width: 576px) {
   .current-weather {
-    grid-template-columns: 1fr;
     grid-template-rows: auto;
-    width: 50vw;
-    /* 모바일에서 폭을 화면에 맞게 조정 */
+    width: 90vw;
     height: auto;
-    /* 높이를 자동으로 조정 */
     gap: 10px;
-    /* 모바일에서는 여백을 추가 */
     justify-content: center;
   }
-  
-  .weather-feels-container{
+
+  .weather-feels-container {
     /* position: relative; */
     align-items: left;
     background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px; 
-    border-radius: 5px; /* 둥근 모서리 */
-    font-size: 14px;    /* 글씨 크기 */
+    padding: 8px;
+    border-radius: 5px;
+    /* 둥근 모서리 */
+    font-size: 14px;
+    /* 글씨 크기 */
   }
 
-  .sun-times{
+  .sun-times {
     /* position: relative; */
     align-items: right;
     background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px; 
-    border-radius: 5px; /* 둥근 모서리 */
-    font-size: 14px;    /* 글씨 크기 */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    padding: 8px;
+    border-radius: 5px;
+    /* 둥근 모서리 */
+    font-size: 14px;
+    /* 글씨 크기 */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    /* 그림자 효과 */
+  }
+
+  .weather-icon{
+    width: 100%;
   }
 }
