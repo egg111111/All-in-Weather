@@ -17,6 +17,7 @@ import AddUserInfo from './page_component/AddUserInfo';
 import InputBox from './sign_component/InputBox';
 import Perference_check from './page_component/preference_check';
 import Result from './page_component/result';
+import RecommendItem from './service/RecommendItem';
 
 import Layout from './header_footer/layout';
 import Sidebar from './header_footer/sidebar';
@@ -46,6 +47,7 @@ function App() {
               <Route path="/inputbox" element={< InputBox/>} />
               <Route path="/recView" element={<RecView/>} />
               <Route path="/result" element={<Result/>} />
+              <Route path="/recItem" element={<RecommendItem/>} />
           </Routes>
           </div>
           </Layout>

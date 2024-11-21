@@ -24,6 +24,7 @@ import cloudyIcon from '../icon/cloudy.png';
 import sunnyIcon from '../icon/sunshine.png';
 import sunriseIcon from '../icon/sunrise.png';
 import sunsetIcon from '../icon/sunset.png';
+import RecommendItem from "../service/RecommendItem";
 
 import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
 import T_clouys from '/src/assets/images/weatherChart_icon/cloudy.gif';
@@ -172,6 +173,8 @@ function WeatherChart({ userData }) {
                         }).replace('오후', '오후 ').replace('오전', '오전 '),
                         temp: Math.round(hour.temp),
                         precipitation: Math.round(hour.pop * 100),
+                        rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
+                        snow: hour.snow ? hour.snow["1h"] : 0   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
                     }));
                     setHourlyData(forecastData);
                 } catch (error) {
@@ -348,6 +351,9 @@ function WeatherChart({ userData }) {
                     {currentWeather && (
                         <ChatgptApi weatherData={currentWeather} userData={userData} />
                     )}
+                </div>
+                <div>
+                    {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData}/>}
                 </div>
             </div>
 
