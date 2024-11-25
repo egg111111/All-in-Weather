@@ -64,6 +64,7 @@ function WeatherChart({ userData }) {
     const [airPoll, setAirPoll] = useState(null);
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
+    const [uvIndex, setUvIndex] = useState(null); // UV Index 상태 추가
 
     const isMobile = useMediaQuery({ query: "(max-width:474px)" });
     const isTablet = useMediaQuery({ query: "(min-witdh:475px) and (max-witdh:768px)" })
@@ -152,6 +153,8 @@ function WeatherChart({ userData }) {
                         sunset: data.current.sunset
                     })
 
+                    setUvIndex(data.current.uvi); // UV Index 설정
+
                     //대기오염 api 가져오기 
                     const pollution_response = await fetch(
                         `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
@@ -166,16 +169,20 @@ function WeatherChart({ userData }) {
                     })
                     console.log(airPoll);
 
-                    const forecastData = data.hourly.slice(0, 24).map(hour => ({
-                        time: new Date(hour.dt * 1000).toLocaleTimeString("ko-KR", {
-                            hour: "numeric",
-                            hour12: true,
-                        }).replace('오후', '오후 ').replace('오전', '오전 '),
-                        temp: Math.round(hour.temp),
-                        precipitation: Math.round(hour.pop * 100),
-                        rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
-                        snow: hour.snow ? hour.snow["1h"] : 0   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
-                    }));
+                    const forecastData = data.hourly.slice(0, 24).map((hour) => {
+                        const hourDate = new Date(hour.dt * 1000);
+                        return {
+                            date: hourDate,
+                            time: hourDate.toLocaleTimeString("ko-KR", {
+                                hour: "numeric",
+                                hour12: true,
+                            }).replace("오후", "오후 ").replace("오전", "오전 "),
+                            temp: Math.round(hour.temp),
+                            precipitation: Math.round(hour.pop * 100),
+                            rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
+                            snow: hour.snow ? hour.snow["1h"] : 0,   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
+                        };
+                    });
                     setHourlyData(forecastData);
                 } catch (error) {
                     console.error("Error fetching weather data:", error);
@@ -326,13 +333,12 @@ function WeatherChart({ userData }) {
     return (
         <div className="weatherChart-container">
             <div className="first-container">
-
                 {currentWeather && (
                     <div className="current-weather">
                         {/* <h4 className="current-location"> 📍 {address}</h4> */}
                         <img src={weatherIcon_Map(currentWeather.id)}
                              alt="Weather Icon" 
-                             className="weather-icon"/>
+                             className="weather-icon" />
                         <div className="weather-info">
                         <h3 className="current-temp">{currentWeather.temp}°C</h3>
                             <div className="temp-details">
@@ -353,7 +359,7 @@ function WeatherChart({ userData }) {
                     )}
                 </div>
                 <div>
-                    {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData}/>}
+                    {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData} airPollData={airPoll}  uvIndex={uvIndex}  />}
                 </div>
             </div>
 

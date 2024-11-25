@@ -28,7 +28,7 @@ function Loading() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setTimeLimit(true); // 10초 후 timeLimit 상태를 true로 변경
-        }, 15000);
+        }, 20000);
 
         return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
     }, []);
