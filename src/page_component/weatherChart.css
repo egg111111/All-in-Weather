@@ -22,13 +22,17 @@
 .first-container {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 0.2fr;
+  grid-template-rows: 0.2fr 1fr 0.2fr;
   align-content: center;
   /* padding-left: 1.5%; */
   /* width: 89vw;
   height: 20vh; */
   font-family: 'NEXON Lv1 Gothic OTF';
   column-gap: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-bottom: 5%;
 }
 
 .weather-chart-container {
@@ -41,9 +45,10 @@
 }
 
 .line-chart {
-  width: 75vw;
-  height: 30vh;
+  width: 85vw;
+  height: 15vh;
   max-width: 600px;
+  margin-bottom: 5%;
 }
 
 .chart-container {
@@ -55,10 +60,10 @@
   width: 80vw;
   max-width: 600px;
   margin: 20px auto;
-  padding: 40px 20px 20px 20px;
-  border-radius: 10px;
+  /* padding: 40px 20px 20px 20px; */
+  /* border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: #fff; */
   justify-content: center;
   align-items: center;
 }
@@ -66,12 +71,11 @@
 .weather-hour {
   text-align: center;
   min-width: 5vh;
-  margin: 0px 10px 10px 10px;
+  margin: 0px 15px 10px 10px;
   /* background-color: #f8f8f8; */
   padding: 10px;
   border-radius: 5px;
   font-size: 5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .weather-hour-time,
@@ -96,16 +100,16 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 30px;
+  font-size: 20px;
   color: #333;
   z-index: 1;
   position: absolute;
-  top: 50%;
   transform: translateY(-50%);
   padding: 3px;
   border-radius: 30%;
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15%;
 }
 
 .prev-button {
@@ -140,14 +144,13 @@
   align-items: center;
   justify-content: center;
   justify-items: center;
-  width: 55vw;
+  width: 90%;
   height: 40vh;
-  margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid #e0e0e0;
+  /* border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: #fff; */
   gap: -10px;
   column-gap: 5px;
   grid-template-columns: 1.5fr 1fr;
@@ -259,6 +262,12 @@
 .weather-icon{
 }
 
+.sun_Doughnut{
+  width: 90vw;
+  height: 30vh;
+  background-color: #ffffff;
+}
+
 @media (max-width: 576px) {
   .current-weather {
     grid-template-rows: auto;
@@ -293,6 +302,6 @@
   }
 
   .weather-icon{
-    width: 100%;
+    width: 90%;
   }
 }

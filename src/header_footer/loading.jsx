@@ -17,9 +17,16 @@ const modalStyle = {
 };
 
 const loaderStyle = {
-    textAlign: "center",
+    display: "flex",
+    flexDirection: 'column',
+    width: "100%",
+    justifyContent: 'center',
     color: "#fff",
 };
+
+const override = {
+    margin: 'auto'
+}
 
 function Loading() {
     const [timeLimit, setTimeLimit] = useState(false);
@@ -53,7 +60,7 @@ function Loading() {
         !timeLimit && ( // timeLimit이 false일 때만 로딩 화면 표시
             <div style={modalStyle}>
                 <div style={loaderStyle}>
-                    <HashLoader color="#fff" loading={true} size={70} />
+                    <HashLoader color="#fff" loading={true} cssOverride={override} />
                     <p>잠시만 기다려주세요</p>
                 </div>
             </div>

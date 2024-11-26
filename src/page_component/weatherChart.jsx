@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
+    ArcElement,
     CategoryScale,
     LinearScale,
     PointElement,
@@ -12,12 +13,11 @@ import {
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 플러그인
 import ChatgptApi from "../service/chatgptApi"; import annotationPlugin from "chartjs-plugin-annotation";
-// import { ResponsiveRad/ialBar } from '@nivo/radial-bar';
+
 
 import { useMediaQuery } from "react-responsive";
 
 import weatherDescKo from "../service/weatherDescKo";
-{/* <ResponsiveRad /> */}
 import "./weatherChart.css";
 import rainyIcon from '../icon/rainy.png';
 import cloudyIcon from '../icon/cloudy.png';
@@ -33,25 +33,25 @@ import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
 import T_sunny from '/src/assets/images/weatherChart_icon/sun.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
 
-const weatherIcon_Map =(weather_Id)=> {
-    if(weather_Id >= 200 && weather_Id < 300){
+const weatherIcon_Map = (weather_Id) => {
+    if (weather_Id >= 200 && weather_Id < 300) {
         return T_storm;
-    } else if (weather_Id >= 300 && weather_Id < 600){
+    } else if (weather_Id >= 300 && weather_Id < 600) {
         return T_rain;
-    } else if (weather_Id >= 600 && weather_Id < 700){
+    } else if (weather_Id >= 600 && weather_Id < 700) {
         return T_snow;
-    } else if (weather_Id >= 700 && weather_Id < 800){
+    } else if (weather_Id >= 700 && weather_Id < 800) {
         return T_clounds;
-    } else if (weather_Id == 800){
+    } else if (weather_Id == 800) {
         return T_sunny;
-    } else if (weather_Id >= 800 && weather_Id < 900){
+    } else if (weather_Id >= 800 && weather_Id < 900) {
         return T_clouys;
     }
 }
 
 
 // Chart.js 구성 요소 등록
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels, annotationPlugin); // 플러그인 등록
+ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels, annotationPlugin); // 플러그인 등록
 
 
 function WeatherChart({ userData }) {
@@ -138,7 +138,7 @@ function WeatherChart({ userData }) {
                         temp: Math.round(data.current.temp),
                         high: Math.round(data.daily[0].temp.max),
                         low: Math.round(data.daily[0].temp.min),
-                        id:data.current.weather[0].id,
+                        id: data.current.weather[0].id,
                         weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
                     });
 
@@ -259,22 +259,7 @@ function WeatherChart({ userData }) {
                 label: "Temperature (°C)",
                 data: hourlyData
                     .slice(currentHourIndex, currentHourIndex + hoursPerPage)
-                    .map(hour => hour?.temp || null),  // hour가 정의되지 않은 경우 null로 설정
-                borderColor: hourlyData
-                    .slice(currentHourIndex, currentHourIndex + hoursPerPage)
-                    .map(hour => {
-                        if (!hour || !hour.time) return "black";  // hour가 정의되지 않으면 기본 색상
-                        // hour.time 문자열을 Date 객체로 변환 후 getTime()으로 타임스탬프 변환
-                        const hourTime = new Date(`1970-01-01T${hour.time}:00`).getTime();
-                        if (sunriseTimestamp && sunsetTimestamp) {
-                            if (hourTime >= sunriseTimestamp && hourTime < sunsetTimestamp) {
-                                return "red";  // 일출 이후 일몰 전에는 붉은색
-                            } else {
-                                return "navy";  // 일몰 이후는 남색
-                            }
-                        }
-                        return "black";
-                    }),
+                    .map(hour => hour?.temp || null),  // hour가 정의되지 않은 경우 null로 설
                 backgroundColor: "rgba(255, 99, 132, 0.2)",
                 pointRadius: 5,
                 datalabels: {
@@ -314,6 +299,9 @@ function WeatherChart({ userData }) {
                 display: false,
             },
             x: {
+                grid: {
+                    display: false,
+                },
                 title: {
                     display: false,
                 },
@@ -322,68 +310,154 @@ function WeatherChart({ userData }) {
         },
     };
 
-    
+    //일출 관련 그래프 
+    const normalizeTime = (time) => {
+        if (time < sunriseTimestamp) return 0; // 일출 전
+        if (time > sunsetTimestamp) return 1; // 일몰 후
+        return (time - sunriseTimestamp) / (sunsetTimestamp - sunriseTimestamp);
+    };
+
+    const currentTime = new Date().getTime(); // 현재 시각 (밀리초)
+    const currentNormalized = normalizeTime(currentTime);
+
+    const data_sun = {
+        labels: ["Elapsed", "Remaining"],
+        datasets: [
+            {
+                data: [currentNormalized, 1 - currentNormalized],
+                backgroundColor: ["#FFC95C", "#291D6B"],
+                borderWidth: 2,
+            },
+        ],
+    };
+
+    const formatTime = (time) => {
+        const date = new Date(time);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const period = hours >= 12 ? "오후" : "오전";
+
+        // 12시간제 변환
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes.toString().padStart(2, "0");
+
+        return `${period} ${formattedHours}시 ${formattedMinutes}분`;
+    };
+
+    const options_sun = {
+        rotation: -90, // 시작 각도 (위쪽)
+        circumference: 180, // 반원
+        plugins: {
+            legend: {
+                display: false, // 범례 제거
+            },
+            tooltip: {
+                enabled: true,
+                callbacks: {
+                    label: (tooltipItem) => {
+                        if (tooltipItem.dataIndex === 0) return "Elapsed Time";
+                        return "Remaining Time";
+                    },
+                },
+            },
+            customCanvasBackgroundColor: {
+                id: "currentTimeLabel",
+                beforeDraw: (chart) => {
+                    const { ctx, chartArea } = chart;
+                    const currentFormattedTime = formatTime(currentTime);
+
+                    ctx.save();
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "#333";
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        `현재 시각: ${currentFormattedTime}`,
+                        (chartArea.left + chartArea.right) / 2,
+                        (chartArea.top + chartArea.bottom) / 2
+                    );
+                    ctx.restore();
+                },
+            },
+        },
+        scales: {
+            x: {
+                ticks: {
+                    callback: (value, index) => {
+                        if (index === 0) return formatTime(sunriseTimestamp); // 시작(일출 시간)
+                        if (index === 1) return formatTime(sunsetTimestamp); // 끝(일몰 시간)
+                        return ""; // 중간 값 생략
+                    },
+                },
+            },
+        },
+    };
+
     return (
         <div className="weatherChart-container">
             <div className="first-container">
-
+                <h3 className="current-location"> 📍 {address}</h3>
                 {currentWeather && (
                     <div className="current-weather">
-                        {/* <h4 className="current-location"> 📍 {address}</h4> */}
+
                         <img src={weatherIcon_Map(currentWeather.id)}
-                             alt="Weather Icon" 
-                             className="weather-icon"/>
+                            alt="Weather Icon"
+                            className="weather-icon" />
                         <div className="weather-info">
-                        <h3 className="current-temp">{currentWeather.temp}°C</h3>
+                            <h3 className="current-temp">{currentWeather.temp}°C</h3>
                             <div className="temp-details">
                                 <h4 className="high-low">{currentWeather.high}°C / {currentWeather.low}°C</h4>
                             </div>
                             <p className="weather-status">{currentWeather.weather}</p>
                         </div>
-                        
+
                         {/* <div className="weather-feels-container"> */}
-                            <p> 체감온도 {like_hum?.feels_like}</p>
-                            <p> 습도 {like_hum?.humidity}</p>
+                        <p> 체감온도 {like_hum?.feels_like}</p>
+                        <p> 습도 {like_hum?.humidity}</p>
                         {/* </div> */}
                     </div>
                 )}
+
+                <div className="chart-container">
+                    {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
+
+                    <div className="line-chart">
+                        <Line data={data} options={options} />
+                    </div>
+
+                    {!isLastPage && <button className="next-button" onClick={handleNext}>&gt;</button>}
+
+                    <div className="weather-chart-container">
+                        {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
+                            <div key={index} className="weather-hour">
+                                <p className="weather-hour-precipitation">{hour.precipitation}%</p>
+                                <img
+                                    src={
+                                        hour.precipitation >= 60 ? rainyIcon :
+                                            hour.precipitation >= 30 ? cloudyIcon : sunnyIcon
+                                    }
+                                    alt="강수 확률 아이콘"
+                                    className="weather-hour-icon"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="chatgpt-button">
                     {currentWeather && (
                         <ChatgptApi weatherData={currentWeather} userData={userData} />
                     )}
                 </div>
-                <br/>
-                <div>
-                    {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData}/>}
-                </div>
+                <br />
+
+            </div>
+
+            <div>
+                {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData} />}
             </div>
 
 
-            <div className="chart-container">
-                {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
 
-                <div className="line-chart">
-                    <Line data={data} options={options} />
-                </div>
-
-                {!isLastPage && <button className="next-button" onClick={handleNext}>&gt;</button>}
-
-                <div className="weather-chart-container">
-                    {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
-                        <div key={index} className="weather-hour">
-                            <p className="weather-hour-precipitation">{hour.precipitation}%</p>
-                            <img
-                                src={
-                                    hour.precipitation >= 60 ? rainyIcon :
-                                        hour.precipitation >= 30 ? cloudyIcon : sunnyIcon
-                                }
-                                alt="강수 확률 아이콘"
-                                className="weather-hour-icon"
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
 
             <div className="weather-pollution-container">
                 <table className="pollution-table">
@@ -403,7 +477,7 @@ function WeatherChart({ userData }) {
             </div>
             <br />
 
-            <div className="weather-second-box">
+            {/* <div className="weather-second-box">
                 {sun && (
                     <div className="sun-times">
                         <img src={sunriseIcon} ></img>
@@ -412,9 +486,10 @@ function WeatherChart({ userData }) {
                         <p>{formattedSunset}</p>
                     </div>
                 )}
-
+            </div> */}
+            <div className="sun_Doughnut" style={{ width: "100vw", height: "50vh" }}>
+                <Doughnut data={data_sun} options={options_sun} />
             </div>
-
 
         </div>
     );
