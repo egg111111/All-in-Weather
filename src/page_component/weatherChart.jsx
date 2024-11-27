@@ -105,6 +105,9 @@ function WeatherChart({ userData }) {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setLocation({ latitude, longitude });
+
+                    // 위치 정보 서버로 전송
+                    sendLocationToServer(latitude, longitude);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -125,6 +128,29 @@ function WeatherChart({ userData }) {
     }, [location]);
 
 
+    // 서버로 위치 정보 전송
+    const sendLocationToServer = (latitude, longitude) => {
+        const userId = userData.userId; // 사용자 ID
+        fetch('http://localhost:8080/api/location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId,
+                latitude,
+                longitude,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Location saved:', data);
+        })
+        .catch((error) => {
+            console.error('Error sending location to server:', error);
+        });
+    };
+        
     // 날씨 데이터 가져오기
     useEffect(() => {
         if (location.latitude && location.longitude) {

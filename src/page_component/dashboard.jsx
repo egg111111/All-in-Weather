@@ -4,12 +4,24 @@ import './dashboard.css';
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 import socialApiClient from '../service/socialApiClient';   // 소셜 로그인용 API 클라이언트
 import WeatherChart from "./weatherChart";
+import RecentCalendar from "../service/RecentCalendar"; 
+import { notification } from 'antd'; // Ant Design의 Notification 컴포넌트
 
 function Dashboard() {
     const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
-    
+
+    // Ant Design Notification 설정 함수
+    const openNotification = (title, description) => {
+        notification.open({
+            message: title,
+            description: description,
+            placement: 'top', // 알림 위치
+            duration: 0, // 알림이 자동으로 사라지지 않음, 사용자가 닫아야 함
+        });
+    };
+
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         const socialUserId = localStorage.getItem('social_userId');
@@ -41,6 +53,8 @@ function Dashboard() {
             .then(response => {
                 setUserInfo(response.data);
                 console.log("User Info:", response.data);  // 콘솔에 출력
+                // 사용자 정보 가져온 후 알림을 요청
+                fetchNotifications(userId);
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
@@ -48,9 +62,25 @@ function Dashboard() {
             });
     };
 
+    const fetchNotifications = (userId) => {
+        // 알림 정보를 서버에서 가져와 Notification 띄우기
+        generalApiClient.get(`/api/notifications/upcoming?userId=${userId}`)
+            .then(response => {
+                const notifications = response.data;
+
+                notifications.forEach(notification => {
+                    openNotification(notification.title, notification.message);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching notifications:", error);
+            });
+    };
+
     return (
         <>
-            <WeatherChart userData={userInfo} />
+            {userInfo && <WeatherChart userData={userInfo} />}
+            {userInfo && <RecentCalendar userData={userInfo} />} 
             <div>
                 {error ? (
                     <div>{error}</div>

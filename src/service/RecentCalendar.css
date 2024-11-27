@@ -1,0 +1,199 @@
+.recent-calendar-container {
+  max-width: 400px; /* 최대 너비를 조정하여 화면에 일부만 보이도록 설정 */
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+}
+
+/* 날짜 카드 래퍼 스타일 수정: 가로 스크롤 추가 */
+.recent-dates-wrapper {
+  display: flex;
+  padding-bottom: 10px; /* 스크롤 바와의 간격 */
+  gap: 10px;
+  margin-bottom: 20px;
+  scrollbar-width: thin; /* Firefox용 */
+  -ms-overflow-style: none; /* IE, Edge용 */
+}
+
+.recent-dates-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.recent-dates-wrapper::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 4px;
+}
+
+.date-card {
+  flex: 0 0 auto;
+  min-width: 100px; /* 각 카드의 최소 너비 설정 */
+  width: 100px; /* 각 카드의 너비를 설정 */
+  height: 80px; /* 각 카드의 고정 높이 설정 */
+  padding: 15px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+  display: flex; /* 내부 콘텐츠 정렬을 위한 설정 */
+  flex-direction: column; /* 위에서 아래로 정렬 */
+  justify-content: space-between; /* 상하 균등 분포 */
+  align-items: center; /* 중앙 정렬 */
+}
+
+
+.date-card.selected {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.date-card:hover {
+  background-color: #e6e6e6;
+}
+
+.date {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+
+.activities {
+  margin-top: 10px;
+  width: 100%; /* 활동 리스트 너비를 전체로 설정 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: normal;
+}
+
+.activity-item {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 20px; /* 버튼의 가로 크기 */
+  height: 20px; /* 버튼의 세로 크기 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px; /* X 텍스트의 크기 */
+  padding: 0;
+  line-height: 1; /* 텍스트와 버튼 높이를 맞추기 위해 설정 */
+  text-align: center;
+}
+
+
+.activity-options {
+  margin-top: 20px;
+}
+
+.activity-options button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.activity-options button:hover {
+  background-color: #0056b3;
+}
+
+.edit-button {
+  position: absolute;
+  top: -10px;
+  left: -15px;
+  background: rgb(255 255 255 / 92%);
+  color: white;
+  border: none;
+  border-radius: 60%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  line-height: 1px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 모달 콘텐츠 스타일 */
+.react-modal-content {
+  width: 300px;
+  max-width: 90%;
+  height: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  position: relative;
+}
+
+/* 모달 버튼들 */
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button:hover {
+  background-color: #0056b3;
+}
+
+/* 취소 버튼 스타일 */
+.cancel-button {
+  margin-top: 20px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+/* 모달 오버레이 스타일 */
+.react-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
