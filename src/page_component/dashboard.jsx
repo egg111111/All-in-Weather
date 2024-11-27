@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { Collapse } from "antd";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,12 +20,11 @@ function dashboard() {
 
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
-    
+
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
         const social_userId = localStorage.getItem('social_userId');
-        const nickname = localStorage.getItem('nickname');
 
         // 소셜 로그인인 경우 userId를 localStorage에 저장
         if (!userId && !social_userId) {
@@ -34,6 +34,7 @@ function dashboard() {
                     const userData = response.data;
                     const social_userId = userData.social_userId;
                     localStorage.setItem('social_userId', social_userId);
+                    localStorage.setItem('nickname', userData.social_nickname);
                     fetchUserInfo(social_userId);  // 소셜 로그인 후 사용자 정보 요청
                 })
                 .catch(error => {
@@ -55,7 +56,6 @@ function dashboard() {
             },
             ...(userId && { credentials: 'include' }),  // 소셜 로그인인 경우 쿠키 포함
         };
-        
 
         fetch(`${API_URL}/api/users/show/${userId}`, fetchOptions)
             .then(response => {
@@ -74,17 +74,18 @@ function dashboard() {
             });
     };
 
+
     return (
         <>
             <WeatherChart userData={userInfo} />
-            <br/> 
+            <br />
             <p>
-            {error ? (
+                {error ? (
                     <div>{error}</div>
                 ) : userInfo ? (
                     <div>
                         <strong>안녕하세요</strong> {userInfo.social_nickname ? userInfo.social_nickname : userInfo.nickname}님
-                        <br/>
+                        <br />
                         <strong>안녕하세요</strong> {userInfo.social_userId ? userInfo.social_userId : userInfo.userId}님
                     </div>
                 ) : (

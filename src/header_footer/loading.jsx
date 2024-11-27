@@ -34,8 +34,8 @@ function Loading() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setTimeLimit(true); // 10초 후 timeLimit 상태를 true로 변경
-        }, 15000);
+            setTimeLimit(true); 
+        }, 20000);
 
         return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
     }, []);
@@ -47,9 +47,8 @@ function Loading() {
                 text: "잠시 후 다시 시도해주세요.",
                 icon: "warning",
                 showConfirmButton: false,
-                timer: 1500, // Swal 창이 1.5초 후 자동으로 닫힘
+                timer: 1500,
             }).then(() => {
-                // Swal 닫힌 후 로딩 화면 닫기
                 setTimeLimit(false);
                 navigate('/dashboard');
             });

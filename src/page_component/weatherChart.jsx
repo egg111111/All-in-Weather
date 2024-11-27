@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Children, useContext } from "react";
 import { Line, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -10,10 +10,14 @@ import {
     Title,
     Tooltip,
     Legend,
+    elements,
 } from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 플러그인
+import { Collapse, theme } from "antd";
+import { CaretRightOutlined } from '@ant-design/icons';
 import ChatgptApi from "../service/chatgptApi"; import annotationPlugin from "chartjs-plugin-annotation";
 
+import { IsNightContext } from "../service/isNight_Provider";
 
 import { useMediaQuery } from "react-responsive";
 
@@ -22,8 +26,6 @@ import "./weatherChart.css";
 import rainyIcon from '../icon/rainy.png';
 import cloudyIcon from '../icon/cloudy.png';
 import sunnyIcon from '../icon/sunshine.png';
-import sunriseIcon from '../icon/sunrise.png';
-import sunsetIcon from '../icon/sunset.png';
 import RecommendItem from "../service/RecommendItem";
 
 import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
@@ -32,22 +34,8 @@ import T_rain from '/src/assets/images/weatherChart_icon/rain.gif';
 import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
 import T_sunny from '/src/assets/images/weatherChart_icon/sun.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
-
-const weatherIcon_Map = (weather_Id) => {
-    if (weather_Id >= 200 && weather_Id < 300) {
-        return T_storm;
-    } else if (weather_Id >= 300 && weather_Id < 600) {
-        return T_rain;
-    } else if (weather_Id >= 600 && weather_Id < 700) {
-        return T_snow;
-    } else if (weather_Id >= 700 && weather_Id < 800) {
-        return T_clounds;
-    } else if (weather_Id == 800) {
-        return T_sunny;
-    } else if (weather_Id >= 800 && weather_Id < 900) {
-        return T_clouys;
-    }
-}
+import T_night from '/src/assets/images/weatherChart_icon/night.gif';
+import { isAction } from "redux";
 
 
 // Chart.js 구성 요소 등록
@@ -60,10 +48,12 @@ function WeatherChart({ userData }) {
     const [currentWeather, setCurrentWeather] = useState(null);
     const [address, setAddress] = useState(''); // 행정동 주소를 저장할 상태
     const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
+    const AirQuality_Key = import.meta.env.VITE_AIR_QUALITY_KEY;
     const [currentHourIndex, setCurrentHourIndex] = useState(0);
     const [airPoll, setAirPoll] = useState(null);
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
+    const [airQuality, setAirQuality] = useState(null);
 
     const isMobile = useMediaQuery({ query: "(max-width:474px)" });
     const isTablet = useMediaQuery({ query: "(min-witdh:475px) and (max-witdh:768px)" })
@@ -203,6 +193,18 @@ function WeatherChart({ userData }) {
         }
     };
 
+    //미세먼지 가져오기(AirQuality api)
+    useEffect(() => {
+        const fetchAirQuality = async ()=> {
+            try {
+                const response = await fetch(`https://api.breezometer.com/air-quality/v2/forecast/hourly?lat=${48.857456}&lon=${2.354611}&key=${YOUR_API_KEY}&hours=3`);
+                const data = await response.json();
+
+            } catch {
+
+            }
+        }
+    })
 
     const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
         hour: "numeric",
@@ -219,6 +221,8 @@ function WeatherChart({ userData }) {
     //일출 일몰 구별 
     const sunriseTimestamp = sun ? sun.sunrise * 1000 : null;
     const sunsetTimestamp = sun ? sun.sunset * 1000 : null;
+    localStorage.setItem('sunrise', sunriseTimestamp);
+    localStorage.setItem('sunset', sunsetTimestamp);
 
     // 데이터 및 라벨 분리
     const beforeSunrise = hourlyData.filter(
@@ -325,8 +329,8 @@ function WeatherChart({ userData }) {
         datasets: [
             {
                 data: [currentNormalized, 1 - currentNormalized],
-                backgroundColor: ["#FFC95C", "#291D6B"],
-                borderWidth: 2,
+                backgroundColor: ["#FFC95C", "#D4CEFF"],
+                borderWidth: 1,
             },
         ],
     };
@@ -345,43 +349,28 @@ function WeatherChart({ userData }) {
     };
 
     const options_sun = {
+        responsive: false,
         rotation: -90, // 시작 각도 (위쪽)
         circumference: 180, // 반원
+        cutout: "90%", // 굵기 조절
         plugins: {
             legend: {
-                display: false, // 범례 제거
+                display: false,
             },
             tooltip: {
-                enabled: true,
-                callbacks: {
-                    label: (tooltipItem) => {
-                        if (tooltipItem.dataIndex === 0) return "Elapsed Time";
-                        return "Remaining Time";
-                    },
-                },
+                enabled: false,
             },
-            customCanvasBackgroundColor: {
-                id: "currentTimeLabel",
-                beforeDraw: (chart) => {
-                    const { ctx, chartArea } = chart;
-                    const currentFormattedTime = formatTime(currentTime);
-
-                    ctx.save();
-                    ctx.font = "16px Arial";
-                    ctx.fillStyle = "#333";
-                    ctx.textAlign = "center";
-                    ctx.fillText(
-                        `현재 시각: ${currentFormattedTime}`,
-                        (chartArea.left + chartArea.right) / 2,
-                        (chartArea.top + chartArea.bottom) / 2
-                    );
-                    ctx.restore();
-                },
+            datalabels: {
+                display: false,
             },
         },
         scales: {
             x: {
+                grid: {
+                    display: false,
+                },
                 ticks: {
+                    // maxRotation: 45, // 최대 회전 각도
                     callback: (value, index) => {
                         if (index === 0) return formatTime(sunriseTimestamp); // 시작(일출 시간)
                         if (index === 1) return formatTime(sunsetTimestamp); // 끝(일몰 시간)
@@ -390,7 +379,88 @@ function WeatherChart({ userData }) {
                 },
             },
         },
+        layout: {
+            padding: {
+                top: 10,
+                bottom: 10,
+            },
+        },
     };
+
+    //Collapse 사용 
+    const getItems = (panelStyle) =>
+        [
+            {
+                key: '1',
+                label: '대기오염',
+                children:
+                    <div className="weather-pollution-container">
+                        <table className="pollution-table">
+                            <th>미세먼지</th>
+                            <th>이산화황</th>
+                            <th>이산화질소</th>
+                            <th> 오존 </th>
+                            <tr>
+                                <td>{PM_standard(airPoll?.pm2_5)} ({airPoll?.pm2_5}) </td>
+                                <td>{airPoll?.so2}</td>
+                                <td>{airPoll?.no}</td>
+                                <td> {airPoll?.o3}</td>
+                            </tr>
+                        </table>
+                    </div>,
+                style: panelStyle,
+            },
+            {
+                key: '2',
+                label: '일출 일몰',
+                children: <div className="sun_Doughnut" >
+                    <Doughnut data={data_sun} options={options_sun} />
+                </div>,
+                style: panelStyle,
+            },
+        ];
+
+    const panelStyle = {
+        border: '1px',
+        background: '#ffffff',
+        borderRadius: '5px'
+    };
+
+    const weatherIcon_Map = (weather_Id) => {
+        if (weather_Id >= 200 && weather_Id < 300) {
+            return T_storm;
+        } else if (weather_Id >= 300 && weather_Id < 600) {
+            return T_rain;
+        } else if (weather_Id >= 600 && weather_Id < 700) {
+            return T_snow;
+        } else if (weather_Id >= 700 && weather_Id < 800) {
+            return T_clounds;
+        } else if (weather_Id == 800) {
+            if (currentTime < sunriseTimestamp || currentTime > sunsetTimestamp) {
+                return T_night;
+            }
+            else {
+                return T_sunny;
+            }
+        } else if (weather_Id >= 800 && weather_Id < 900) {
+            return T_clouys;
+        }
+    }
+
+    //일출/일몰에 맞춰서 배경 바꾸기 
+    //여기서 나온 값을 context Api를 사용해서 App으로 보냄 
+    //0: 낮 1: 밤
+    const {setIsNight} = useContext(IsNightContext);
+
+    const day_night = () => {
+        return currentTime < sunriseTimestamp || currentTime > sunsetTimestamp
+        ? true
+        : false;
+    };
+
+    useEffect(() => {
+        setIsNight(day_night());
+    }, [currentTime, setIsNight]);
 
     return (
         <div className="weatherChart-container">
@@ -456,40 +526,15 @@ function WeatherChart({ userData }) {
                 {currentWeather && <RecommendItem weatherData={currentWeather} hourlyData={hourlyData} />}
             </div>
 
-
-
-
-            <div className="weather-pollution-container">
-                <table className="pollution-table">
-                    <th>미세먼지</th>
-                    <th>이산화황</th>
-                    <th>이산화질소</th>
-                    <th> 오존 </th>
-                    <tr>
-                        <td>{PM_standard(airPoll?.pm2_5)} ({airPoll?.pm2_5}) </td>
-                        <td>{airPoll?.so2}</td>
-                        <td>{airPoll?.no}</td>
-                        <td> {airPoll?.o3}</td>
-                    </tr>
-                </table>
-                <p></p>
-
-            </div>
             <br />
 
-            {/* <div className="weather-second-box">
-                {sun && (
-                    <div className="sun-times">
-                        <img src={sunriseIcon} ></img>
-                        <p>{formattedSunrise}</p>
-                        <img src={sunsetIcon} ></img>
-                        <p>{formattedSunset}</p>
-                    </div>
-                )}
-            </div> */}
-            <div className="sun_Doughnut" style={{ width: "100vw", height: "50vh" }}>
-                <Doughnut data={data_sun} options={options_sun} />
-            </div>
+            <Collapse
+                bordered={false}
+                defaultActiveKey={['0']}
+                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+
+                items={getItems(panelStyle)}
+            />
 
         </div>
     );

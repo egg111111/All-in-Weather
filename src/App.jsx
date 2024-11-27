@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+
 import './App.css'
 import Signup from './sign_component/sign_up'
 import Home_basic from './sign_component/home_basic'
@@ -24,33 +25,74 @@ import Sidebar from './header_footer/sidebar';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
+import { IsNightContext } from './service/isNight_Provider';
 
-function App() {
+const App = () => {
+  const { isNight } = useContext(IsNightContext);
+
+  useEffect(() => {
+    // body 스타일 업데이트
+    document.body.style.backgroundImage = isNight
+      ? "url('../src/assets/images/background_night.jpg')"
+      : "url('../src/assets/images/background.jpg')";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.display = "grid";
+    document.body.style.justifyContent = "center";
+    document.body.style.alignItems = "center";
+    document.body.style.height = "100vh";
+    document.body.style.width = "100vw";
+
+    // 컴포넌트 언마운트 시 초기화
+    return () => {
+      document.body.style.backgroundImage = null;
+      document.body.style.backgroundRepeat = null;
+      document.body.style.backgroundAttachment = null;
+      document.body.style.backgroundSize = null;
+    };
+  }, [isNight]); // isNight 값이 변경될 때마다 업데이트
 
   return (
     <Provider store={store} >
       <Router>
         <Layout>
-        <div className="centered-content">
-          <Routes>
-              <Route path="/" element={<Home_basic />} />
-              <Route path="/sign_up" element={<Signup />} />
-              <Route path="/addUserInfo" element={<AddUserInfo />} />
-              <Route path="/perference" element={<Perference_check/>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/myPage" element={<MyPage />} />
-              <Route path="/pwUpdate" element={<Id_pw_update />} />
-              <Route path="/chatgpt" element={<ChatgptApi />} />
-              <Route path="/delete" element={< Delete_user/>} />
-              <Route path="/social_delete" element={< SocialDeleteUser/>} />
-              <Route path="/inputbox" element={< InputBox/>} />
-              <Route path="/recView" element={<RecView/>} />
-              <Route path="/result" element={<Result/>} />
-              <Route path="/recItem" element={<RecommendItem/>} />
-          </Routes>
+          <div
+            // style={{
+            //   backgroundImage: isNight
+            //     ? "url(../src/assets/images/background_night.jpg?v=1)"
+            //     : "url(../src/assets/images/background.jpg?v=1)",
+            //     backgroundRepeat: "no-repeat",
+            //     backgroundAttachment: "fixed",
+            //     backgroundSize: "cover",
+            //     display: "grid",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //     height: "100vh",
+            //     // transition: "background-image 0.5s ease",
+            // }}
+          >
+            <div className="centered-content">
+              <Routes>
+                <Route path="/" element={<Home_basic />} />
+                <Route path="/sign_up" element={<Signup />} />
+                <Route path="/addUserInfo" element={<AddUserInfo />} />
+                <Route path="/perference" element={<Perference_check />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/myPage" element={<MyPage />} />
+                <Route path="/pwUpdate" element={<Id_pw_update />} />
+                <Route path="/chatgpt" element={<ChatgptApi />} />
+                <Route path="/delete" element={< Delete_user />} />
+                <Route path="/social_delete" element={< SocialDeleteUser />} />
+                <Route path="/inputbox" element={< InputBox />} />
+                <Route path="/recView" element={<RecView />} />
+                <Route path="/result" element={<Result />} />
+                <Route path="/recItem" element={<RecommendItem />} />
+              </Routes>
+            </div>
           </div>
-          </Layout>
+        </Layout>
       </Router>
     </Provider>
   );

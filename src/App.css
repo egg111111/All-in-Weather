@@ -27,18 +27,18 @@
 }
 
 body {
-  /* background-color: #ffffff; */
+  /* background-color: #ffffff;
   background-image: url(./assets/images/background.jpg);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
   display: grid;
   justify-content: center;
-  align-items: center;
-  /* height: 150vh; */
+  align-items: center; */
+  height: 150vh;
   /* max-width: 600px; */
-  min-height: 100vh;
-  padding: 3%;
+  /* min-height: 100vh; */
+  background-color:transparent;
 }
 
 .centered-content {

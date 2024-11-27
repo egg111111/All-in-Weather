@@ -4,7 +4,7 @@
 
 .sidebar {
   background-color: #E3ECF1;
-  border-left: 4px solid #202020;
+  /* border-left: 4px solid #202020; */
   position: sticky;
   top: 0;
   bottom: 0;
