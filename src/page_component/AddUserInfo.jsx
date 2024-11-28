@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AddUserInfo.css';
 import jwt_decode from 'jwt-decode';
+import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
@@ -76,60 +77,62 @@ const AddUserInfo = () => {
     }
   };
 
-  // 회원가입 버튼 클릭 시
+  // 다음 버튼 클릭 시
   const handleSubmit = async () => {
-    // 유효성 검사
     if (!gender) {
-      alert('성별을 선택해주세요.');
-      return;
+        alert('성별을 선택해주세요.');
+        return;
     }
     if (!height || !weight) {
-      alert('키와 몸무게를 입력해주세요.');
-      return;
+        alert('키와 몸무게를 입력해주세요.');
+        return;
     }
- 
-    // 추가 사용자 정보 객체 생성
+
     const userInfo = {
-      age,
-      gender,
-      height: parseFloat(height),
-      weight: parseFloat(weight),
+        age,
+        gender,
+        height: parseFloat(height),
+        weight: parseFloat(weight),
     };
- 
+
     try {
-      let response;
- 
-      // 소셜 로그인 전용 API 요청
-      if (isSocialLogin && !isSocialUserComplete) {
-        response = await fetch(`http://localhost:8080/api/users/addUserInfo/${socialUserId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // 쿠키를 포함하여 전송
-          body: JSON.stringify(userInfo),
-        });
- 
-        if (response.ok) {
-          // 소셜 로그인 정보 업데이트 후 userId 초기화
-          setIsSocialLogin(false); // 소셜 로그인 상태 false로 변경
+        let response;
+
+        if (isSocialLogin && !isSocialUserComplete) {
+            response = await fetch(`http://localhost:8080/api/users/addUserInfo/${socialUserId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(userInfo),
+            });
+
+            if (response.ok) {
+                console.log('소셜 로그인 사용자 추가정보 저장 성공:', await response.json());
+                setIsSocialLogin(false);
+            } else {
+                console.error('소셜 로그인 사용자 추가정보 저장 실패:', await response.json());
+                throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
+            }
+        } else {
+            response = await generalApiClient.put(`/api/users/addUserInfo/${userId}`, userInfo);
+
+            if (response.status >= 200 && response.status < 300) {
+                console.log('일반 로그인 사용자 추가정보 저장 성공:', response.data);
+            } else {
+                throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
+            }
         }
- 
-      } else {
-        // 일반 로그인 전용 API 요청 (generalApiClient 사용)
-        response = await generalApiClient.put(`/api/users/addUserInfo/${userId}`, userInfo);
-      }
-        if (response.ok) {  // 200번대 응답 확인   
-          localStorage.setItem('gender', gender); 
-          navigate('/perference');
-      } else {
-        throw new Error('추가정보 저장에 실패했습니다. 다시 시도해주세요.');
-      }
+
+        localStorage.setItem('gender', gender);
+        navigate('/perference');
     } catch (error) {
-      console.error('추가정보 저장 실패:', error);
-      alert(error.message); // 오류 메시지 출력
+        console.error('추가정보 저장 실패:', error.message || error);
+        alert(error.message); // 에러 메시지 출력
     }
   };
+
 
   return (
     <div>
