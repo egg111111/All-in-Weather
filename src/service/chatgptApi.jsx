@@ -226,19 +226,20 @@ function chatgptApi({weatherData, userData}) {
             const engGender = await translateToEnglish(gender); // '남자' -> 'male', '여자' -> 'female'
             const engWeather = await translateToEnglish(currentWeather.weather); // '맑음' -> 'clear', '흐림' -> 'cloudy', 등
             const engUserStyle = await translateToEnglish(userStyle);
-
+    
             const prompt = `
                 Create a ${engUserStyle} style outfit for a ${engGender}, suitable for ${currentWeather.temp}°C (${engWeather} weather).
-                Please ensure that the image does not show the head, face, or any facial features. Focus solely on the body and clothing.The image should only show the full body from the neck down with clothing details visible.
+                The image should only show the full body from the neck down, focusing on clothing details, with the figure facing forward. Ensure no head, face, or facial features are visible.
                 The outfit includes:
                 - Outerwear: ${translatedItems.outerwear}.
                 - Top: ${translatedItems.top}.
                 - Bottom: ${translatedItems.bottom}.
                 - Shoes: ${translatedItems.shoes}.
-                `.trim();//  프롬프트는 1000자 이내로
-
+                `.trim(); // 프롬프트는 1000자 이내로
+    
             console.log("Generated Prompt for DALL·E:", prompt);
     
+            // DALL·E API 호출
             const response = await fetch("https://api.openai.com/v1/images/generations", {
                 method: "POST",
                 headers: {
@@ -246,18 +247,28 @@ function chatgptApi({weatherData, userData}) {
                     Authorization: `Bearer ${import.meta.env.VITE_GPT_KEY}`,
                 },
                 body: JSON.stringify({
+                    model: "dall-e-3",
                     prompt: prompt,
                     n: 1,
-                    size: "1024x1024", // 이미지 크기 설정
+                    size: "1024x1792", // 이미지 크기 설정
                 }),
             });
-
+    
             const data = await response.json();
             console.log("DALL·E Response: ", data); // 응답 데이터 콘솔 출력
+    
             if (data.data && data.data[0].url) {
                 const gptImageUrl = data.data[0].url;
-                setGptImage(gptImageUrl); // 이미지 URL 저장
-                return gptImageUrl; // URL 반환
+    
+                // 백엔드를 통해 DALL·E 이미지를 S3로 업로드
+                const s3ImageUrl = await uploadDalleImageToS3(gptImageUrl);
+                if (s3ImageUrl) {
+                    console.log("Image uploaded to S3:", s3ImageUrl);
+                    setGptImage(s3ImageUrl); // 업로드된 이미지의 S3 URL 저장
+                    return s3ImageUrl; // 업로드된 S3 URL 반환
+                } else {
+                    console.error("Failed to upload DALL·E image to S3");
+                }
             } else {
                 console.error("DALL·E 이미지 생성 실패.");
             }
@@ -346,6 +357,29 @@ function chatgptApi({weatherData, userData}) {
         }
     };
     
+    const uploadDalleImageToS3 = async (dalleImageUrl) => {
+        try {
+            const response = await fetch("http://localhost:8080/upload-dalle-image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url: dalleImageUrl }), // DALL·E URL 전달
+            });
+    
+            if (response.ok) {
+                const s3Url = await response.text(); // S3 URL 반환
+                console.log("Image uploaded to S3:", s3Url);
+                return s3Url;
+            } else {
+                console.error("Failed to upload DALL·E image to S3:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error uploading DALL·E image to S3:", error);
+        }
+    };
+    
+
     return (
         <>
             <div>

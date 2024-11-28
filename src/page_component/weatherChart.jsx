@@ -54,6 +54,7 @@ function WeatherChart({ userData }) {
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
     const [airQuality, setAirQuality] = useState(null);
+    const [uvIndex, setUvIndex] = useState(null); // UV Index 상태 추가
 
     const isMobile = useMediaQuery({ query: "(max-width:474px)" });
     const isTablet = useMediaQuery({ query: "(min-witdh:475px) and (max-witdh:768px)" })
@@ -94,6 +95,9 @@ function WeatherChart({ userData }) {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     setLocation({ latitude, longitude });
+
+                    // 위치 정보 서버로 전송
+                    sendLocationToServer(latitude, longitude);
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -114,6 +118,29 @@ function WeatherChart({ userData }) {
     }, [location]);
 
 
+    // 서버로 위치 정보 전송
+    const sendLocationToServer = (latitude, longitude) => {
+        const userId = userData.userId; // 사용자 ID
+        fetch('http://localhost:8080/api/location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId,
+                latitude,
+                longitude,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Location saved:', data);
+        })
+        .catch((error) => {
+            console.error('Error sending location to server:', error);
+        });
+    };
+        
     // 날씨 데이터 가져오기
     useEffect(() => {
         if (location.latitude && location.longitude) {
@@ -142,6 +169,8 @@ function WeatherChart({ userData }) {
                         sunset: data.current.sunset
                     })
 
+                    setUvIndex(data.current.uvi); // UV Index 설정
+
                     //대기오염 api 가져오기 
                     const pollution_response = await fetch(
                         `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
@@ -156,16 +185,20 @@ function WeatherChart({ userData }) {
                     })
                     console.log(airPoll);
 
-                    const forecastData = data.hourly.slice(0, 24).map(hour => ({
-                        time: new Date(hour.dt * 1000).toLocaleTimeString("ko-KR", {
-                            hour: "numeric",
-                            hour12: true,
-                        }).replace('오후', '오후 ').replace('오전', '오전 '),
-                        temp: Math.round(hour.temp),
-                        precipitation: Math.round(hour.pop * 100),
-                        rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
-                        snow: hour.snow ? hour.snow["1h"] : 0   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
-                    }));
+                    const forecastData = data.hourly.slice(0, 24).map((hour) => {
+                        const hourDate = new Date(hour.dt * 1000);
+                        return {
+                            date: hourDate,
+                            time: hourDate.toLocaleTimeString("ko-KR", {
+                                hour: "numeric",
+                                hour12: true,
+                            }).replace("오후", "오후 ").replace("오전", "오전 "),
+                            temp: Math.round(hour.temp),
+                            precipitation: Math.round(hour.pop * 100),
+                            rain: hour.rain ? hour.rain["1h"] : 0,  // 강수량이 있을 경우 가져오고, 없으면 0으로 설정
+                            snow: hour.snow ? hour.snow["1h"] : 0,   // 강설량이 있을 경우 가져오고, 없으면 0으로 설정
+                        };
+                    });
                     setHourlyData(forecastData);
                 } catch (error) {
                     console.error("Error fetching weather data:", error);
