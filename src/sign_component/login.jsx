@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import './login.css';
 import InputBox from "./InputBox";
+import googleImg from '/src/assets/googleSignIn.png';
+import naverImg from '/src/assets/naverSignIn.png';
+import kakaoImg from '/src/assets/kakaoSignIn.png';
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
@@ -94,9 +97,21 @@ function Login() {
         window.location.href = `${API_URL}/oauth2/authorization/kakao`;
     };
 
-    useEffect(() => {
+    const checkTokenValidity = () => {
         const token = localStorage.getItem('token');
-        if (token) {
+        const tokenExpiry = localStorage.getItem('tokenExpiry');
+    
+        if (!token || !tokenExpiry) {
+            return false;
+        }
+    
+        const currentTime = Date.now();
+        return currentTime < parseInt(tokenExpiry, 10); // 현재 시간과 만료 시간 비교
+    };
+
+    useEffect(() => {
+        const isTokenValid = checkTokenValidity();
+        if (isTokenValid) {
             navigate('/dashboard');
         }
     }, [navigate]);
@@ -137,9 +152,17 @@ function Login() {
                         <div className='sign-in-content-sns-sign-in-box'></div>
                         <div className='sign-in-content-sns-sign-in-title'>SNS 로그인</div>
                         <div className='sign-in-content-sns-sign-in-button-box'>
-                            <button onClick={handleGoogleLogin} style={{ margin: '10px' }}>Login with Google</button>
-                            <button onClick={handleNaverLogin} style={{ margin: '10px' }}>Login with Naver</button>
-                            <button onClick={handleKakaoLogin} style={{ margin: '10px' }}>Login with Kakao</button>
+                        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                            <div style={{ margin: '10px' }}>
+                                <img src={googleImg} alt="Login with Google" onClick={handleGoogleLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                            </div>
+                            <div style={{ margin: '10px' }}>
+                                <img src={naverImg} alt="Login with Naver" onClick={handleNaverLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                            </div>
+                            <div style={{ margin: '10px' }}>
+                                <img src={kakaoImg} alt="Login with Kakao" onClick={handleKakaoLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>

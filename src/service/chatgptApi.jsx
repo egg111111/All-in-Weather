@@ -160,7 +160,9 @@ function chatgptApi({weatherData, userData}) {
     
             const data = await response.json();
             const recStyle = data.choices[0].message.content;
-    
+            const cleanedRecStyle = recStyle.replace(/\*\*/g, ""); // 모든 ** 제거
+            const formattedRecStyle = cleanedRecStyle.replace(/(\d\.)/g, "$1\n"); // 숫자 뒤에 줄바꿈 추가
+
             const items = extractItems(recStyle);
             const translatedItems = {
                 outerwear: await translateToEnglish(items.outerwear.join(", ")),
@@ -169,16 +171,16 @@ function chatgptApi({weatherData, userData}) {
                 shoes: await translateToEnglish(items.shoes.join(", "))
             };
 
-            navigate("/result", { state: { result: recStyle, imageUrl: null, type: "옷차림 추천", loading: false, imageLoading: true } });
+            navigate("/result", { state: { result: formattedRecStyle, imageUrl: null, type: "옷차림 추천", loading: false, imageLoading: true } });
     
             // 이미지 생성
             const gptImageUrl = await call_generate_clothing_image(translatedItems, gender, style);
     
             // 결과값 전송
-            sendGptResult(recStyle, "style", gptImageUrl);
+            sendGptResult(cleanedRecStyle, "style", gptImageUrl);
 
             // `/result` 페이지에 업데이트할 데이터 전송
-            navigate("/result", { state: { result: recStyle, imageUrl: gptImageUrl, type: "옷차림 추천", loading: false, imageLoading: false } });
+            navigate("/result", { state: { result: formattedRecStyle, imageUrl: gptImageUrl, type: "옷차림 추천", loading: false, imageLoading: false } });
         } catch (error) {
             console.error("API 호출 실패:", error);
         }
