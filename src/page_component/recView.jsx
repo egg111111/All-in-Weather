@@ -1,9 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Select } from 'antd';
 import './recView.css'
 import Loading from "../header_footer/loading";
 const API_URL = import.meta.env.VITE_API_URL;
+const { Option } = Select;
 
 function recView() {
     const [view, setView] = useState([]);
@@ -11,7 +13,7 @@ function recView() {
     const [showModal, setShowModal] = useState(false);
     const [filter, setFilter] = useState("style");
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedWeek, setSelectedWeek] = useState(1);
+    const [selectedWeek, setSelectedWeek] = useState(null);
     const [weeks, setWeeks] = useState([]);
     const [loading, setLoading] = useState(false); // 로딩 상태 추가
     const itemPerPage = 7;
@@ -131,83 +133,50 @@ function recView() {
             </div>
 
             <div className="dropdown-container">
-                <select
-                    onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}
-                    value={selectedWeek || ""}
+                <Select
+                    className="dropdown-container-context"
+                    style={{ width: 200 }}
+                    placeholder="주차를 선택하세요"
+                    onChange={(value) => setSelectedWeek(parseInt(value, 10))}
+                    value={selectedWeek !== null && selectedWeek !== undefined ? String(selectedWeek) : undefined}
                 >
-                    <option value="" disabled>주차를 선택하세요</option>
                     {weeks.map((week, index) => (
-                        <option key={index} value={index}>
-                            {`주차: ${week.start} ~ ${week.end}`}
-                        </option>
+                        <Option key={index} value={String(index)}>
+                            {`주차 ${week.start} ~ ${week.end}`}
+                        </Option>
                     ))}
-                </select>
+                </Select>
             </div>
 
             <hr class="hr-2"></hr>
-
-            {/* <div className="filter-options">
-                <label>
-                    <input
-                        type="radio"
-                        value="style"
-                        checked={filter === "style"}
-                        onChange={() => setFilter("style")}
-                    />
-                    스타일
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="activity"
-                        checked={filter === "activity"}
-                        onChange={() => setFilter("activity")}
-                    />
-                    활동
-                </label>
-            </div> */}
-
-                <div className="rec_background">
-                    {currentWeekData.map((item, index) => (
-                        <p
-                            key={index}
-                            onClick={() => handleDateClick(item)}
-                            style={{ cursor: "pointer", color: "black" }}
-                        >
-                            {formatDate(item.createDate)}의 기록
-                        </p>
-                    ))}
-                </div>
-
-            {/* {totalPages > 1 && (
-                <div className="pagination">
-                    {pageNumbers.map((number) => (
-                        <button
-                            key={number}
-                            onClick={() => handlePageChange(number)}
-                            className={number === currentPage ? "active" : ""}>
-                            {number}
-                        </button>
-                    ))}
-                </div>
-            )} */}
+            <div className="rec_background">
+                {currentWeekData.map((item, index) => (
+                    <p
+                        key={index}
+                        onClick={() => handleDateClick(item)}
+                        style={{ cursor: "pointer", color: "black" }}
+                    >
+                        {formatDate(item.createDate)}의 기록
+                    </p>
+                ))}
+            </div>
 
             {showModal && selecteRec && (
-                <div className="modal-background"  onClick={closeModal}>
+                <div className="modal-background" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h3 className="modal-title">{formatDate(selecteRec.createDate)}의 기록</h3>
                             <button className="modal-button" onClick={closeModal}>X</button>
                         </div>
                         <p> 최고: {selecteRec.temp_high}℃ 최저: {selecteRec.temp_low}℃ </p>
-                        <br/>
+                        <br />
 
                         <div>
                             {(selecteRec.recActivity || selecteRec.recStyle)
-                                .replace(/\. /g, '.\n') 
-                                .split('\n') 
+                                .replace(/\. /g, '.\n')
+                                .split('\n')
                                 .map((line, index) => (
-                                    <p key={index}>{line}</p> 
+                                    <p key={index}>{line}</p>
                                 ))}
                         </div>
 
@@ -221,7 +190,7 @@ function recView() {
                 </div>
             )}
 
-            {loading ? <Loading/> : null}
+            {loading ? <Loading /> : null}
         </div>
     );
 }

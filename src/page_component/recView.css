@@ -101,7 +101,10 @@ hr.hr-2 {
     border-bottom: 2px dashed #eee;
     background: #999;
   }
-  
+
+.dropdown-container-context{
+    font-family: 'NEXON Lv2 Gothic';
+}
 
 /* .pagination {
     display: flex;

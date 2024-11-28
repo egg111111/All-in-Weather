@@ -195,16 +195,40 @@ function WeatherChart({ userData }) {
 
     //미세먼지 가져오기(AirQuality api)
     useEffect(() => {
-        const fetchAirQuality = async ()=> {
-            try {
-                const response = await fetch(`https://api.breezometer.com/air-quality/v2/forecast/hourly?lat=${48.857456}&lon=${2.354611}&key=${YOUR_API_KEY}&hours=3`);
-                const data = await response.json();
-
-            } catch {
-
+        const fetchAirQuality = async () => {
+          const url = `https://airquality.googleapis.com/v1/forecast:lookup?key=${AirQuality_Key}`;
+          
+          const requestBody = {
+            location: {
+              latitude: 37.4125333,
+              longitude: -122.0840937,
+            },
+            dateTime: currentTime_air,
+          };
+    
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept-Language": "*", // 모든 언어를 허용
+              },
+              body: JSON.stringify(requestBody), // JSON 형식으로 요청 본문 생성
+            });
+    
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
-    })
+    
+            const data = await response.json();
+            console.log("Air Quality Forecast:", data); // 데이터를 콘솔에 출력
+          } catch (error) {
+            console.error("Error fetching air quality data:", error);
+          }
+        };
+    
+        fetchAirQuality();
+      }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
     const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
         hour: "numeric",
@@ -322,6 +346,7 @@ function WeatherChart({ userData }) {
     };
 
     const currentTime = new Date().getTime(); // 현재 시각 (밀리초)
+    const currentTime_air = new Date();
     const currentNormalized = normalizeTime(currentTime);
 
     const data_sun = {
@@ -450,12 +475,12 @@ function WeatherChart({ userData }) {
     //일출/일몰에 맞춰서 배경 바꾸기 
     //여기서 나온 값을 context Api를 사용해서 App으로 보냄 
     //0: 낮 1: 밤
-    const {setIsNight} = useContext(IsNightContext);
+    const { setIsNight } = useContext(IsNightContext);
 
     const day_night = () => {
         return currentTime < sunriseTimestamp || currentTime > sunsetTimestamp
-        ? true
-        : false;
+            ? true
+            : false;
     };
 
     useEffect(() => {

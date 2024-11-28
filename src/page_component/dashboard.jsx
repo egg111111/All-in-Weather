@@ -13,10 +13,6 @@ function dashboard() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [username, setUsername] = useState("");
-    //const username = localStorage.getItem('username');
-    // const [location, setLocation] = useState({ latitude: null, longitude: null });
-    // const [locationStatus, setLocationStatus] = useState("위치 정보 불러오는 중...");
-    // const [currentWeather, setCurrentWeather] = useState(null);
 
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
