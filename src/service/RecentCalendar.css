@@ -32,8 +32,8 @@
 .date-card {
   flex: 0 0 auto;
   min-width: 100px; /* 각 카드의 최소 너비 설정 */
-  width: 100px; /* 각 카드의 너비를 설정 */
-  height: 80px; /* 각 카드의 고정 높이 설정 */
+  width: 120px; /* 각 카드의 너비를 설정 */
+  height: auto; /* 각 카드의 고정 높이 설정 */
   padding: 15px;
   background-color: #f1f1f1;
   border: 1px solid #ddd;
@@ -65,12 +65,13 @@
 
 
 .activities {
-  margin-top: 10px;
-  width: 100%; /* 활동 리스트 너비를 전체로 설정 */
+  margin-top: 8px;
+  width: 110%; /* 활동 리스트 너비를 전체로 설정 */
   text-align: center; /* 텍스트 가운데 정렬 */
   display: flex;
   flex-direction: column;
   align-items: normal;
+  gap: 15px;
 }
 
 .activity-item {
@@ -78,8 +79,6 @@
   color: #ffffff;
   padding: 5px;
   border-radius: 5px;
-  margin-bottom: 5px;
-  font-size: 0.9em;
   position: relative;
 }
 
