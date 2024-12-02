@@ -204,10 +204,9 @@
   background-color: #fff;
   padding: 8px;
   margin-top: 2%;
+  font-family: 'NEXON Lv2 Gothic';
   font-size: 14px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90vw;
+  width: 75vw;
   max-width: 640px;
   height: 20vh;
   max-height: 200px;
@@ -263,12 +262,20 @@
 }
 
 .sun_Doughnut{
-  width: 90vw;
+  width: 80vw;
   height: 25vh;
   background-color: #ffffff;
   display: grid;
   justify-content: center;
   align-items: center;
+  font-family: 'NEXON Lv2 Gothic';
+}
+
+.collapse-content{
+  width: 90vw;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: NEXON Lv2 Gothic;
 }
 
 @media (max-width: 576px) {

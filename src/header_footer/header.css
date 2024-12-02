@@ -32,3 +32,13 @@ hr.hr-5 {
     border-top: 3px double #526b916d;
     margin-left: 5%;
   }
+
+.header-nickname{
+    font-family: 'NEXON Lv1 Gothic OTF';
+    font-size: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: #ffffffa8;
+    padding: 5%;
+    border-radius: 10px;
+}

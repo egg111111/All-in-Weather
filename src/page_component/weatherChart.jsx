@@ -387,7 +387,7 @@ function WeatherChart({ userData }) {
         datasets: [
             {
                 data: [currentNormalized, 1 - currentNormalized],
-                backgroundColor: ["#FFC95C", "#D4CEFF"],
+                backgroundColor: ["#D4CEFF", "#FFC95C"],
                 borderWidth: 1,
             },
         ],
@@ -585,14 +585,16 @@ function WeatherChart({ userData }) {
             </div>
 
             <br />
+            
+            <div className="collapse-content">
+                <Collapse
+                    bordered={false}
+                    defaultActiveKey={['0']}
+                    expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
 
-            <Collapse
-                bordered={false}
-                defaultActiveKey={['0']}
-                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-
-                items={getItems(panelStyle)}
-            />
+                    items={getItems(panelStyle)}
+                />  
+            </div>
 
         </div>
     );

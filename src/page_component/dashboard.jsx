@@ -64,6 +64,7 @@ function Dashboard() {
                 console.log("User Info:", response.data);  // 콘솔에 출력
                 // 사용자 정보 가져온 후 알림을 요청
                 fetchNotifications(userId);
+                localStorage.setItem("nickname", userInfo.nickname);
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
@@ -90,7 +91,7 @@ function Dashboard() {
         <>
             {userInfo && <WeatherChart userData={userInfo} />}
             {userInfo && <RecentCalendar userData={userInfo} />} 
-            <div>
+            {/* <div>
                 {error ? (
                     <div>{error}</div>
                 ) : userInfo ? (
@@ -102,7 +103,7 @@ function Dashboard() {
                 ) : (
                     <div>Loading user information...</div>
                 )}
-            </div>
+            </div> */}
         </>
     );
 }

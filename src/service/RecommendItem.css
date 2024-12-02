@@ -3,8 +3,8 @@
   display: grid;
   width: 90vw;
   max-width: 610px;
-  height: 30vh;
-  max-height: 200px;
+  /* height: 50vh; */
+  max-height: 600px;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #e0e0e0;
@@ -51,7 +51,7 @@
 }
 
 .rain-details-table {
-  width: 160%;
+  /* width: 0%; */
   border-collapse: collapse;
   text-align: center;
   margin-top: 10px;

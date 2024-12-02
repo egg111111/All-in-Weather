@@ -1,6 +1,6 @@
 .recent-calendar-container {
   max-width: 400px; /* 최대 너비를 조정하여 화면에 일부만 보이도록 설정 */
-  width: 100%;
+  width: 80vW;
   margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;

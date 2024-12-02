@@ -32,12 +32,15 @@ const Header = () => {
         navigate('/')
     }
 
+    //닉네임 가져오기 
+    const nickname = localStorage.getItem('nickname');
+
     return (
         <div>
             <Sidebar>
                     <h2 className="header-title" onClick={()=>{navigate('/dashboard')}}> All-in-Weather </h2>
+                    <p className="header-nickname"> {nickname}님 <br/> 환영합니다! </p>
                     <br/>
-                    <p>  </p>
 
                     <div className="header-container">
                         <p onClick={() => navigate('/myPage') }>마이 페이지</p>
