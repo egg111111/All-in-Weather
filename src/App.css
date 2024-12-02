@@ -1,18 +1,22 @@
+@font-face {
+  font-family: 'NEXON Lv1 Gothic OTF';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
 
 body {
-  /* background-color: #ffffff;
-  background-image: url(./assets/images/background.jpg);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  display: grid;
-  justify-content: center;
-  align-items: center; */
   height: 150vh;
-  /* max-width: 600px; */
-  /* min-height: 100vh; */
-  background-color:transparent;
+  background-color: transparent;
+  font-family: 'NEXON Lv2 Gothic';
 }
 
 .centered-content {
@@ -23,10 +27,11 @@ body {
   align-items: start;
   width: fit-content;
   height: fit-content;
-text-align: center;
+  text-align: center;
   background-color: #ffffff54;
   /* padding: 5px; */
   border-radius: 11px;
+  margin-bottom: 60px;
 }
 
 .kakao-sign-in-button {
@@ -34,99 +39,100 @@ text-align: center;
   height: 56px;
   background-position: 50% 50%;
   background-size: 100% 100%;
-  background-image : url(assets/images/kakao.png);
-  
-  cursor:pointer;
-  }
-  
-  .naver-sign-in-button {
+  background-image: url(assets/images/kakao.png);
+
+  cursor: pointer;
+}
+
+.naver-sign-in-button {
   width: 56px;
   height: 56px;
-  
+
   background-position: 50% 50%;
   background-size: 100% 100%;
-  background-image : url(assets/images/naver.png);
-  
-  cursor:pointer;
-  }
+  background-image: url(assets/images/naver.png);
 
-  .primary-button-lg {
-    border-radius: 6px;
-    padding: 8px 24px;
-    
-    box-sizing: border-box;
-  
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-  
-    background-color: rgba(58,87,232,1);
-  
-    color: rgba(255,255,255,1);
-  
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
-  
-    cursor: pointer;
-  
-  }
-  
-  .primary-button-lg:hover {
-    opacity: 0.95;
-  }
-  
-  .disable-button-lg {
-    border-radius: 6px;
-    padding: 8px 24px;
-    
-    box-sizing: border-box;
-  
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-  
-    background-color: rgba(138,146,166,1);
-  
-    color: rgba(255,255,255,1);
-  
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
-  
-    cursor: default;
-  
-  }
-  
-  .text-link-lg {
-    box-sizing: border-box;
-  
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-  
-    color: rgba(113,113, 113, 1);
-  
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 175%;
-  
-    cursor: pointer;
-  }
-  
-  .text-link-lg:hover {
-   color: rgba(40,40,4,1);
-  }
-  
-  .full-width {
-    width:100%;
-  }
-  
-  .sign-up-content-sns-sign-in-button-box {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 24px !important;
+  cursor: pointer;
 }
+
+.primary-button-lg {
+  border-radius: 6px;
+  padding: 8px 24px;
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(58, 87, 232, 1);
+
+  color: rgba(255, 255, 255, 1);
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+
+  cursor: pointer;
+
+}
+
+.primary-button-lg:hover {
+  opacity: 0.95;
+}
+
+.disable-button-lg {
+  border-radius: 6px;
+  padding: 8px 24px;
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(138, 146, 166, 1);
+
+  color: rgba(255, 255, 255, 1);
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+
+  cursor: default;
+
+}
+
+.text-link-lg {
+  box-sizing: border-box;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  color: rgba(113, 113, 113, 1);
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+
+  cursor: pointer;
+}
+
+.text-link-lg:hover {
+  color: rgba(40, 40, 4, 1);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.sign-up-content-sns-sign-in-button-box {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 24px !important;
+}
+
 .sign-up-content-box {
   display: flex;
   flex-direction: column;
@@ -136,7 +142,7 @@ text-align: center;
   gap: 12px;
 }
 
-.sign-up-content-divider{
-  border-top: 1px solid rgba(238,238,238,1);
+.sign-up-content-divider {
+  border-top: 1px solid rgba(238, 238, 238, 1);
   width: 64px;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AddUserInfo.css';
+import InputBox from '../sign_component/InputBox';
 import jwt_decode from 'jwt-decode';
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 
@@ -135,14 +136,14 @@ const AddUserInfo = () => {
 
 
   return (
-    <div>
-      <p> 개인 정보를 입력해주세요 </p>
+    <div className='addUser-content'> 
+      <p className='addUser-text-first'> 추천을 위한 개인 정보를 입력해주세요 </p>
       <div className="extra-info-form">
         {/* 나이 입력 */}
         <div className="form-group">
-          <label>나이</label>
+          <label className='addUser-form-label'>나이</label>
           <div className="age-input-group">
-            <input
+            <InputBox
               type="number"
               value={age}
               min="10"
@@ -163,7 +164,7 @@ const AddUserInfo = () => {
 
         {/* 성별 선택 */}
         <div className="form-group">
-          <label>성별</label>
+          <label className='addUser-form-label'>성별</label>
           <div className="gender-buttons">
             <button
               className={gender === 'male' ? 'active' : ''}
@@ -182,15 +183,15 @@ const AddUserInfo = () => {
 
         {/* 키와 몸무게 입력 */}
         <div className="form-group">
-          <label>키와 몸무게</label>
+          <label className='addUser-form-label'>키 / 몸무게</label>
           <div className="height-weight-group">
-            <input
+            <InputBox
               type="number"
               placeholder="키 (cm)"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
             />
-            <input
+            <InputBox
               type="number"
               placeholder="몸무게 (kg)"
               value={weight}
@@ -198,11 +199,11 @@ const AddUserInfo = () => {
             />
           </div>
         </div>
-        {/* 회원가입 버튼 */}
-        <button type="button" onClick={handleSubmit}>
+      </div>
+       {/* 회원가입 버튼 */}
+       <button type="button" style={{marginBottom: "15px"}}  onClick={handleSubmit}>
           다음
         </button>
-      </div>
     </div>
   );
 };

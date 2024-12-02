@@ -268,7 +268,7 @@ export default function SignUp() {
                   onChange={(e) => { setVerificationCode(e.target.value); setVerificationMessage(''); }}
                   isErrorMessage={isVerificationError}
                   message={verificationMessage}
-                  buttonTitle='이메일 인증 확인'
+                  buttonTitle='인증 확인'
                   onButtonClick={() => verifyCode(id, email, verificationCode)} // 인증 코드 확인 요청
                 />
               </div>

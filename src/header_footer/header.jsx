@@ -2,6 +2,7 @@ import React from "react"
 import { useState } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./sidebar";
+import BottomNav from "./bottomNav";
 import './header.css';
 
 const Header = () => {
@@ -37,7 +38,7 @@ const Header = () => {
 
     return (
         <div>
-            <Sidebar>
+            {/* <Sidebar>
                     <h2 className="header-title" onClick={()=>{navigate('/dashboard')}}> All-in-Weather </h2>
                     <p className="header-nickname"> {nickname}님 <br/> 환영합니다! </p>
                     <br/>
@@ -49,7 +50,8 @@ const Header = () => {
                         <hr className="hr-5"/>
                         <p onClick={handleLogout}>로그아웃</p>
                     </div>
-            </Sidebar>
+            </Sidebar> */}
+            <BottomNav/>
         </div>
     )
 }

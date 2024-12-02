@@ -1,0 +1,41 @@
+@font-face { 
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.detailPage-container{
+    width: 90vw;
+}
+
+.detail-title{
+    font-family: 'PyeongChangPeace-Bold';
+    font-size: 38px;
+    margin-left: 8%;
+    text-shadow: 5px 5px rgb(255, 255, 255), 0px 1px rgb(255, 255, 255), 1px 0px rgb(255, 255, 255), 0px -1px rgb(255, 255, 255);
+}
+
+.hr.hr-5 {
+    border: 0;
+    border-top: 3px double #526b916d;
+    margin-left: 5%;
+  }
+
+.detail-container{
+    font-family: 'NEXON Lv1 Gothic OTF';
+    font-size: 20px;
+    text-align: center;
+    margin-right: 4%;
+}
+
+
+.detail-nickname{
+    font-family: 'NEXON Lv1 Gothic OTF';
+    font-size: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: #ffffffd6;
+    padding: 5%;
+    border-radius: 10px;
+}

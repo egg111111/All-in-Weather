@@ -1,6 +1,6 @@
 /* recommendation-container 안의 모든 요소들을 가로로 배치 */
 .recommendation-container {
-  display: grid;
+  display: flex;
   width: 90vw;
   max-width: 610px;
   /* height: 50vh; */
@@ -34,10 +34,8 @@
 }
 
 .recommendations-right {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
-  padding-left: 80px;
-  /* 오른쪽으로 적당한 간격을 유지하기 위한 패딩 추가 */
 }
 
 .recommendation-item {

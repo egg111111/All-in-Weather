@@ -1,3 +1,15 @@
+@font-face {
+  font-family: 'NEXON Lv1 Gothic OTF';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+.addUser-content{
+  font-size: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 .extra-info-form {
   max-width: 400px;
   margin: 20px auto;
@@ -5,6 +17,8 @@
   /* border: 1px solid #ddd; */
   border-radius: 8px;
   /* background-color: #f9f9f9; */
+  display: grid;
+  justify-content: left;
 }
 
 .form-group {
@@ -15,14 +29,11 @@
   display: grid;
   align-items: center;
   gap: 10px;
-  justify-content: center;
 }
 
 .gender-buttons {
   display: grid;
   gap: 10px;
-  justify-content: center;
-  align-items: center;
   grid-template-columns: 90px 90px;
 }
 
@@ -40,10 +51,22 @@
 }
 
 .height-weight-group {
-  display: flex;
+  display: grid;
   gap: 10px;
+  width: 90%;
 }
 
 .height-weight-group input {
   flex: 1;
+}
+
+.addUser-form-label{
+  display: grid;
+  justify-content: left;
+  font-family: 'NEXON Lv1 Gothic OTF';
+}
+
+.addUser-text-first{
+  margin-left: 15px;
+  margin-right: 15px;
 }

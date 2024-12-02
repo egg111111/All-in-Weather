@@ -5,6 +5,21 @@
     font-style: normal;
 }
 
+@font-face {
+  font-family: 'NEXON Lv1 Gothic OTF';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NEXON Lv2 Gothic';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 .div-main{
     text-align: center;
 }
@@ -41,12 +56,11 @@
   }
   
   .sign-in-box {
-    width: 380px;
+    width: 90vw;
   
     display: flex;
     flex-direction: column;
-    
-    gap: 24px;
+  
   }
   
   .sign-in-title {
@@ -66,7 +80,7 @@
   
     align-items: center;
     
-    gap: 16px;
+    gap: 5px;
   }
   
   .sign-in-content-sns-sign-in-box {
@@ -92,8 +106,8 @@
   }
   
   .sign-in-content-divider{
-    border-top: 1px solid rgba(238,238,238,1);
-    width: 64px;
+    border-top: 1px solid rgb(195 195 195);
+    width: 70%;
   }
   
   .sign-in-content-input-box {

@@ -22,6 +22,7 @@ import RecommendItem from './service/RecommendItem';
 
 import Layout from './header_footer/layout';
 import Sidebar from './header_footer/sidebar';
+import DetailPage from './page_component/detailPage';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
@@ -57,21 +58,7 @@ const App = () => {
     <Provider store={store} >
       <Router>
         <Layout>
-          <div
-            // style={{
-            //   backgroundImage: isNight
-            //     ? "url(../src/assets/images/background_night.jpg?v=1)"
-            //     : "url(../src/assets/images/background.jpg?v=1)",
-            //     backgroundRepeat: "no-repeat",
-            //     backgroundAttachment: "fixed",
-            //     backgroundSize: "cover",
-            //     display: "grid",
-            //     justifyContent: "center",
-            //     alignItems: "center",
-            //     height: "100vh",
-            //     // transition: "background-image 0.5s ease",
-            // }}
-          >
+          <div>
             <div className="centered-content">
               <Routes>
                 <Route path="/" element={<Home_basic />} />
@@ -89,6 +76,7 @@ const App = () => {
                 <Route path="/recView" element={<RecView />} />
                 <Route path="/result" element={<Result />} />
                 <Route path="/recItem" element={<RecommendItem />} />
+                <Route path="/detail" element={<DetailPage />} />
               </Routes>
             </div>
           </div>

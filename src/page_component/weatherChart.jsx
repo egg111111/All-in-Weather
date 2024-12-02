@@ -16,10 +16,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 
 import { Collapse, theme } from "antd";
 import { CaretRightOutlined } from '@ant-design/icons';
 import ChatgptApi from "../service/chatgptApi"; import annotationPlugin from "chartjs-plugin-annotation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { useMediaQuery } from "react-responsive";
 
 import { IsNightContext } from "../service/isNight_Provider";
-
-import { useMediaQuery } from "react-responsive";
 
 import weatherDescKo from "../service/weatherDescKo";
 import "./weatherChart.css";
@@ -523,7 +524,7 @@ function WeatherChart({ userData }) {
     return (
         <div className="weatherChart-container">
             <div className="first-container">
-                <h3 className="current-location"> 📍 {address}</h3>
+                <h3 className="current-location"> <FontAwesomeIcon icon={faLocationDot}/> {address}</h3>
                 {currentWeather && (
                     <div className="current-weather">
 
