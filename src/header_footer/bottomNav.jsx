@@ -8,6 +8,10 @@ import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 import { IsNightContext } from "../service/isNight_Provider";
+import { WeatherdataContext } from "../service/weatherdataProvider";
+import { UserDataContext } from "../service/userDataProvider";
+
+import ChatgptApi from "../service/chatgptApi";
 import './bottomNav.css'
 
 // library.add(faHouse, faShirt, faCalendar, faBars);
@@ -15,10 +19,17 @@ import './bottomNav.css'
 const BottomNav = () => {
     const navigate = useNavigate();
     const { isNight } = useContext(IsNightContext);
+    const { currentWeather } = useContext(WeatherdataContext);
+    const {userInfo} = useContext(UserDataContext)
 
     return (
-        <nav className="Nav_container" style={{color: isNight ? '#BDACF6' : '#5ba3ff' }}>
-            <div > <FontAwesomeIcon icon={faShirt}/> </div>
+        <nav className="BottomNav_container" style={{color: isNight ? '#BDACF6' : '#5ba3ff' }}>
+            <div > 
+                {/* <FontAwesomeIcon icon={faShirt}/>  */}
+                {currentWeather && (
+                        <ChatgptApi weatherData={currentWeather}  userData={userInfo}/>
+                    )}
+            </div>
             <div> <FontAwesomeIcon icon={faCalendar} /> </div>
             <div onClick={()=>{navigate('/dashboard')}}> <FontAwesomeIcon icon={faHouse} /> </div>
             <div onClick={()=>{navigate('/detail')}}> <FontAwesomeIcon icon={faBars} /> </div>

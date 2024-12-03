@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Children, useContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { Line, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -21,6 +21,7 @@ import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "react-responsive";
 
 import { IsNightContext } from "../service/isNight_Provider";
+import { WeatherdataContext } from "../service/weatherdataProvider";
 
 import weatherDescKo from "../service/weatherDescKo";
 import "./weatherChart.css";
@@ -46,7 +47,8 @@ ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, LineEleme
 function WeatherChart({ userData }) {
     const [hourlyData, setHourlyData] = useState([]);
     const [location, setLocation] = useState({ latitude: null, longitude: null });
-    const [currentWeather, setCurrentWeather] = useState(null);
+    // const [currentWeather, setCurrentWeather] = useState(null);
+    const {currentWeather, setCurrentWeather} = useContext(WeatherdataContext);
     const [address, setAddress] = useState(''); // 행정동 주소를 저장할 상태
     const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
     const AirQuality_Key = import.meta.env.VITE_AIR_QUALITY_KEY;
@@ -141,6 +143,8 @@ function WeatherChart({ userData }) {
             console.error('Error sending location to server:', error);
         });
     };
+
+
         
     // 날씨 데이터 가져오기
     useEffect(() => {
@@ -151,6 +155,8 @@ function WeatherChart({ userData }) {
                         `https://api.openweathermap.org/data/3.0/onecall?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&units=metric&lang=kr`
                     );
                     const data = await response.json();// 현재 날씨 정보 가져오기
+
+
                     console.log(data)
                     setCurrentWeather({
                         temp: Math.round(data.current.temp),
@@ -159,6 +165,14 @@ function WeatherChart({ userData }) {
                         id: data.current.weather[0].id,
                         weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
                     });
+
+                    // setWeatherDate({
+                    //     temp: Math.round(data.current.temp),
+                    //     high: Math.round(data.daily[0].temp.max),
+                    //     low: Math.round(data.daily[0].temp.min),
+                    //     id: data.current.weather[0].id,
+                    //     weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
+                    // });
 
                     setLike_hum({
                         feels_like: Math.round(data.current.feels_like),
@@ -230,7 +244,7 @@ function WeatherChart({ userData }) {
     //미세먼지 가져오기(AirQuality api)
     useEffect(() => {
         const fetchAirQuality = async () => {
-          const url = `https://airquality.googleapis.com/v1/forecast:lookup?key=${AirQuality_Key}`;
+          const url = `http://api.waqi.info/feed/shanghai/?token=demo`;
           
           const requestBody = {
             location: {
@@ -247,7 +261,7 @@ function WeatherChart({ userData }) {
                 "Content-Type": "application/json",
                 "Accept-Language": "*", // 모든 언어를 허용
               },
-              body: JSON.stringify(requestBody), // JSON 형식으로 요청 본문 생성
+              body: JSON.stringify, // JSON 형식으로 요청 본문 생성
             });
     
             if (!response.ok) {
@@ -264,36 +278,9 @@ function WeatherChart({ userData }) {
         fetchAirQuality();
       }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
-    const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-    }).replace('오후', '오후 ').replace('오전', '오전 ') : null;
-
-    const formattedSunset = sun ? new Date(sun.sunset * 1000).toLocaleTimeString("ko-KR", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-    }).replace('오후', '오후 ').replace('오전', '오전 ') : null;
-
     //일출 일몰 구별 
     const sunriseTimestamp = sun ? sun.sunrise * 1000 : null;
     const sunsetTimestamp = sun ? sun.sunset * 1000 : null;
-    localStorage.setItem('sunrise', sunriseTimestamp);
-    localStorage.setItem('sunset', sunsetTimestamp);
-
-    // 데이터 및 라벨 분리
-    const beforeSunrise = hourlyData.filter(
-        (hour) => new Date(hour.time).getTime() < formattedSunrise
-    );
-    const afterSunriseBeforeSunset = hourlyData.filter(
-        (hour) =>
-            new Date(hour.time).getTime() >= formattedSunrise &&
-            new Date(hour.time).getTime() < formattedSunset
-    );
-    const afterSunset = hourlyData.filter(
-        (hour) => new Date(hour.time).getTime() >= formattedSunset
-    );
 
     //미세먼지 기준 구분
     function PM_standard(pm) {
@@ -571,12 +558,6 @@ function WeatherChart({ userData }) {
                         ))}
                     </div>
                 </div>
-
-                <div className="chatgpt-button">
-                    {currentWeather && (
-                        <ChatgptApi weatherData={currentWeather} userData={userData} />
-                    )}
-                </div>
                 <br />
 
             </div>
@@ -603,3 +584,4 @@ function WeatherChart({ userData }) {
 
 export default WeatherChart;
 
+export const useWeather = () => useContext(WeatherdataContext);

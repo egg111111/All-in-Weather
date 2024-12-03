@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Collapse } from "antd";
@@ -12,12 +12,13 @@ import socialApiClient from '../service/socialApiClient';   // 소셜 로그인�
 import WeatherChart from "./weatherChart";
 import RecentCalendar from "../service/RecentCalendar"; 
 import { notification } from 'antd'; // Ant Design의 Notification 컴포넌트
+import { UserDataContext } from "../service/userDataProvider";
 
 function Dashboard() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [username, setUsername] = useState("");
-    const [userInfo, setUserInfo] = useState(null);
+    const {userInfo, setUserInfo} = useContext(UserDataContext);
     const [error, setError] = useState(null);
 
     // Ant Design Notification 설정 함수
@@ -91,19 +92,6 @@ function Dashboard() {
         <>
             {userInfo && <WeatherChart userData={userInfo} />}
             {userInfo && <RecentCalendar userData={userInfo} />} 
-            {/* <div>
-                {error ? (
-                    <div>{error}</div>
-                ) : userInfo ? (
-                    <div>
-                        <strong>안녕하세요</strong> {userInfo.nickname}님
-                        <br />
-                        <strong>사용자 ID: </strong>{userInfo.userId}
-                    </div>
-                ) : (
-                    <div>Loading user information...</div>
-                )}
-            </div> */}
         </>
     );
 }

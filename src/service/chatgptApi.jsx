@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import Result from "../page_component/result";
 import WeatherChart from "../page_component/weatherChart";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShirt } from "@fortawesome/free-solid-svg-icons";
+
 import './chatgptApi.css'
 
 function chatgptApi({weatherData, userData}) {
@@ -385,9 +388,10 @@ function chatgptApi({weatherData, userData}) {
     return (
         <>
             <div>
-                <button onClick={call_get_style}> 옷차림 추천 </button>
-                <button onClick={call_get_activity}>활동 추천</button>
-                <br />
+                {/* <div onClick={call_get_style}> 옷차림 추천 </div> */}
+                <FontAwesomeIcon icon={faShirt} onClick={call_get_style}/> 
+                {/* <button onClick={call_get_activity}>활동 추천</button>
+                <br /> */}
                 {loading ? <Loading/> : null}
                 {gptData && <div>{gptData}</div>}
                 {gptImage ? (
