@@ -1,0 +1,21 @@
+.social_delete-container{
+    width: 90vw;
+    font-size: 20px;
+    margin-bottom: 20px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.social_delete-content-button{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    width: 75vw;
+    gap: 10px;
+}
+
+.social_delete-button{
+    font-size: 14px;
+}

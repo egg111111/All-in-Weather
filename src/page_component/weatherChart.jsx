@@ -16,8 +16,13 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'; // 데이터 레이블 
 import { Collapse, theme } from "antd";
 import { CaretRightOutlined } from '@ant-design/icons';
 import ChatgptApi from "../service/chatgptApi"; import annotationPlugin from "chartjs-plugin-annotation";
+//아이콘 가져오기 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faDroplet } from "@fortawesome/free-solid-svg-icons";
+import { faTemperatureHalf } from "@fortawesome/free-solid-svg-icons";
+import { faSmog } from "@fortawesome/free-solid-svg-icons";
+// ---
 import { useMediaQuery } from "react-responsive";
 
 import { IsNightContext } from "../service/isNight_Provider";
@@ -527,8 +532,8 @@ function WeatherChart({ userData }) {
                         </div>
 
                         {/* <div className="weather-feels-container"> */}
-                        <p> 체감온도 {like_hum?.feels_like}</p>
-                        <p> 습도 {like_hum?.humidity}</p>
+                        <p> <FontAwesomeIcon icon={faTemperatureHalf} /> 체감온도 {like_hum?.feels_like}</p>
+                        <p> <FontAwesomeIcon icon={faDroplet}/> 습도 {like_hum?.humidity}</p>
                         {/* </div> */}
                     </div>
                 )}

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import './social_delete.css'
 import Swal from "sweetalert2";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,11 +32,13 @@ function SocialDeleteUser() {
     };
 
     return (
-        <div>
+        <div className="social_delete-container">
             <h2>소셜 회원 탈퇴</h2>
             <p>정말 탈퇴하시겠습니까?</p>
-            <button onClick={deleteUser}>회원 탈퇴</button>
-            <button onClick={() => navigate('/myPage')}>취소</button>
+            <div className="social_delete-content-button">
+            <button className="social_delete-button" onClick={deleteUser}>회원 탈퇴</button>
+            <button className="social_delete-button" onClick={() => navigate('/myPage')}>취소</button>
+            </div>
         </div>
     );
 }

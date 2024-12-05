@@ -392,7 +392,7 @@ function chatgptApi({weatherData, userData}) {
                 <FontAwesomeIcon icon={faShirt} onClick={call_get_style}/> 
                 {/* <button onClick={call_get_activity}>활동 추천</button>
                 <br /> */}
-                {loading ? <Loading/> : null}
+                {/* {loading ? <Loading/> : null} */}
                 {gptData && <div>{gptData}</div>}
                 {gptImage ? (
                     <div>

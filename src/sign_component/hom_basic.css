@@ -18,7 +18,14 @@
     /* padding: 10%; */
     height: 80vh;
     width: 80vw;
-    justify-items: top;
+    justify-items: center;
     align-items: top;
 }
 
+.div-box{
+    display: grid;
+    width: 30vw;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}

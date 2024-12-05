@@ -173,7 +173,7 @@ function recView() {
 
                         <div>
                             {(selecteRec.recActivity || selecteRec.recStyle)
-                                .replace(/\. /g, '.\n')
+                                .replace(/(\d\.\s?)/g, `$1`)
                                 .split('\n')
                                 .map((line, index) => (
                                     <p key={index}>{line}</p>

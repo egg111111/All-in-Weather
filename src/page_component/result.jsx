@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../header_footer/loading";
+import './result.css'
 
 function Result() {
     const location = useLocation();
@@ -19,14 +20,15 @@ function Result() {
     }
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h2>{type}</h2>
+        <div className="result-container">
+            <h2 className="result-title">{type}</h2>
             {loading ? (
                 <Loading />
             ) : (
                 <>
                     {/* 줄바꿈 처리 */}
                     <div
+                        className="result-content-main"
                         dangerouslySetInnerHTML={{ __html: formattedResult }}
                         style={{ textAlign: "left", lineHeight: "1.8" }} // 줄 간격 조절
                     />
@@ -37,8 +39,11 @@ function Result() {
                     )}
                 </>
             )}
-            <button onClick={() => navigate('/dashboard')}> 돌아가기 </button>
-            <button onClick={() => navigate('/recView')}> 기록 보러 가기 </button>
+            <br/>
+            <div className="result-content-button">
+                <button onClick={() => navigate('/dashboard')}> 돌아가기 </button>
+                <button onClick={() => navigate('/recView')}> 기록 보러 가기 </button>
+            </div>
         </div>
     );
 }

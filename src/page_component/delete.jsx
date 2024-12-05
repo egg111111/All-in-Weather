@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
+import './delete.css'
 const API_URL = import.meta.env.VITE_API_URL;
 
 function DeleteUser() {
@@ -91,7 +92,7 @@ function DeleteUser() {
     };
 
     return (
-        <>
+        <div className="delete_container">
             <h2>회원 탈퇴</h2>
             <p>회원 탈퇴 시 이용자의 모든 개인정보가 즉시 삭제됩니다.</p>
             <p>회원 탈퇴를 진행하시겠습니까?</p>
@@ -105,19 +106,22 @@ function DeleteUser() {
             ) : (
                 // 일반 로그인 사용자 UI
                 <form onSubmit={handleVerifyPassword}>
-                    <label>비밀번호:</label>
+                    <label>비밀번호 입력</label>
+                    <br/>
                     <input
+                        className="delete_input"
                         type="password"
                         placeholder="비밀번호 입력"
                         value={inputPassword}
                         onChange={(e) => setInputPassword(e.target.value)}
                     />
-                    <button style={{ marginLeft: '10px', marginBottom: '10px' }} onClick={handleVerifyPassword}>비밀번호 확인</button>
-                    <button style={{ marginRight: '10px' }} onClick={deleteUser} disabled={!isPasswordValid}>회원 탈퇴</button>
-                    <button onClick={() => navigate('/myPage')}>취소</button>
+                    <button className="delete_button" style={{ marginLeft: '10px', marginBottom: '10px' }} onClick={handleVerifyPassword}>확인</button>
+                    <br/>
+                    <button className="delete_button" style={{ marginRight: '10px' }} onClick={deleteUser} disabled={!isPasswordValid}>회원 탈퇴</button>
+                    <button className="delete_button" onClick={() => navigate('/myPage')}>취소</button>
                 </form>
             )}
-        </>
+        </div>
     );
 }
 

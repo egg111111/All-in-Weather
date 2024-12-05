@@ -9,6 +9,7 @@ import naverImage from '/src/assets/images/naver.png';
 import kakaoImage from '/src/assets/images/kakao.png';
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 import socialApiClient from '../service/socialApiClient'; // 소셜 로그인용 API 클라이언트
+import { color } from "chart.js/helpers";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -158,20 +159,21 @@ function myPage() {
                                 <p>
                                     <strong className="myPage-container-title">닉네임 </strong>
                                     <br />
-                                    <img src={getProviderImage()} alt={userInfo.userId} style={{ width: "20px", marginRight: "5px", display: "inline" }} />
-                                    <span className="myPage-container-content" style={{ display: "inline" }}>{userInfo.nickname}</span>
+                                    <div className="myPage-container-content">
+                                        <img src={getProviderImage()} alt={userInfo.userId} style={{ width: "20px", marginRight: "5px", objectFit: "contain"}} />
+                                        {userInfo.nickname}
+                                    </div>
                                 </p>
-                                <strong className="myPage-container-title">이메일 주소</strong> <br/><span className="myPage-container-content">{userInfo.email}</span> <br/>
-                                <strong className="myPage-container-title">나이</strong> <br/> <span className="myPage-container-content">{userInfo.age}</span><br/>
-                                <strong className="myPage-container-title">성별</strong> <br/> <span className="myPage-container-content">{userInfo.gender}</span><br/>
-                                <strong className="myPage-container-title">키</strong> <br/> <span className="myPage-container-content">{userInfo.height}</span><br/>
-                                <strong className="myPage-container-title">몸무게</strong> <br/> <span className="myPage-container-content">{userInfo.weight}</span><br/>
+                                <strong className="myPage-container-title">이메일 주소</strong> <br/><div className="myPage-container-content">{userInfo.email}</div> <br/>
+                                <strong className="myPage-container-title">나이</strong> <br/> <div className="myPage-container-content">{userInfo.age}</div><br/>
+                                <strong className="myPage-container-title">성별</strong> <br/> <div className="myPage-container-content">{userInfo.gender}</div><br/>
+                                <strong className="myPage-container-title">키</strong> <br/> <div className="myPage-container-content">{userInfo.height}</div><br/>
+                                <strong className="myPage-container-title">몸무게</strong> <br/> <div className="myPage-container-content">{userInfo.weight}</div><br/>
                                 <br/>
                                 <hr/>
-                                <p  onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</p>
                                 <button style={{ marginLeft:'10%', marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
-                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate('/dashboard'); }}>취소</button>
-                                <br />
+                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate(-1); }}>취소</button>
+                                <p style={{color: '#898989'}} onClick={() => { navigate('/social_delete'); }}>회원 탈퇴</p>
                                 {/* <button onClick={() => navigate('/dashboard')}>확인</button> */}
                             </div>
                         )}
@@ -216,18 +218,18 @@ function myPage() {
                             </div>
                         ) : (
                             <div >
-                                <strong className="myPage-container-title">아이디</strong> <br/> <span className="myPage-container-content" >{userInfo.userId} <br/> </span>
-                                <strong className="myPage-container-title">닉네임</strong><br/> <span className="myPage-container-content" >{userInfo.nickname}<br/></span>
-                                <strong className="myPage-container-title">이메일</strong><br/> <span className="myPage-container-content" >{userInfo.email}<br/></span>
-                                <strong className="myPage-container-title">나이</strong><br/> <span className="myPage-container-content" >{userInfo.age}<br/></span>
-                                <strong className="myPage-container-title">성별</strong><br/> <span className="myPage-container-content" >{userInfo.gender}<br/></span>
-                                <strong className="myPage-container-title">키</strong><br/> <span className="myPage-container-content" >{userInfo.height}<br/></span>
-                                <strong className="myPage-container-title">몸무게</strong><br/> <span className="myPage-container-content" >{userInfo.weight}<br/></span>
+                                <strong className="myPage-container-title">아이디</strong> <br/> <div className="myPage-container-content" >{userInfo.userId} <br/> </div>
+                                <strong className="myPage-container-title">닉네임</strong><br/> <div className="myPage-container-content" >{userInfo.nickname}<br/></div>
+                                <strong className="myPage-container-title">이메일</strong><br/> <div className="myPage-container-content" >{userInfo.email}<br/></div>
+                                <strong className="myPage-container-title">나이</strong><br/> <div className="myPage-container-content" >{userInfo.age}<br/></div>
+                                <strong className="myPage-container-title">성별</strong><br/> <div className="myPage-container-content" >{userInfo.gender}<br/></div>
+                                <strong className="myPage-container-title">키</strong><br/> <div className="myPage-container-content" >{userInfo.height}<br/></div>
+                                <strong className="myPage-container-title">몸무게</strong><br/> <div className="myPage-container-content" >{userInfo.weight}<br/></div>
                                 <br/>
                                 <hr/>
-                                <p  onClick={() => { navigate('/delete'); }}>회원 탈퇴</p>
                                 <button style={{ marginLeft:'10%', marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>
-                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate('/dashboard'); }}>취소</button>
+                                <button  style={{ marginTop: '5px' }} onClick={() => { navigate(-1); }}>취소</button>
+                                <p style={{color: '#898989'}} onClick={() => { navigate('/delete'); }}>회원 탈퇴</p>
                                 <br />
                             </div>
                         )}

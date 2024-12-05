@@ -13,9 +13,10 @@
 }
 
 .myPage-all-container{
-  width: 75%;
+  width: 90vw;
   min-width: 300px;
-  display: inline-grid;
+  display: grid;
+  /* margin-bottom: 10px; */
 }
 
 .myPage-title{
@@ -40,12 +41,15 @@
 
 .myPage-container-content{
   font-family: 'NEXON Lv2 Gothic';
-  padding: 2%;
   border: solid 1.6px #7897f58a;
   border-radius:10px;
   background-color:#ffffff;
   padding-left: 5%;
   padding-right: 5%;
+  margin-right: 40px;
+  display: grid;
+  font-size: larger;
+  /* padding: 1%; */
 }
 
 .myPage-container-button{

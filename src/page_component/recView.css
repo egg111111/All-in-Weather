@@ -16,23 +16,26 @@
     font-style: normal;
 }
 
-.rec-title{
+.rec-title {
     font-family: 'NEXON Lv1 Gothic OTF';
     font-size: 30px;
     font-weight: 900;
-    
-}
-.recview-back{
-    /* background-color: #E0E7E7; */
-    display: contents;
-    padding: 10%;
-    width: 90vw;
-    height: 100vh;
+
 }
 
-.recView-text{
+.recview-back {
+    /* background-color: #E0E7E7; */
+    display: grid;
+    /* padding: 10%; */
+    width: 90vw;
+    /* height: 100vh; */
+    justify-content: center;
+    align-content: center;
+}
+
+.recView-text {
     font-family: 'NEXON Lv2 Gothic';
-    text-align: justify;    
+    text-align: justify;
     text-align-last: right;
     font-size: 20px;
     font-weight: 300;
@@ -65,24 +68,24 @@
     overflow-y: auto;
 }
 
-.modal-header{
+.modal-header {
     display: flex;
     gap: 3%;
     justify-content: center;
     align-items: center;
 }
 
-.modal-button{
+.modal-button {
     width: 5%;
     height: 5%;
     justify-content: center;
 }
 
-.modal-title{
+.modal-title {
     font-family: 'NEXON Lv1 Gothic OTF';
 }
 
-.rec_background{
+.rec_background {
     display: grid;
     margin-top: 10%;
     /* background-color: #bcbcbc; */
@@ -91,7 +94,7 @@
     font-family: 'NEXON Lv1 Gothic OTF';
 }
 
-.rec_list{
+.rec_list {
     list-style-type: none;
     line-height: 250%;
 }
@@ -100,9 +103,9 @@ hr.hr-2 {
     border: 0;
     border-bottom: 2px dashed #eee;
     background: #999;
-  }
+}
 
-.dropdown-container-context{
+.dropdown-container-context {
     font-family: 'NEXON Lv2 Gothic';
 }
 

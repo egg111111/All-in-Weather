@@ -1,12 +1,11 @@
 .recent-calendar-container {
   max-width: 400px; /* 최대 너비를 조정하여 화면에 일부만 보이도록 설정 */
-  width: 80vW;
+  width: 85vw;
   margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
   text-align: center;
 }
 
@@ -25,7 +24,7 @@
 }
 
 .recent-dates-wrapper::-webkit-scrollbar-thumb {
-  background-color: #007bff;
+  background-color: #A2D8FF;
   border-radius: 4px;
 }
 
@@ -49,9 +48,9 @@
 
 
 .date-card.selected {
-  background-color: #007bff;
+  background-color: #A2D8FF;
   color: #fff;
-  border-color: #007bff;
+  border-color: #A2D8FF;
 }
 
 .date-card:hover {
@@ -75,7 +74,7 @@
 }
 
 .activity-item {
-  background-color: #007bff;
+  background-color: #A2D8FF;
   color: #ffffff;
   padding: 5px;
   border-radius: 5px;
@@ -108,7 +107,7 @@
 }
 
 .activity-options button {
-  background-color: #007bff;
+  background-color: #A2D8FF;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -119,7 +118,7 @@
 }
 
 .activity-options button:hover {
-  background-color: #0056b3;
+  background-color: #A2D8FF;
 }
 
 .edit-button {
@@ -159,7 +158,7 @@
 }
 
 .modal-buttons button {
-  background-color: #007bff;
+  background-color: #A2D8FF;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -170,7 +169,7 @@
 }
 
 .modal-buttons button:hover {
-  background-color: #0056b3;
+  background-color: #A2D8FF;
 }
 
 /* 취소 버튼 스타일 */
