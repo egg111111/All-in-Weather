@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './social_delete.css'
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function SocialDeleteUser() {
     const navigate = useNavigate();
     const social_userId = localStorage.getItem('social_userId');
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setTitle('회원탈퇴'));
+    }, [dispatch]);
 
     const deleteUser = async () => {
         try {

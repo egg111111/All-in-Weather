@@ -1,10 +1,18 @@
+@font-face { 
+    font-family: 'PyeongChangPeace-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
 nav {
     overflow: hidden;
 }
 
 .TopNav_container{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* display: grid;
+    grid-template-columns: 1fr 1fr; */
+    display: flex;
     position: fixed;
     background-color: #fff;
     color: #5ba3ff;
@@ -16,6 +24,23 @@ nav {
     height: 50px;
     z-index: 9999;
     box-shadow: 0px 0px 0px 1.5px rgb(212, 212, 212);
+
+    align-items: center;
+}
+
+.TopNav_title{
+    position: fixed;
+    right: 10px;
+    font-family: 'PyeongChangPeace-Bold';
+}
+
+.TopNav_text{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    font-size: 20px;
 }
 
 nav>div {

@@ -14,12 +14,20 @@ import RecentCalendar from "../service/RecentCalendar";
 import { notification } from 'antd'; // Ant Design의 Notification 컴포넌트
 import { UserDataContext } from "../service/userDataProvider";
 
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
+
 function Dashboard() {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [username, setUsername] = useState("");
     const {userInfo, setUserInfo} = useContext(UserDataContext);
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(setTitle(' '));
+    }, [dispatch]);
 
     // Ant Design Notification 설정 함수
     const openNotification = (title, description) => {

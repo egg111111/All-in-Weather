@@ -1,9 +1,17 @@
 import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
 import './detailPage.css';
 
 export const detailPage = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(setTitle('더보기'));
+    }, [dispatch]);
 
     if (location.pathname === "/" || location.pathname === "/sign_up" || location.pathname === "/login") return null;
 

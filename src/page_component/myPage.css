@@ -52,6 +52,20 @@
   /* padding: 1%; */
 }
 
+.myPage-container-content_social{
+  font-family: 'NEXON Lv2 Gothic';
+  border: solid 1.6px #7897f58a;
+  border-radius:10px;
+  background-color:#ffffff;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin-right: 40px;
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
+  font-size: larger;
+  margin-bottom: -4px;
+}
+
 .myPage-container-button{
   display: flex;
   column-gap: 10px;

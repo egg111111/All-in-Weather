@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
+
 import Swal from "sweetalert2";
 import './myPage.css'
 import Loading from '../header_footer/loading.jsx';
@@ -21,6 +24,11 @@ function myPage() {
     const [isSocialLogin, setIsSocialLogin] = useState(false);
 
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setTitle('마이페이지'));
+    }, [dispatch]);
 
     // 사용자 정보 가져오기
     useEffect(() => {
@@ -159,16 +167,16 @@ function myPage() {
                                 <p>
                                     <strong className="myPage-container-title">닉네임 </strong>
                                     <br />
-                                    <div className="myPage-container-content">
+                                    <div className="myPage-container-content_social">
                                         <img src={getProviderImage()} alt={userInfo.userId} style={{ width: "20px", marginRight: "5px", objectFit: "contain"}} />
                                         {userInfo.nickname}
                                     </div>
                                 </p>
-                                <strong className="myPage-container-title">이메일 주소</strong> <br/><div className="myPage-container-content">{userInfo.email}</div> <br/>
-                                <strong className="myPage-container-title">나이</strong> <br/> <div className="myPage-container-content">{userInfo.age}</div><br/>
-                                <strong className="myPage-container-title">성별</strong> <br/> <div className="myPage-container-content">{userInfo.gender}</div><br/>
-                                <strong className="myPage-container-title">키</strong> <br/> <div className="myPage-container-content">{userInfo.height}</div><br/>
-                                <strong className="myPage-container-title">몸무게</strong> <br/> <div className="myPage-container-content">{userInfo.weight}</div><br/>
+                                <strong className="myPage-container-title">이메일 주소</strong> <br/><div className="myPage-container-content_social">{userInfo.email}</div> <br/>
+                                <strong className="myPage-container-title">나이</strong> <br/> <div className="myPage-container-content_social">{userInfo.age}</div><br/>
+                                <strong className="myPage-container-title">성별</strong> <br/> <div className="myPage-container-content_social">{userInfo.gender}</div><br/>
+                                <strong className="myPage-container-title">키</strong> <br/> <div className="myPage-container-content_social">{userInfo.height}</div><br/>
+                                <strong className="myPage-container-title">몸무게</strong> <br/> <div className="myPage-container-content_social">{userInfo.weight}</div><br/>
                                 <br/>
                                 <hr/>
                                 <button style={{ marginLeft:'10%', marginRight: '10px' }} onClick={() => setEditMode(true)}>정보 수정</button>

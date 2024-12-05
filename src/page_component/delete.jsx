@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
 import './delete.css'
+
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function DeleteUser() {
@@ -13,6 +16,11 @@ function DeleteUser() {
     const [inputPassword, setInputPassword] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [isSocialLogin, setIsSocialLogin] = useState(false);
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(setTitle('회원탈퇴'));
+    }, [dispatch]);
 
     // 사용자 정보 가져오기
     useEffect(() => {

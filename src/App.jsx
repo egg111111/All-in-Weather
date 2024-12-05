@@ -21,12 +21,13 @@ import Result from './page_component/result';
 import RecommendItem from './service/RecommendItem';
 
 import Layout from './header_footer/layout';
-import Sidebar from './header_footer/sidebar';
+import TopNav from './header_footer/topNav';
 import DetailPage from './page_component/detailPage';
 
 import { Provider } from 'react-redux';
 import store from './store/store';
 import { IsNightContext } from './service/isNight_Provider';
+
 
 const App = () => {
   const { isNight } = useContext(IsNightContext);

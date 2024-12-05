@@ -7,6 +7,9 @@ import Loading from "../header_footer/loading";
 const API_URL = import.meta.env.VITE_API_URL;
 const { Option } = Select;
 
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
+
 function recView() {
     const [view, setView] = useState([]);
     const [selecteRec, setSelecteRec] = useState(null);
@@ -19,6 +22,11 @@ function recView() {
     const itemPerPage = 7;
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(setTitle('추천 기록'));
+    }, [dispatch]);
 
     const getRecList = async () => {
         setLoading(true);

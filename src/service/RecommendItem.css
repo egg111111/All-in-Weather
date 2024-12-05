@@ -48,6 +48,10 @@
   /* 아이템 간 간격 추가 */
 }
 
+.recommendation-imgs{
+  object-fit: contain;
+}
+
 .rain-details-table {
   /* width: 0%; */
   border-collapse: collapse;

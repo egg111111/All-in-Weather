@@ -126,7 +126,7 @@ function RecommendItem({ hourlyData, airPollData, uvIndex }) {
           <ul className="recommendation-list">
             {recommendations.map((item, index) => (
               <li key={index} className="recommendation-item">
-                <img src={item.imageUrl} alt={item.name} />
+                <img className="recommendation-imgs" src={item.imageUrl} alt={item.name} />
                 <div className="recommendation-details">
                   <span>{item.name}</span>
                 </div>

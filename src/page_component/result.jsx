@@ -1,5 +1,9 @@
 import React from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
+
 import Loading from "../header_footer/loading";
 import './result.css'
 
@@ -7,6 +11,11 @@ function Result() {
     const location = useLocation();
     const navigate = useNavigate();
     const { result, imageUrl, type, loading, imageLoading } = location.state || { result: null, imageUrl: null, type: null, loading: true, imageLoading: true };
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setTitle('옷차림 추천'));
+    }, [dispatch]);
 
     // 디버깅: 데이터 확인
     console.log("Location 데이터:", location.state);
