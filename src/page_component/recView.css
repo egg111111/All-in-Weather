@@ -31,6 +31,9 @@
     /* height: 100vh; */
     justify-content: center;
     align-content: center;
+    padding-bottom: 10px;
+    background-color: #fff;
+    border-radius: 10px;
 }
 
 .recView-text {

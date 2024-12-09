@@ -12,6 +12,10 @@ import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../reducers/titleSlice.js";
 
+//아이콘 추가 임포트
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
+
 
 moment.locale("ko"); // moment의 로케일을 한국어로 설정
 Modal.setAppElement("#root");
@@ -244,6 +248,11 @@ const RecentCalendar = () => {
     return hourNumber + 12;
   };
 
+  //날짜 출력 형식 바꾸기
+  const formatKoreanDate = (date) => {
+    return moment(date).format("YYYY년 M월 D일");
+  };
+
   return (
     <div className="recent-calendar-container">
       <h3 className="recent-calendar-title">일정 추가하기</h3>
@@ -349,15 +358,17 @@ const RecentCalendar = () => {
       )}
 
       {/* 시간 선택 */}
+      <br/>
+      <hr/>
       <div className="time-picker-container">
-        <h4>{selectedDate.toDateString()}에 시간대 선택</h4>
+        <h4><FontAwesomeIcon icon={faClock} /> {formatKoreanDate(selectedDate)} 시간대 선택</h4>
         <Timepicker onTimeSelect={handleTimeSelect} />
       </div>
 
       {/* 활동 추가 */}
       {selectedTime && (
         <div className="activity-options">
-          <h4>{selectedDate.toDateString()} {selectedTime}에 추가할 활동 선택</h4>
+          <h4>{formatKoreanDate(selectedDate)} <br/> {selectedTime}에 추가할 활동 선택</h4>
           {["등산", "산책", "스포츠"].map((activity) => (
             <button
               key={activity}

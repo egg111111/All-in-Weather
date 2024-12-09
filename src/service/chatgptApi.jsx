@@ -20,7 +20,37 @@ function chatgptApi({weatherData, userData}) {
     const [currentWeather, setCurrentWeather] = useState([]);
     const [userStyle, setUserStyle] = useState(""); // 사용자 스타일 상태 추가
 
+    const [isRecommended, setIsRecommended] = useState(false); // 추천 여부
+    const [recommendationData, setRecommendationData] = useState(null); // 추천 데이터
+
+
     const navigate = useNavigate();
+
+    //오늘 추천을 받았는지, 받았으면 그걸 띄어주는 로직 구현 
+    const checkRecommendation = async() => {
+        const userId = localStorage.getItem("userId") || localStorage.getItem("social_userId");
+        if (!userId) {
+            console.error("User ID not found");
+            return;
+        }
+
+        const today = new Date().toISOString.split("T")[0];
+        try {
+            const response = await fetch(``);
+            if(response.ok){
+                const data = await response.json();
+                if (data) {
+                    setIsRecommended(true);
+                    setRecommendationData(data);
+                } else {
+                    setRecommendationData(false);
+                    call_get_style;
+                }
+            }
+        } catch (error) {
+            console.error("Error checking recommendation: ", error);
+        }
+    }
 
     useEffect(() => {
         const savedWeather = localStorage.getItem("currentWeather");
@@ -189,42 +219,6 @@ function chatgptApi({weatherData, userData}) {
         }
     }
 
-    //gpt 출력 로직(활동)
-    const call_get_activity = async (savedWeather) => {
-        setLoading(true);
-        if (!weatherData || !weatherData.temp) { // temp 속성 체크
-            console.error("Weather data is missing or incomplete:", weatherData);
-            return; // weatherData가 유효하지 않을 경우 함수 종료
-        }
-
-        try {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${import.meta.env.VITE_GPT_KEY}`,
-                },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [
-                        { role: "user", content: `오늘 날씨는 ${savedWeather.temp}, ${savedWeather.weather}, 실외 활동을 좋아하는 ${userData.age}세 여자의 오늘 활동을 추천해줘, 간략하게` },
-                    ],
-                    temperature: 0.5,
-                    max_tokens: 500,
-                })
-            });
-
-            const data = await response.json();
-            const recActivity = data.choices[0].message.content;
-            setGptData(recActivity);
-            console.log("Response: ", recActivity);
-            setLoading(false);
-            sendGptResult(recActivity, 'activity');
-            navigate("/result", { state: { result: recActivity, type: "활동 추천" } });
-        } catch (error) {
-            console.error("API 호출 실패:", error);
-        }
-    };
 
     const call_generate_clothing_image = async (translatedItems, gender, userStyle) => {
         try {
@@ -388,21 +382,7 @@ function chatgptApi({weatherData, userData}) {
     return (
         <>
             <div>
-                {/* <div onClick={call_get_style}> 옷차림 추천 </div> */}
                 <FontAwesomeIcon icon={faShirt} onClick={call_get_style}/> 
-                {/* <button onClick={call_get_activity}>활동 추천</button>
-                <br /> */}
-                {/* {loading ? <Loading/> : null} */}
-                {gptData && <div>{gptData}</div>}
-                {gptImage ? (
-                    <div>
-                        <h3>추천된 옷차림</h3>
-                        <img src={gptImage} alt="Generated Outfit" style={{ maxWidth: "100%" }} /> {/* DALL·E 이미지 출력 */}
-                    </div>
-                ) : (
-                    !loading && <div></div>  // 이미지가 없을 때 로딩 상태 표시
-                )}
-                
             </div>
 
             

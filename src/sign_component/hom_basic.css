@@ -8,6 +8,7 @@
 .title-h1{
     font-family: 'PyeongChangPeace-Bold';
     padding: 10%;
+    color: black;
     text-shadow: 5px 5px rgb(255, 255, 255), 0px 1px rgb(255, 255, 255), 1px 0px rgb(255, 255, 255), 0px -1px rgb(255, 255, 255);
 
 }

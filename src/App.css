@@ -12,6 +12,10 @@
   font-style: normal;
 }
 
+h1, h2, h3, label{
+  font-family: 'NEXON Lv1 Gothic OTF';
+}
+
 
 body {
   height: 150vh;

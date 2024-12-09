@@ -146,21 +146,21 @@ function Login() {
                         </div>
                         <div className='sign-in-content-button-box'>
                             <div className='primary-button-lg full-width' onClick={handleLogin}>로그인</div>
-                            <div className='text-link-lg full-width' style={{marginBottom: '14px'} } onClick={onSignUpButtonClickHandler}>회원가입</div>
+                            <div className='text-link-lg-full-width' style={{marginBottom: '14px'} } onClick={onSignUpButtonClickHandler}>회원가입</div>
                         </div>
                         <div className='sign-in-content-divider'></div>
                         <div className='sign-in-content-sns-sign-in-box'></div>
                         <div className='sign-in-content-sns-sign-in-title'>SNS 로그인</div>
                         <div className='sign-in-content-sns-sign-in-button-box'>
-                        <div style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}>
+                        <div className="sign-in-social"  style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}>
                             <div style={{ margin: '10px' }}>
-                                <img src={googleImg} alt="Login with Google" onClick={handleGoogleLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                                <img src={googleImg} alt="Login with Google" onClick={handleGoogleLogin} style={{ cursor: 'pointer', height: 'auto' }}/>
                             </div>
                             <div style={{ margin: '10px' }}>
-                                <img src={naverImg} alt="Login with Naver" onClick={handleNaverLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                                <img src={naverImg} alt="Login with Naver" onClick={handleNaverLogin} style={{ cursor: 'pointer', height: 'auto' }}/>
                             </div>
                             <div style={{ margin: '10px' }}>
-                                <img src={kakaoImg} alt="Login with Kakao" onClick={handleKakaoLogin} style={{ cursor: 'pointer', width: '150px', height: 'auto' }}/>
+                                <img src={kakaoImg} alt="Login with Kakao" onClick={handleKakaoLogin} style={{ cursor: 'pointer', height: 'auto' }}/>
                             </div>
                         </div>
                         </div>

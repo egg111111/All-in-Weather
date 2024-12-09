@@ -5,6 +5,7 @@ import './AddUserInfo.css';
 import InputBox from '../sign_component/InputBox';
 import jwt_decode from 'jwt-decode';
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
+import Swal from 'sweetalert2';
 
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
@@ -81,11 +82,21 @@ const AddUserInfo = () => {
   // 다음 버튼 클릭 시
   const handleSubmit = async () => {
     if (!gender) {
-        alert('성별을 선택해주세요.');
+      Swal.fire({
+        title: "",
+        text: "성별을 선택해주세요.",
+        icon: "warning",
+        showConfirmButton: true,
+    });
         return;
     }
     if (!height || !weight) {
-        alert('키와 몸무게를 입력해주세요.');
+      Swal.fire({
+        title: "",
+        text: "키와 몸무게를 작성해주세요.",
+        icon: "warning",
+        showConfirmButton: true,
+    });
         return;
     }
 
@@ -127,7 +138,7 @@ const AddUserInfo = () => {
         }
 
         localStorage.setItem('gender', gender);
-        navigate('/perference');
+        navigate('/preference');
     } catch (error) {
         console.error('추가정보 저장 실패:', error.message || error);
         alert(error.message); // 에러 메시지 출력

@@ -30,6 +30,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: -40px;
 }
 
 
@@ -39,7 +40,7 @@
     flex-direction: column;
     background-color: white;
     gap: 24px;
-}
+    margin-top: -40px;}
 
 
 .sign-up-title {

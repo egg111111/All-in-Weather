@@ -9,7 +9,12 @@ const Header = () => {
     const navigate = useNavigate()
     const location = useLocation();
 
-    if(location.pathname === "/" || location.pathname === "/sign_up" || location.pathname === "/login") return null;
+    if(location.pathname === "/" || 
+        location.pathname === "/sign_up" || 
+        location.pathname === "/login" || 
+        location.pathname === "/addUserInfo" ||
+        location.pathname === "/preference"
+    ) return null;
 
     function handleLogout() {
         localStorage.removeItem('token');

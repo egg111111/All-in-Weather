@@ -21,7 +21,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { faDroplet } from "@fortawesome/free-solid-svg-icons";
 import { faTemperatureHalf } from "@fortawesome/free-solid-svg-icons";
-import { faSmog } from "@fortawesome/free-solid-svg-icons";
+import { faStarOfLife } from "@fortawesome/free-solid-svg-icons";
+import { faVirus } from "@fortawesome/free-solid-svg-icons";
+import { faCertificate } from "@fortawesome/free-solid-svg-icons";
+import { faSunPlantWilt } from "@fortawesome/free-solid-svg-icons";
 // ---
 import { useMediaQuery } from "react-responsive";
 
@@ -39,7 +42,7 @@ import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
 import T_clouys from '/src/assets/images/weatherChart_icon/cloudy.gif';
 import T_rain from '/src/assets/images/weatherChart_icon/rain.gif';
 import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
-import T_sunny from '/src/assets/images/weatherChart_icon/sun.gif';
+import T_sunny from '/src/assets/images/weatherChart_icon/sun_1.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
 import T_night from '/src/assets/images/weatherChart_icon/night.gif';
 import { isAction } from "redux";
@@ -346,6 +349,9 @@ function WeatherChart({ userData }) {
                         return `${tooltipItem.dataset.label}: ${tooltipItem.parsed.y}°C`;
                     },
                 },
+                font: {
+                    family: "'NEXON Lv2 Gothic'",
+                }
             },
         },
         scales: {
@@ -410,6 +416,9 @@ function WeatherChart({ userData }) {
             },
             tooltip: {
                 enabled: false,
+                font: {
+                    family: "NEXON Lv2 Gothic",
+                }
             },
             datalabels: {
                 display: false,
@@ -447,10 +456,10 @@ function WeatherChart({ userData }) {
                 children:
                     <div className="weather-pollution-container">
                         <table className="pollution-table">
-                            <th>미세먼지</th>
-                            <th>이산화황</th>
-                            <th>이산화질소</th>
-                            <th> 오존 </th>
+                            <th> <FontAwesomeIcon icon={faStarOfLife}/> 미세먼지 </th>
+                            <th> <FontAwesomeIcon icon={faVirus}/> 이산화황 </th>
+                            <th><FontAwesomeIcon icon={faCertificate}/> 이산화질소 </th>
+                            <th><FontAwesomeIcon icon={faSunPlantWilt}/> 오존 </th>
                             <tr>
                                 <td>{PM_standard(airPoll?.pm2_5)} ({airPoll?.pm2_5}) </td>
                                 <td>{airPoll?.so2}</td>

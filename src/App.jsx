@@ -22,7 +22,6 @@ import RecommendItem from './service/RecommendItem';
 import RecentCalendar from './service/RecentCalendar';
 
 import Layout from './header_footer/layout';
-import TopNav from './header_footer/topNav';
 import DetailPage from './page_component/detailPage';
 
 import { Provider } from 'react-redux';
@@ -66,8 +65,9 @@ const App = () => {
                 <Route path="/" element={<Home_basic />} />
                 <Route path="/sign_up" element={<Signup />} />
                 <Route path="/addUserInfo" element={<AddUserInfo />} />
-                <Route path="/perference" element={<Perference_check />} />
+                <Route path="/preference" element={<Perference_check />} />
                 <Route path="/login" element={<Login />} />
+
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/myPage" element={<MyPage />} />
                 <Route path="/pwUpdate" element={<Id_pw_update />} />
