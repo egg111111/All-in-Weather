@@ -4,6 +4,7 @@ import axios from 'axios';
 import './AddUserInfo.css';
 import jwt_decode from 'jwt-decode';
 import generalApiClient from '../service/generalApiClient'; // 일반 로그인용 API 클라이언트
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
@@ -21,7 +22,7 @@ const AddUserInfo = () => {
   useEffect(() => {
     // 소셜 로그인 사용자의 정보 가져오기
     axios
-      .get('http://localhost:8080/api/users/social_user', { withCredentials: true })
+      .get(`${API_URL}/api/users/social_user`, { withCredentials: true })
       .then(response => {
         const social_userId = response.data.social_userId;
         console.log("social_userId 출력", social_userId);
@@ -99,7 +100,7 @@ const AddUserInfo = () => {
         let response;
 
         if (isSocialLogin && !isSocialUserComplete) {
-            response = await fetch(`http://localhost:8080/api/users/addUserInfo/${socialUserId}`, {
+            response = await fetch(`${API_URL}/api/users/addUserInfo/${socialUserId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

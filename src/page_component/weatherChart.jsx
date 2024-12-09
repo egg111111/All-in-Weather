@@ -23,9 +23,9 @@ import { useMediaQuery } from "react-responsive";
 
 import weatherDescKo from "../service/weatherDescKo";
 import "./weatherChart.css";
-import rainyIcon from '../icon/rainy.png';
-import cloudyIcon from '../icon/cloudy.png';
-import sunnyIcon from '../icon/sunshine.png';
+import rainyIcon from '../assets/icon/rainy.png';
+import cloudyIcon from '../assets/icon/cloudy.png';
+import sunnyIcon from '../assets/icon/sunshine.png';
 import RecommendItem from "../service/RecommendItem";
 
 import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
@@ -36,6 +36,7 @@ import T_sunny from '/src/assets/images/weatherChart_icon/sun.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
 import T_night from '/src/assets/images/weatherChart_icon/night.gif';
 import { isAction } from "redux";
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 // Chart.js 구성 요소 등록
@@ -70,7 +71,7 @@ function WeatherChart({ userData }) {
         hoursPerPage = 6;
     }
 
-    // Kakao Maps SDK 로드
+    //Kakao Maps SDK 로드
     const getAddressFromCoords = (latitude, longitude) => {
         if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
             const geocoder = new window.kakao.maps.services.Geocoder();
@@ -79,12 +80,13 @@ function WeatherChart({ userData }) {
                 if (status === window.kakao.maps.services.Status.OK) {
                     const region = result.find(item => item.region_type === 'H');
                     setAddress(region ? region.address_name : '위치 정보 없음');
+                    console.log("변환된 주소:", region ? region.address_name : '위치 정보 없음');
                 } else {
                     console.error(`Geocoder Error: ${status}`);
                 }
             });
         } else {
-            console.error("Kakao Maps SDK가 로드되지 않았습니다.");
+            console.error("Kakao Maps SDK가 vm에서 로드되지 않았습니다.");
         }
     };
 
@@ -94,23 +96,42 @@ function WeatherChart({ userData }) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
+                    console.log("현재 위치:", latitude, longitude);
                     setLocation({ latitude, longitude });
-
                     // 위치 정보 서버로 전송
                     sendLocationToServer(latitude, longitude);
                 },
                 (error) => {
-                    console.error("Error getting location:", error);
+                    console.error("Error getting location:", error.message);
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            console.error("사용자가 위치 권한을 거부했습니다.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            console.error("위치 정보를 사용할 수 없습니다.");
+                            break;
+                        case error.TIMEOUT:
+                            console.error("위치 요청이 시간 초과되었습니다.");
+                            break;
+                        default:
+                            console.error("알 수 없는 오류:", error);
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // 10초 대기
+                    maximumAge: 0   // 캐시된 위치 정보 사용 안 함
                 }
             );
         } else {
-            console.log("Geolocation is not supported by this browser.");
+            console.error("Geolocation이 브라우저에서 지원되지 않습니다.");
         }
     }, []);
 
-    // Kakao Maps SDK가 로드된 후 위치 정보를 기반으로 주소를 가져옴
+    //Kakao Maps SDK가 로드된 후 위치 정보를 기반으로 주소를 가져옴
     useEffect(() => {
-        if (location && location.latitude && location.longitude) {
+        if (location.latitude !== null && location.longitude !== null) {
+            console.log("주소 변환을 시작합니다:", location);
             getAddressFromCoords(location.latitude, location.longitude);
         } else {
             console.error("위치 정보가 없습니다:", location);
@@ -121,7 +142,7 @@ function WeatherChart({ userData }) {
     // 서버로 위치 정보 전송
     const sendLocationToServer = (latitude, longitude) => {
         const userId = userData.userId; // 사용자 ID
-        fetch('http://localhost:8080/api/location', {
+       fetch(`${API_URL}/api/location`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -173,7 +194,7 @@ function WeatherChart({ userData }) {
 
                     //대기오염 api 가져오기 
                     const pollution_response = await fetch(
-                        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
+                        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
                     );
                     const pollution_data = await pollution_response.json();
                     console.log(pollution_data);
@@ -227,41 +248,41 @@ function WeatherChart({ userData }) {
     };
 
     //미세먼지 가져오기(AirQuality api)
-    useEffect(() => {
-        const fetchAirQuality = async () => {
-          const url = `https://airquality.googleapis.com/v1/forecast:lookup?key=${AirQuality_Key}`;
+    // useEffect(() => {
+    //     const fetchAirQuality = async () => {
+    //       const url = `https://airquality.googleapis.com/v1/forecast:lookup?key=${AirQuality_Key}`;
           
-          const requestBody = {
-            location: {
-              latitude: 37.4125333,
-              longitude: -122.0840937,
-            },
-            dateTime: currentTime_air,
-          };
+    //       const requestBody = {
+    //         location: {
+    //           latitude: 37.4125333,
+    //           longitude: -122.0840937,
+    //         },
+    //         dateTime: currentTime_air,
+    //       };
     
-          try {
-            const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Accept-Language": "*", // 모든 언어를 허용
-              },
-              body: JSON.stringify(requestBody), // JSON 형식으로 요청 본문 생성
-            });
+    //       try {
+    //         const response = await fetch(url, {
+    //           method: "POST",
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //             "Accept-Language": "*", // 모든 언어를 허용
+    //           },
+    //           body: JSON.stringify(requestBody), // JSON 형식으로 요청 본문 생성
+    //         });
     
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //           throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
     
-            const data = await response.json();
-            console.log("Air Quality Forecast:", data); // 데이터를 콘솔에 출력
-          } catch (error) {
-            console.error("Error fetching air quality data:", error);
-          }
-        };
+    //         const data = await response.json();
+    //         console.log("Air Quality Forecast:", data); // 데이터를 콘솔에 출력
+    //       } catch (error) {
+    //         console.error("Error fetching air quality data:", error);
+    //       }
+    //     };
     
-        fetchAirQuality();
-      }, []); // 컴포넌트가 마운트될 때 한 번 실행
+    //     fetchAirQuality();
+    //   }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
     const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
         hour: "numeric",
@@ -523,10 +544,9 @@ function WeatherChart({ userData }) {
     return (
         <div className="weatherChart-container">
             <div className="first-container">
-                <h3 className="current-location"> 📍 {address}</h3>
+            <h3 className="current-location"> 📍 {address}</h3>
                 {currentWeather && (
                     <div className="current-weather">
-
                         <img src={weatherIcon_Map(currentWeather.id)}
                             alt="Weather Icon"
                             className="weather-icon" />

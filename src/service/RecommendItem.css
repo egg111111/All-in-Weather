@@ -1,6 +1,6 @@
 /* recommendation-container 안의 모든 요소들을 가로로 배치 */
 .recommendation-container {
-  display: grid;
+  display: flex;
   width: 90vw;
   max-width: 610px;
   height: 30vh;
