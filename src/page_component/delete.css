@@ -12,8 +12,13 @@
     padding-left: 5%;
     padding-right: 5%;
     font-size: 14px;
+    height: 29px;
 }
 
 .delete_button{
     font-size: 14px;
+}
+
+.delete-form-container{
+    /* background-color: #ffffff; */
 }

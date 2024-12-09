@@ -5,6 +5,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'NEXONFootballGothicBA1';
+    src: url('https://gcore.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXONFootballGothicBA1.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 nav {
     overflow: hidden;
 }
@@ -17,6 +24,7 @@ nav {
     background-color: #fff;
     color: #5ba3ff;
     font-size: 20px;
+    font-family: 'NEXONFootballGothicBA1';
 
     top: 0;
     left: 0;
@@ -32,6 +40,7 @@ nav {
     position: fixed;
     right: 10px;
     font-family: 'PyeongChangPeace-Bold';
+    font-size: 27px;
 }
 
 .TopNav_text{

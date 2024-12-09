@@ -113,6 +113,7 @@ function DeleteUser() {
                 </>
             ) : (
                 // 일반 로그인 사용자 UI
+                <div className="delete-form-container">
                 <form onSubmit={handleVerifyPassword}>
                     <label>비밀번호 입력</label>
                     <br/>
@@ -125,9 +126,11 @@ function DeleteUser() {
                     />
                     <button className="delete_button" style={{ marginLeft: '10px', marginBottom: '10px' }} onClick={handleVerifyPassword}>확인</button>
                     <br/>
+                    <br/>
                     <button className="delete_button" style={{ marginRight: '10px' }} onClick={deleteUser} disabled={!isPasswordValid}>회원 탈퇴</button>
                     <button className="delete_button" onClick={() => navigate('/myPage')}>취소</button>
                 </form>
+                </div>
             )}
         </div>
     );

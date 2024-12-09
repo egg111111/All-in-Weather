@@ -19,7 +19,7 @@ const TopNav = () => {
         <nav className="TopNav_container"  style={{color: isNight ? '#BDACF6' : '#5ba3ff' }}>
             <div><FontAwesomeIcon icon={faArrowLeft} onClick={() => {navigate(-1)}}/></div>
             <p className="TopNav_text"> {title} </p>
-            <p className="TopNav_title">AiW</p>
+            <p className="TopNav_title" onClick={() => {navigate('/dashboard')}}>AiW</p>
         </nav>
     )
 }

@@ -8,11 +8,24 @@ import Timepicker from "./TimePicker";
 import { Button, TimePicker } from "antd"; // TimePicker 추가
 import moment from "moment"; // 추가
 import "moment/locale/ko"; // 한국어 로케일 추가
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../reducers/titleSlice.js";
+
 
 moment.locale("ko"); // moment의 로케일을 한국어로 설정
 Modal.setAppElement("#root");
 
-const RecentCalendar = ({ userData }) => {
+const RecentCalendar = () => {
+  const location = useLocation();
+  const { userInfo } = location.state || {};
+
+  const dispatch = useDispatch();
+    
+  useEffect(() => {
+      dispatch(setTitle('일정'));
+  }, [dispatch]);
+
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const getRecentDates = () => {
@@ -53,7 +66,7 @@ const RecentCalendar = ({ userData }) => {
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState("week");
-  const userId = userData.userId;
+  const userId = userInfo.userId;
 
   const getSchedules = () => {
     if (userId) {
@@ -233,7 +246,7 @@ const RecentCalendar = ({ userData }) => {
 
   return (
     <div className="recent-calendar-container">
-      <h3>일정 추가하기</h3>
+      <h3 className="recent-calendar-title">일정 추가하기</h3>
       <div className="view-mode-buttons">
         <Button
           type={viewMode === "week" ? "primary" : "default"}
@@ -248,6 +261,8 @@ const RecentCalendar = ({ userData }) => {
           월단위 보기
         </Button>
       </div>
+
+      <br/>
 
       {viewMode === "week" ? (
         <ScrollMenu>
@@ -287,9 +302,9 @@ const RecentCalendar = ({ userData }) => {
         <div className="month-view-container">
           <div className="month-header">
             <Button onClick={() => handleMonthChange(-1)}>{"<"}</Button>
-            <span className="current-month">
+            <div className="current-month">
               {currentMonth.getFullYear()}년 {currentMonth.getMonth() + 1}월
-            </span>
+            </div>
             <Button onClick={() => handleMonthChange(1)}>{">"}</Button>
           </div>
           <div className="days-of-week">

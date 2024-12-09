@@ -99,7 +99,7 @@ function Dashboard() {
     return (
         <>
             {userInfo && <WeatherChart userData={userInfo} />}
-            {userInfo && <RecentCalendar userData={userInfo} />} 
+            {/* {userInfo && <RecentCalendar userData={userInfo} />}  */}
         </>
     );
 }

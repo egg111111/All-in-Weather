@@ -1,5 +1,19 @@
+@font-face {
+  font-family: 'NEXON Lv1 Gothic OTF';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.view-mode-buttons{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  
+}
+
 .recent-calendar-container {
-  max-width: 400px; /* 최대 너비를 조정하여 화면에 일부만 보이도록 설정 */
+  /* max-width: 400px; 최대 너비를 조정하여 화면에 일부만 보이도록 설정 */
   width: 85vw;
   margin: 20px auto;
   padding: 20px;
@@ -7,6 +21,11 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.recent-calendar-title{
+  font-family: 'NEXON Lv1 Gothic OTF';
+  font-size: 25px;
 }
 
 /* 날짜 카드 래퍼 스타일 수정: 가로 스크롤 추가 */
@@ -34,7 +53,7 @@
   width: 120px; /* 각 카드의 너비를 설정 */
   height: auto; /* 각 카드의 고정 높이 설정 */
   padding: 15px;
-  background-color: #f1f1f1;
+  background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
@@ -54,12 +73,11 @@
 }
 
 .date-card:hover {
-  background-color: #e6e6e6;
+  background-color: #cbe6ff;
 }
 
 .date {
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 
@@ -96,7 +114,7 @@
 }
 
 .delete-button:hover {
-  background: #c0c0c0; /* 호버 시 조금 더 진한 회색 */
+  background: #eaeaea; /* 호버 시 조금 더 진한 회색 */
 }
 
 /* 삭제 버튼 스타일 */
@@ -110,6 +128,7 @@
   margin-top: 10px; /* 위쪽 버튼들과 간격 추가 */
   text-align: center;
   transition: background-color 0.3s ease;
+
 }
 
 .delete-modal-button:hover {
@@ -212,8 +231,9 @@
 .days-of-week, .month-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 6px;
   margin-bottom: 10px;
+  justify-content: center;
 }
 
 .day-of-week {
@@ -226,6 +246,11 @@
   flex-direction: column;
 }
 
+.month-header{
+  display: grid;
+  grid-template-columns: 0.3fr 1fr 0.3fr;
+  margin-bottom: 15px;
+}
 
 .month-date-card {
   padding: 10px;
@@ -239,7 +264,7 @@
 }
 
 .selected {
-  background-color: #99ccff; /* 연한 파란색으로 변경 */
+  /* background-color: #99ccff; 연한 파란색으로 변경 */
   color: #fff;
   border-color: #99ccff;
 }
@@ -248,4 +273,18 @@
   background-color: #99ccff; /* 연한 파란색으로 변경 */
   color: #fff;
   border-color: #99ccff;
+}
+
+
+.ant-btn-variant-solid {
+  background-color: #99ccff;
+}
+
+.ant-btn-color-primary {
+  background-color: #99ccff;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+}
+
+.time-picker-container{
+  
 }

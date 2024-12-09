@@ -24,14 +24,14 @@ const BottomNav = () => {
 
     return (
         <nav className="BottomNav_container" style={{color: isNight ? '#BDACF6' : '#5ba3ff' }}>
+            <div onClick={()=>{navigate('/dashboard')}}> <FontAwesomeIcon icon={faHouse} /> </div>
             <div > 
                 {/* <FontAwesomeIcon icon={faShirt}/>  */}
                 {currentWeather && (
                         <ChatgptApi weatherData={currentWeather}  userData={userInfo}/>
                     )}
             </div>
-            <div> <FontAwesomeIcon icon={faCalendar} /> </div>
-            <div onClick={()=>{navigate('/dashboard')}}> <FontAwesomeIcon icon={faHouse} /> </div>
+            <div> <FontAwesomeIcon icon={faCalendar} onClick={()=>{navigate('/recCalendar', { state: { userInfo } })}}/> </div>
             <div onClick={()=>{navigate('/detail')}}> <FontAwesomeIcon icon={faBars} /> </div>
         </nav>
     )

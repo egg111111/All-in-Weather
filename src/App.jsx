@@ -19,6 +19,7 @@ import InputBox from './sign_component/InputBox';
 import Perference_check from './page_component/preference_check';
 import Result from './page_component/result';
 import RecommendItem from './service/RecommendItem';
+import RecentCalendar from './service/RecentCalendar';
 
 import Layout from './header_footer/layout';
 import TopNav from './header_footer/topNav';
@@ -77,6 +78,7 @@ const App = () => {
                 <Route path="/recView" element={<RecView />} />
                 <Route path="/result" element={<Result />} />
                 <Route path="/recItem" element={<RecommendItem />} />
+                <Route path="/recCalendar" element={<RecentCalendar/>}/>
                 <Route path="/detail" element={<DetailPage />} />
               </Routes>
             </div>
