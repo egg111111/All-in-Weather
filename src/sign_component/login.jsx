@@ -6,6 +6,8 @@ import InputBox from "./InputBox";
 import googleImg from '/src/assets/googleSignIn.png';
 import naverImg from '/src/assets/naverSignIn.png';
 import kakaoImg from '/src/assets/kakaoSignIn.png';
+import { messaging } from '../firebase';
+import { getToken } from "firebase/messaging"; // getToken 가져오기
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
@@ -16,8 +18,21 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-
     const navigate = useNavigate();
+
+    // 알림 권한 요청 (앱 로드시 요청)
+    useEffect(() => {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission()
+                .then((permission) => {
+                    if (permission === 'granted') {
+                        console.log("알림 권한이 허용되었습니다.");
+                    } else {
+                        console.warn("알림 권한이 거부되었습니다.");
+                    }
+                });
+        }
+    }, []);
 
     const onSignUpButtonClickHandler = () => {
         navigate('/sign_up');
@@ -29,11 +44,6 @@ function Login() {
             return;
         }
         e.preventDefault();
-
-        // 기존 토큰 삭제
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('refreshToken');
-        // localStorage.removeItem('tokenExpiry');
 
         const loginData = { userId, password };
 
@@ -58,6 +68,36 @@ function Login() {
                 localStorage.setItem('refreshToken', refreshToken);
                 localStorage.setItem('userId', userId);
                 localStorage.setItem('tokenExpiry', tokenExpiry);
+
+                // FCM 토큰 발급 전 권한 확인
+                if (Notification.permission === 'granted') {
+                    getToken(messaging, { vapidKey: import.meta.env.VITE_FCM_vapidKey })
+                        .then((fcmToken) => {
+                            if (fcmToken) {
+                                console.log("FCM Token:", fcmToken);
+                                fetch(`${API_URL}/api/users/update/fcm_token`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        userId: userId,
+                                        fcmToken: fcmToken,
+                                    }),
+                                })
+                                .then(response => response.json())
+                                .then(data => console.log("FCM 토큰 업데이트 성공:", data))
+                                .catch(err => console.error("FCM 토큰 업데이트 실패:", err));
+                            } else {
+                                console.error("FCM 토큰을 발급받을 수 없습니다.");
+                            }
+                        })
+                        .catch((err) => {
+                            console.error("FCM 토큰 발급 실패:", err);
+                        });
+                } else {
+                    console.error("알림 권한이 허용되지 않았습니다.");
+                }
 
                 navigate('/dashboard');
             } else {

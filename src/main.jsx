@@ -8,7 +8,6 @@ import App from './App.jsx'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <IsNightProvider>
     <WeatherdataProvider>
     <UserDataProvider>
@@ -16,5 +15,4 @@ createRoot(document.getElementById('root')).render(
     </UserDataProvider>
     </WeatherdataProvider>
     </IsNightProvider>
-  </StrictMode>
 )

@@ -10,6 +10,7 @@ import WeatherChart from "../page_component/weatherChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShirt } from "@fortawesome/free-solid-svg-icons";
 
+const API_URL = import.meta.env.VITE_API_URL;
 import './chatgptApi.css'
 
 function chatgptApi({weatherData, userData}) {
@@ -53,7 +54,7 @@ function chatgptApi({weatherData, userData}) {
             };
     
             // fetch 요청
-            const response = await fetch(`http://localhost:8080/api/users/style/${UserId}`, fetchOptions);
+            const response = await fetch(`${API_URL}/api/users/style/${UserId}`, fetchOptions);
     
             // 응답 처리
             if (response.ok) {
@@ -324,7 +325,7 @@ function chatgptApi({weatherData, userData}) {
     
         // API 호출
         try {
-            const response = await fetch(`http://localhost:8080/api/chat/save`, fetchOptions);
+            const response = await fetch(`${API_URL}/api/chat/save`, fetchOptions);
     
             if (response.ok) {
                 console.log("GPT 결과값 서버 전송 성공");
@@ -364,7 +365,7 @@ function chatgptApi({weatherData, userData}) {
     
     const uploadDalleImageToS3 = async (dalleImageUrl) => {
         try {
-            const response = await fetch("http://localhost:8080/upload-dalle-image", {
+            const response = await fetch(`${API_URL}/api/upload-dalle-image`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
