@@ -128,6 +128,15 @@ function myPage() {
         return provider ? providerImages[provider] : null;
     };
 
+    function gender_kr (gender) {
+        var genderKr;
+        if (userInfo.gender == 'male'){
+            return genderKr = '남자';
+        } else {
+            return genderKr = '여자';
+        }
+    }
+
 
     return (
         <div className="myPage-all-container">
@@ -174,7 +183,7 @@ function myPage() {
                                 </p>
                                 <strong className="myPage-container-title">이메일 주소</strong> <br/><div className="myPage-container-content_social">{userInfo.email}</div> <br/>
                                 <strong className="myPage-container-title">나이</strong> <br/> <div className="myPage-container-content_social">{userInfo.age}</div><br/>
-                                <strong className="myPage-container-title">성별</strong> <br/> <div className="myPage-container-content_social">{userInfo.gender}</div><br/>
+                                <strong className="myPage-container-title">성별</strong> <br/> <div className="myPage-container-content_social">{gender_kr(userInfo.gender)}</div><br/>
                                 <strong className="myPage-container-title">키</strong> <br/> <div className="myPage-container-content_social">{userInfo.height}</div><br/>
                                 <strong className="myPage-container-title">몸무게</strong> <br/> <div className="myPage-container-content_social">{userInfo.weight}</div><br/>
                                 <br/>
@@ -230,7 +239,7 @@ function myPage() {
                                 <strong className="myPage-container-title">닉네임</strong><br/> <div className="myPage-container-content" >{userInfo.nickname}<br/></div>
                                 <strong className="myPage-container-title">이메일</strong><br/> <div className="myPage-container-content" >{userInfo.email}<br/></div>
                                 <strong className="myPage-container-title">나이</strong><br/> <div className="myPage-container-content" >{userInfo.age}<br/></div>
-                                <strong className="myPage-container-title">성별</strong><br/> <div className="myPage-container-content" >{userInfo.gender}<br/></div>
+                                <strong className="myPage-container-title">성별</strong><br/> <div className="myPage-container-content" >{gender_kr(userInfo.gender)}<br/></div>
                                 <strong className="myPage-container-title">키</strong><br/> <div className="myPage-container-content" >{userInfo.height}<br/></div>
                                 <strong className="myPage-container-title">몸무게</strong><br/> <div className="myPage-container-content" >{userInfo.weight}<br/></div>
                                 <br/>

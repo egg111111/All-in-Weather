@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShirt } from "@fortawesome/free-solid-svg-icons";
 
 import './chatgptApi.css'
+const API_URL = import.meta.env.VITE_API_URL;
 
 function chatgptApi({weatherData, userData}) {
     const [gptData, setGptData] = useState("")
@@ -36,12 +37,14 @@ function chatgptApi({weatherData, userData}) {
 
         const today = new Date().toISOString.split("T")[0];
         try {
-            const response = await fetch(``);
+            const response = await fetch(`http://localhost:8080/api/chat/isrecommended/${userId}`);
             if(response.ok){
                 const data = await response.json();
                 if (data) {
                     setIsRecommended(true);
                     setRecommendationData(data);
+                    //여기서 스테이트를 저쪽으로 줘야하는 거 아닌가...
+                    navigate("/result", { state: { result: data.recStyle, imageUrl: data.imageUrl, type: "옷차림 추천", loading: false, imageLoading: false } });
                 } else {
                     setRecommendationData(false);
                     call_get_style;

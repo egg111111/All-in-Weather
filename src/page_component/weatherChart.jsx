@@ -25,6 +25,7 @@ import { faStarOfLife } from "@fortawesome/free-solid-svg-icons";
 import { faVirus } from "@fortawesome/free-solid-svg-icons";
 import { faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { faSunPlantWilt } from "@fortawesome/free-solid-svg-icons";
+import { faUmbrella } from "@fortawesome/free-solid-svg-icons";
 // ---
 import { useMediaQuery } from "react-responsive";
 
@@ -45,8 +46,12 @@ import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
 import T_sunny from '/src/assets/images/weatherChart_icon/sun_1.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
 import T_night from '/src/assets/images/weatherChart_icon/night.gif';
-import { isAction } from "redux";
 
+//미세먼지 아이콘 
+import rowIcon from '/src/assets/images/pm2_5/low.png';
+import basicIcon from '/src/assets/images/pm2_5/basic.png';
+import highIcon from '/src/assets/images/pm2_5/high.png';
+import fullIcon from '/src/assets/images/pm2_5/full-high.png';
 
 // Chart.js 구성 요소 등록
 ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels, annotationPlugin); // 플러그인 등록
@@ -56,7 +61,7 @@ function WeatherChart({ userData }) {
     const [hourlyData, setHourlyData] = useState([]);
     const [location, setLocation] = useState({ latitude: null, longitude: null });
     // const [currentWeather, setCurrentWeather] = useState(null);
-    const {currentWeather, setCurrentWeather} = useContext(WeatherdataContext);
+    const { currentWeather, setCurrentWeather } = useContext(WeatherdataContext);
     const [address, setAddress] = useState(''); // 행정동 주소를 저장할 상태
     const Weather_Key = import.meta.env.VITE_WEATHER_KEY;
     const AirQuality_Key = import.meta.env.VITE_AIR_QUALITY_KEY;
@@ -64,8 +69,9 @@ function WeatherChart({ userData }) {
     const [airPoll, setAirPoll] = useState(null);
     const [like_hum, setLike_hum] = useState(null);
     const [sun, setSun] = useState(null);
-    const [airQuality, setAirQuality] = useState(null);
     const [uvIndex, setUvIndex] = useState(null); // UV Index 상태 추가
+    const [hourlyPm2_5, setHourlyPm2_5] = useState([]); //미세먼지를 저장할 상태 
+    const [currentView, setCurrentView] = useState("rain");
 
     const isMobile = useMediaQuery({ query: "(max-width:474px)" });
     const isTablet = useMediaQuery({ query: "(min-witdh:475px) and (max-witdh:768px)" })
@@ -143,17 +149,17 @@ function WeatherChart({ userData }) {
                 longitude,
             }),
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Location saved:', data);
-        })
-        .catch((error) => {
-            console.error('Error sending location to server:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log('Location saved:', data);
+            })
+            .catch((error) => {
+                console.error('Error sending location to server:', error);
+            });
     };
 
 
-        
+
     // 날씨 데이터 가져오기
     useEffect(() => {
         if (location.latitude && location.longitude) {
@@ -173,14 +179,6 @@ function WeatherChart({ userData }) {
                         id: data.current.weather[0].id,
                         weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
                     });
-
-                    // setWeatherDate({
-                    //     temp: Math.round(data.current.temp),
-                    //     high: Math.round(data.daily[0].temp.max),
-                    //     low: Math.round(data.daily[0].temp.min),
-                    //     id: data.current.weather[0].id,
-                    //     weather: weatherDescKo[data.current.weather[0].id] || "알 수 없는 날씨",
-                    // });
 
                     setLike_hum({
                         feels_like: Math.round(data.current.feels_like),
@@ -249,42 +247,39 @@ function WeatherChart({ userData }) {
         }
     };
 
-    //미세먼지 가져오기(AirQuality api)
-    useEffect(() => {
-        const fetchAirQuality = async () => {
-          const url = `http://api.waqi.info/feed/shanghai/?token=demo`;
-          
-          const requestBody = {
-            location: {
-              latitude: 37.4125333,
-              longitude: -122.0840937,
-            },
-            dateTime: currentTime_air,
-          };
-    
-          try {
-            const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Accept-Language": "*", // 모든 언어를 허용
-              },
-              body: JSON.stringify, // JSON 형식으로 요청 본문 생성
-            });
-    
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
+    //미세먼지 가져오기(openWeahterMap)
+    const fetchAirQuality = async () => {
+
+        try {
+            const response = await fetch(
+                `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}`
+            );
             const data = await response.json();
-            console.log("Air Quality Forecast:", data); // 데이터를 콘솔에 출력
-          } catch (error) {
+            console.log("Air:", data);
+
+            const forecastPm2_5 = data.list.slice(0, 24).map((hourAir) => {
+                const hourDate = new Date(hourAir.dt * 1000);
+                return {
+                    date: hourDate,
+                    time: hourDate.toLocaleTimeString("ko-kr", {
+                        hour: "numeric",
+                        hour12: true,
+                    }).replace("오후", "오후").replace("오전", "오전"),
+                    pm2_5: hourAir.components.pm2_5
+                };
+            })
+
+            setHourlyPm2_5(forecastPm2_5);
+            console.log(hourlyPm2_5);
+
+        } catch (error) {
             console.error("Error fetching air quality data:", error);
-          }
-        };
-    
+        }
+    };
+
+    useEffect(() => {
         fetchAirQuality();
-      }, []); // 컴포넌트가 마운트될 때 한 번 실행
+    }, [location]);
 
     //일출 일몰 구별 
     const sunriseTimestamp = sun ? sun.sunrise * 1000 : null;
@@ -305,6 +300,21 @@ function WeatherChart({ userData }) {
         return pm_string;
     }
 
+    function PM_Icon(pm) {
+        if (pm <= 30) {
+            return rowIcon;
+        } else if (pm > 30 && pm <= 80) {
+            return basicIcon;
+        } else if (pm > 80 && pm <= 150) {
+            return highIcon;
+        } else {
+            return fullIcon;
+        }
+    }
+
+    const toggleView = () => {
+        setCurrentView((prev) => (prev === "rain" ? "pm2_5" : "rain"));
+    }
 
 
     const data = {
@@ -456,10 +466,10 @@ function WeatherChart({ userData }) {
                 children:
                     <div className="weather-pollution-container">
                         <table className="pollution-table">
-                            <th> <FontAwesomeIcon icon={faStarOfLife}/> 미세먼지 </th>
-                            <th> <FontAwesomeIcon icon={faVirus}/> 이산화황 </th>
-                            <th><FontAwesomeIcon icon={faCertificate}/> 이산화질소 </th>
-                            <th><FontAwesomeIcon icon={faSunPlantWilt}/> 오존 </th>
+                            <th> <FontAwesomeIcon icon={faStarOfLife} /> 미세먼지 </th>
+                            <th> <FontAwesomeIcon icon={faVirus} /> 이산화황 </th>
+                            <th><FontAwesomeIcon icon={faCertificate} /> 이산화질소 </th>
+                            <th><FontAwesomeIcon icon={faSunPlantWilt} /> 오존 </th>
                             <tr>
                                 <td>{PM_standard(airPoll?.pm2_5)} ({airPoll?.pm2_5}) </td>
                                 <td>{airPoll?.so2}</td>
@@ -525,7 +535,7 @@ function WeatherChart({ userData }) {
     return (
         <div className="weatherChart-container">
             <div className="first-container">
-                <h3 className="current-location"> <FontAwesomeIcon icon={faLocationDot}/> {address}</h3>
+                <h3 className="current-location"> <FontAwesomeIcon icon={faLocationDot} /> {address}</h3>
                 {currentWeather && (
                     <div className="current-weather">
 
@@ -542,12 +552,16 @@ function WeatherChart({ userData }) {
 
                         {/* <div className="weather-feels-container"> */}
                         <p> <FontAwesomeIcon icon={faTemperatureHalf} /> 체감온도 {like_hum?.feels_like}</p>
-                        <p> <FontAwesomeIcon icon={faDroplet}/> 습도 {like_hum?.humidity}</p>
+                        <p> <FontAwesomeIcon icon={faDroplet} /> 습도 {like_hum?.humidity}</p>
                         {/* </div> */}
                     </div>
                 )}
 
                 <div className="chart-container">
+
+                    <button onClick={toggleView} className="toggle-view-button">
+                        {currentView === "rain" ? <p> <FontAwesomeIcon icon={faUmbrella} /> 강수량</p> : <p> <FontAwesomeIcon icon={faStarOfLife} /> 미세먼지 </p>}
+                    </button>
                     {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
 
                     <div className="line-chart">
@@ -556,21 +570,37 @@ function WeatherChart({ userData }) {
 
                     {!isLastPage && <button className="next-button" onClick={handleNext}>&gt;</button>}
 
-                    <div className="weather-chart-container">
-                        {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
-                            <div key={index} className="weather-hour">
-                                <p className="weather-hour-precipitation">{hour.precipitation}%</p>
-                                <img
-                                    src={
-                                        hour.precipitation >= 60 ? rainyIcon :
-                                            hour.precipitation >= 30 ? cloudyIcon : sunnyIcon
-                                    }
-                                    alt="강수 확률 아이콘"
-                                    className="weather-hour-icon"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    {currentView === "rain" && (
+                        <div className="weather-chart-container">
+                            {hourlyData.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hour, index) => (
+                                <div key={index} className="weather-hour">
+                                    <img
+                                        src={
+                                            hour.precipitation >= 60 ? rainyIcon :
+                                                hour.precipitation >= 30 ? cloudyIcon : sunnyIcon
+                                        }
+                                        alt="강수 확률 아이콘"
+                                        className="weather-hour-icon"
+                                    />
+                                    <p className="weather-hour-precipitation">{hour.precipitation}%</p>
+                                </div>
+                            ))}
+                            <br />
+                        </div>
+                    )}
+
+                    {currentView === "pm2_5" && (
+                        <div className="weather-pm2_5-container">
+                            {hourlyPm2_5.slice(currentHourIndex, currentHourIndex + hoursPerPage).map((hourAir, index) => (
+                                <div key={index} className="weather-pm2_5">
+
+                                    {/* <p className="weather-hour-all-pm2_5"> {hourAir.pm2_5}</p> */}
+                                    <img className="weather-pm2_5-icon" src={PM_Icon(hourAir.pm2_5)} />
+                                    <p className="weahter-hour-pm2_5-text"> {PM_standard(hourAir.pm2_5)} </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <br />
 
@@ -581,7 +611,7 @@ function WeatherChart({ userData }) {
             </div>
 
             <br />
-            
+
             <div className="collapse-content">
                 <Collapse
                     bordered={false}
@@ -589,7 +619,7 @@ function WeatherChart({ userData }) {
                     expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
 
                     items={getItems(panelStyle)}
-                />  
+                />
             </div>
 
         </div>

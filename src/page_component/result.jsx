@@ -50,8 +50,8 @@ function Result() {
             )}
             <br/>
             <div className="result-content-button">
-                <button onClick={() => navigate('/dashboard')}> 돌아가기 </button>
-                <button onClick={() => navigate('/recView')}> 기록 보러 가기 </button>
+                <button className="result-real-button" onClick={() => navigate('/dashboard')}> 돌아가기 </button>
+                <button className="result-real-button" onClick={() => navigate('/recView')}> 기록 보러 가기 </button>
             </div>
         </div>
     );

@@ -124,12 +124,12 @@ function recView() {
     const indexOfFirstItem = indexOfLastItem - itemPerPage;
     const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    }
+    // const handlePageChange = (pageNumber) => {
+    //     setCurrentPage(pageNumber);
+    // }
 
-    const totalPages = Math.ceil(filteredView.length / itemPerPage);
-    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+    // const totalPages = Math.ceil(filteredView.length / itemPerPage);
+    // const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
 
     return (

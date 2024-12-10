@@ -59,7 +59,7 @@
   position: relative;
   width: 80vw;
   max-width: 600px;
-  margin: 20px auto;
+  margin: 0px auto;
   /* padding: 40px 20px 20px 20px; */
   /* border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -258,10 +258,9 @@
   align-items: center;
 }
 
-.weather-icon{
-}
+.weather-icon {}
 
-.sun_Doughnut{
+.sun_Doughnut {
   width: 80vw;
   height: 25vh;
   background-color: #ffffff;
@@ -271,10 +270,62 @@
   font-family: 'NEXON Lv2 Gothic';
 }
 
-.collapse-content{
+.collapse-content {
   width: 95vw;
   border-radius: 10px;
   font-family: NEXON Lv2 Gothic;
+}
+
+.weather-pm2_5-container {
+  margin-top: 0;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
+  transform-origin: center;
+}
+
+.weather-pm2_5 {
+  text-align: center;
+  min-width: 5vh;
+  margin: 0px 15px 10px 10px;
+  /* background-color: #f8f8f8; */
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 5rem;
+
+}
+
+.weather-hour-all-pm2_5,
+.weahter-hour-pm2_5-text {
+  margin: 5px 0;
+  font-size: 10px;
+  color: #555;
+
+}
+
+.weather-pm2_5-icon {
+  width: 24px;
+  height: 24px;
+  margin: 5px auto;
+  /* Change from 5px 0 to 5px auto */
+  display: block;
+  /* Ensure the icon is treated as a block element */
+
+}
+
+.toggle-view-button {
+  justify-items: center;
+  display: grid;
+  /* margin-left: -267px; */
+  /* width: 10px; */
+  height: 5vh;
+  justify-content: center;
+  color: cornflowerblue;
+  align-self: flex-start;
+  font-size: 13px;
+  background: #d5ebff;
+  border-color: unset;
 }
 
 @media (max-width: 576px) {
@@ -310,23 +361,23 @@
     /* 그림자 효과 */
   }
 
-  .weather-icon{
+  .weather-icon {
     width: 90%;
   }
 }
 
-.ant-collapse .ant-collapse-content>.ant-collapse-content-box{
+.ant-collapse .ant-collapse-content>.ant-collapse-content-box {
   padding: 16px 16px;
-    display: grid;
-    justify-content: center;
+  display: grid;
+  justify-content: center;
 }
 
-.ant-collapse-borderless >.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box {
+.ant-collapse-borderless>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box {
   padding-top: 4px;
   margin-bottom: 15px;
 }
 
-.ant-collapse>.ant-collapse-item >.ant-collapse-header {
+.ant-collapse>.ant-collapse-item>.ant-collapse-header {
   position: relative;
   display: flex;
   flex-wrap: nowrap;
