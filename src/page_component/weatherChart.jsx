@@ -106,8 +106,6 @@ function WeatherChart({ userData }) {
                     const { latitude, longitude } = position.coords;
                     console.log("현재 위치:", latitude, longitude);
                     setLocation({ latitude, longitude });
-                    // 위치 정보 서버로 전송
-                    sendLocationToServer(latitude, longitude);
                 },
                 (error) => {
                     console.error("Error getting location:", error.message);
@@ -148,30 +146,28 @@ function WeatherChart({ userData }) {
 
 
     // 서버로 위치 정보 전송
-    const sendLocationToServer = (latitude, longitude) => {
-        const userId = userData.userId; // 사용자 ID
-       fetch(`${API_URL}/api/location`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId,
-                latitude,
-                longitude,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Location saved:', data);
-        })
-        .catch((error) => {
-            console.error('Error sending location to server:', error);
-        });
-    };
+    // const sendLocationToServer = (latitude, longitude) => {
+    //     const userId = userData.userId; // 사용자 ID
+    //    fetch(`${API_URL}/api/location`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             userId,
+    //             latitude,
+    //             longitude,
+    //         }),
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Location saved:', data);
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error sending location to server:', error);
+    //     });
+    // };
 
-
-        
     // 날씨 데이터 가져오기
     useEffect(() => {
         if (location.latitude && location.longitude) {
@@ -268,27 +264,27 @@ function WeatherChart({ userData }) {
     };
 
     //미세먼지 가져오기(AirQuality api)
-    useEffect(() => {
-        const fetchAirQuality = async () => {
-          const url = `http://api.waqi.info/feed/shanghai/?token=demo`;
+    // useEffect(() => {
+    //     const fetchAirQuality = async () => {
+    //       const url = `https://api.waqi.info/feed/shanghai/?token=demo`;
           
-    //       const requestBody = {
-    //         location: {
-    //           latitude: 37.4125333,
-    //           longitude: -122.0840937,
-    //         },
-    //         dateTime: currentTime_air,
-    //       };
+    //     //   const requestBody = {
+    //     //     location: {
+    //     //       latitude: 37.4125333,
+    //     //       longitude: -122.0840937,
+    //     //     },
+    //     //     dateTime: currentTime_air,
+    //     //   };
     
-          try {
-            const response = await fetch(url, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Accept-Language": "*", // 모든 언어를 허용
-              },
-              body: JSON.stringify, // JSON 형식으로 요청 본문 생성
-            });
+    //       try {
+    //         const response = await fetch(url, {
+    //           method: "POST",
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //             "Accept-Language": "*", // 모든 언어를 허용
+    //           },
+    //           body: JSON.stringify, // JSON 형식으로 요청 본문 생성
+    //         });
     
     //         if (!response.ok) {
     //           throw new Error(`HTTP error! status: ${response.status}`);
@@ -301,8 +297,8 @@ function WeatherChart({ userData }) {
     //       }
     //     };
     
-        fetchAirQuality();
-      }, []); // 컴포넌트가 마운트될 때 한 번 실행
+    //     fetchAirQuality();
+    //   }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
     const formattedSunrise = sun ? new Date(sun.sunrise * 1000).toLocaleTimeString("ko-KR", {
         hour: "numeric",

@@ -105,16 +105,19 @@
   color: black;
   border: none;
   border-radius: 5px;
-  padding: 10px 15px;
+  padding: 10px 10px; /* 내부 여백 줄이기 */
   cursor: pointer;
   margin-top: 10px; /* 위쪽 버튼들과 간격 추가 */
   text-align: center;
   transition: background-color 0.3s ease;
+  font-size: 14px; /* 글씨 크기 조정 */
+  width: 80px; /* 버튼 크기를 내용에 맞게 조정 */
 }
 
 .delete-modal-button:hover {
   background: #c0c0c0; /* 호버 시 조금 더 진한 회색 */
 }
+
 
 .activity-options {
   margin-top: 20px;
@@ -172,7 +175,7 @@
 }
 
 .modal-buttons button {
-  background-color: #A2D8FF;
+  background-color: #5d68c9;
   color: #fff;
   border: none;
   border-radius: 5px;
