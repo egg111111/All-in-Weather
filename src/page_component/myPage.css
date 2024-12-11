@@ -73,8 +73,20 @@
   display: flex;
   column-gap: 10px;
   margin-left: 15%;
+  margin-bottom: 10px;
 }
 
 .hr{
   width: 50px;
+}
+.myPage-container-input-content{
+  border: solid 1.6px #7897f58a;
+  border-radius:10px;
+  background-color:#ffffff;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin-right: 40px;
+  display: grid;
+  font-size: larger;
+  margin-bottom: -11px;
 }

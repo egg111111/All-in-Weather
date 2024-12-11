@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import OpenAI from "openai";
 import Loading from "../header_footer/loading";
@@ -9,13 +10,14 @@ import WeatherChart from "../page_component/weatherChart";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShirt } from "@fortawesome/free-solid-svg-icons";
+import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 
 import './chatgptApi.css'
 const API_URL = import.meta.env.VITE_API_URL;
 
-function chatgptApi({weatherData, userData}) {
+function chatgptApi({ weatherData, userData, isRe_Rec }) {
     const [gptData, setGptData] = useState("")
-    const [gptImage, setGptImage] = useState(""); 
+    const [gptImage, setGptImage] = useState("");
 
     const [loading, setLoading] = useState(false);
     const [currentWeather, setCurrentWeather] = useState([]);
@@ -24,36 +26,84 @@ function chatgptApi({weatherData, userData}) {
     const [isRecommended, setIsRecommended] = useState(false); // 추천 여부
     const [recommendationData, setRecommendationData] = useState(null); // 추천 데이터
 
+    // const {isRe_Rec} = location.state || {isRe_Rec: isRe_Rec};
+
 
     const navigate = useNavigate();
+    //result에서 가져온 값이 false면 checkRecommendation을 실행 
+    //아니면 get_style 실행 
+
+    const checkIsGood = async () => {
+        if (isRe_Rec == true) {
+            call_get_style();
+        } else {
+            checkRecommendation();
+        }
+    }
 
     //오늘 추천을 받았는지, 받았으면 그걸 띄어주는 로직 구현 
-    const checkRecommendation = async() => {
-        const userId = localStorage.getItem("userId") || localStorage.getItem("social_userId");
-        if (!userId) {
-            console.error("User ID not found");
+    const checkRecommendation = async () => {
+        const userId = localStorage.getItem('userId');
+        const social_userId = localStorage.getItem('social_userId');
+        const UserId = userId || social_userId; // userId 또는 social_userId 선택
+        const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 (YYYY-MM-DD 형식)
+
+        if (!UserId) {
+            console.error("userId와 social_userId 중 하나가 필요합니다.");
             return;
         }
 
-        const today = new Date().toISOString.split("T")[0];
         try {
-            const response = await fetch(`http://localhost:8080/api/chat/isrecommended/${userId}`);
-            if(response.ok){
-                const data = await response.json();
-                if (data) {
-                    setIsRecommended(true);
-                    setRecommendationData(data);
-                    //여기서 스테이트를 저쪽으로 줘야하는 거 아닌가...
-                    navigate("/result", { state: { result: data.recStyle, imageUrl: data.imageUrl, type: "옷차림 추천", loading: false, imageLoading: false } });
+            const fetchOptions = {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(userId && { Authorization: `Bearer ${localStorage.getItem('token')}` }), // 일반 로그인일 경우 토큰 추가
+                },
+                ...(social_userId && { credentials: 'include' }), // 소셜 로그인일 경우 쿠키 포함
+            };
+
+            const response = await fetch(`${API_URL}/api/chat/read/${UserId}`, fetchOptions);
+            const data = await response.json();
+
+            if (response.ok) {
+                if (Array.isArray(data) && data.length > 0) {
+                    // 가장 최근의 기록을 가져오기 위해 정렬
+                    const recentRecord = data.sort((a, b) => new Date(b.createDate) - new Date(a.createDate))[0];
+
+                    if (recentRecord && recentRecord.createDate.startsWith(today)) {
+                        // 오늘 날짜와 동일한 기록이 있다면
+                        setIsRecommended(true);
+                        setRecommendationData(recentRecord);
+
+                        navigate("/result", {
+                            state: {
+                                result: recentRecord.recStyle,
+                                imageUrl: recentRecord.imageUrl,
+                                type: "옷차림 추천",
+                                loading: false,
+                                imageLoading: false,
+                                isRecommended: true
+                            }
+                        });
+                    } else {
+                        // 오늘 기록이 없다면 새 추천 요청
+                        setRecommendationData(false);
+                        console.log('Not result');
+                        call_get_style();
+                    }
                 } else {
-                    setRecommendationData(false);
-                    call_get_style;
+                    console.log("추천 기록 없음");
+                    call_get_style(); // 새 추천 요청
                 }
+            } else {
+                console.error(`데이터 가져오기 실패: ${response.statusText}`);
             }
         } catch (error) {
-            console.error("Error checking recommendation: ", error);
+            console.error("사용자 정보 가져오기 중 오류:", error);
         }
-    }
+    };
+
 
     useEffect(() => {
         const savedWeather = localStorage.getItem("currentWeather");
@@ -71,10 +121,10 @@ function chatgptApi({weatherData, userData}) {
                 console.error("No userId or social_userId provided.");
                 return;
             }
-    
+
             // 토큰 가져오기 (일반 로그인용)
             const token = localStorage.getItem('token');
-    
+
             // fetch 옵션 설정
             const fetchOptions = {
                 method: "GET",
@@ -84,10 +134,10 @@ function chatgptApi({weatherData, userData}) {
                 },
                 ...(social_userId && { credentials: 'include' }), // 소셜 로그인: 쿠키 포함
             };
-    
+
             // fetch 요청
             const response = await fetch(`http://localhost:8080/api/users/style/${UserId}`, fetchOptions);
-    
+
             // 응답 처리
             if (response.ok) {
                 const userStyles = await response.json(); // 여러 스타일을 받을 수 있음
@@ -104,7 +154,7 @@ function chatgptApi({weatherData, userData}) {
             console.error("사용자 스타일 가져오기 실패:", error);
         }
     };
-    
+
     const extractItems = (response) => {
         console.log("추출 텍스트 값 : ", response);
         const items = {
@@ -113,56 +163,56 @@ function chatgptApi({weatherData, userData}) {
             bottom: [],
             shoes: []
         };
-    
+
         // 정규식 수정: `1. **아우터**:` 형식을 포함한 각 항목을 추출
         const outerwearPattern = /1\.\s?\*\*아우터\*\*:\s*(.+?)(?=\s*2\.)/gs;
         const topPattern = /2\.\s?\*\*상의\*\*:\s*(.+?)(?=\s*3\.)/gs;
         const bottomPattern = /3\.\s?\*\*하의\*\*:\s*(.+?)(?=\s*4\.)/gs;
         const shoesPattern = /4\.\s?\*\*신발\*\*:\s*(.+?)(?=\s*$)/gs;
-    
+
         // 정규식으로 항목을 추출하고 배열로 저장
         const outerwearMatches = [...response.matchAll(outerwearPattern)];
         const topMatches = [...response.matchAll(topPattern)];
         const bottomMatches = [...response.matchAll(bottomPattern)];
         const shoesMatches = [...response.matchAll(shoesPattern)];
-    
+
         // 디버깅: 추출된 항목 확인
         console.log("Outerwear Matches:", outerwearMatches);
         console.log("Top Matches:", topMatches);
         console.log("Bottom Matches:", bottomMatches);
         console.log("Shoes Matches:", shoesMatches);
-    
+
         // 추출된 값을 각 항목에 넣기, 쉼표로 나누어 배열로 저장
         items.outerwear = outerwearMatches.length > 0 ? outerwearMatches[0][1].split(', ') : ["Default Outerwear"];  // 쉼표로 구분하여 배열에 저장
         items.top = topMatches.length > 0 ? topMatches[0][1].split(', ') : ["Default Top"];  // 쉼표로 구분하여 배열에 저장
         items.bottom = bottomMatches.length > 0 ? bottomMatches[0][1].split(', ') : ["Default Bottom"];  // 쉼표로 구분하여 배열에 저장
         items.shoes = shoesMatches.length > 0 ? shoesMatches[0][1].split(', ') : ["Default Shoes"];  // 쉼표로 구분하여 배열에 저장
-    
+
         // 디버깅: 최종 추출된 항목
         console.log("Extracted Items:", items);
-    
+
         return items;
     };
-    
-    
+
+
 
     //gpt 출력 로직(옷차림)
     const call_get_style = async () => {
         setLoading(true);
-         // 사용자 스타일 가져오기
-         const userId = localStorage.getItem("userId");
-         const social_userId = localStorage.getItem("social_userId");
-         navigate("/result", { state: { result: null, imageUrl: null, type: "옷차림 추천", loading: true ,imageLoading: true } });
-        
-         try {
+        // 사용자 스타일 가져오기
+        const userId = localStorage.getItem("userId");
+        const social_userId = localStorage.getItem("social_userId");
+        navigate("/result", { state: { result: null, imageUrl: null, type: "옷차림 추천", loading: true, imageLoading: true } });
+
+        try {
             if (!currentWeather || !currentWeather.temp) {
                 console.error("Weather data is missing or incomplete:", currentWeather);
                 return;
             }
-    
+
             const style = await getUserStyle(userId, social_userId);
             const gender = userData.gender === 'male' ? '남자' : '여자';
-    
+
             const messages = [
                 {
                     role: "user",
@@ -193,7 +243,7 @@ function chatgptApi({weatherData, userData}) {
                     max_tokens: 500,
                 }),
             });
-    
+
             const data = await response.json();
             const recStyle = data.choices[0].message.content;
             const cleanedRecStyle = recStyle.replace(/\*\*/g, ""); // 모든 ** 제거
@@ -207,11 +257,11 @@ function chatgptApi({weatherData, userData}) {
                 shoes: await translateToEnglish(items.shoes.join(", "))
             };
 
-            navigate("/result", { state: { result: formattedRecStyle, imageUrl: null, type: "옷차림 추천", loading: false, imageLoading: true } });
-    
+            navigate("/result", { state: { result: formattedRecStyle, imageUrl: null, type: "옷차림 추천", loading: false, imageLoading: true, isRecommended: true } });
+
             // 이미지 생성
             const gptImageUrl = await call_generate_clothing_image(translatedItems, gender, style);
-    
+
             // 결과값 전송
             sendGptResult(cleanedRecStyle, "style", gptImageUrl);
 
@@ -228,7 +278,7 @@ function chatgptApi({weatherData, userData}) {
             const engGender = await translateToEnglish(gender); // '남자' -> 'male', '여자' -> 'female'
             const engWeather = await translateToEnglish(currentWeather.weather); // '맑음' -> 'clear', '흐림' -> 'cloudy', 등
             const engUserStyle = await translateToEnglish(userStyle);
-    
+
             const prompt = `
                 Create a ${engUserStyle} style outfit for a ${engGender}, suitable for ${currentWeather.temp}°C (${engWeather} weather).
                 The image should only show the full body from the neck down, focusing on clothing details, with the figure facing forward. Ensure no head, face, or facial features are visible.
@@ -238,9 +288,9 @@ function chatgptApi({weatherData, userData}) {
                 - Bottom: ${translatedItems.bottom}.
                 - Shoes: ${translatedItems.shoes}.
                 `.trim(); // 프롬프트는 1000자 이내로
-    
+
             console.log("Generated Prompt for DALL·E:", prompt);
-    
+
             // DALL·E API 호출
             const response = await fetch("https://api.openai.com/v1/images/generations", {
                 method: "POST",
@@ -255,13 +305,13 @@ function chatgptApi({weatherData, userData}) {
                     size: "1024x1792", // 이미지 크기 설정
                 }),
             });
-    
+
             const data = await response.json();
             console.log("DALL·E Response: ", data); // 응답 데이터 콘솔 출력
-    
+
             if (data.data && data.data[0].url) {
                 const gptImageUrl = data.data[0].url;
-    
+
                 // 백엔드를 통해 DALL·E 이미지를 S3로 업로드
                 const s3ImageUrl = await uploadDalleImageToS3(gptImageUrl);
                 if (s3ImageUrl) {
@@ -284,20 +334,20 @@ function chatgptApi({weatherData, userData}) {
         const userId = localStorage.getItem('userId');
         const social_userId = localStorage.getItem("social_userId");
         const UserId = userId || social_userId; // userId 또는 social_userId 중 하나를 사용
-    
+
         console.log(recData);
-    
+
         // 데이터 유효성 체크
         if (!weatherData || !weatherData.temp) {
             console.error("Weather data is missing or incomplete:", weatherData);
             return;
         }
-    
+
         if (!recData) {
             console.error("내용이 존재하지 않습니다.");
             return;
         }
-    
+
         // 요청에 포함할 데이터 생성
         const bodyData = {
             userId: UserId, // 항상 userId로 전송
@@ -307,7 +357,7 @@ function chatgptApi({weatherData, userData}) {
             recActivity: type === 'activity' ? recData : null,
             imageUrl: gptImageUrl
         };
-    
+
         // 요청 옵션 설정
         const fetchOptions = {
             method: "POST",
@@ -318,11 +368,11 @@ function chatgptApi({weatherData, userData}) {
             ...(social_userId && { credentials: 'include' }), // 소셜 로그인일 경우 쿠키 포함
             body: JSON.stringify(bodyData),
         };
-    
+
         // API 호출
         try {
             const response = await fetch(`http://localhost:8080/api/chat/save`, fetchOptions);
-    
+
             if (response.ok) {
                 console.log("GPT 결과값 서버 전송 성공");
             } else {
@@ -332,7 +382,7 @@ function chatgptApi({weatherData, userData}) {
             console.error("서버 전송 중 오류 발생:", error);
         }
     };
-    
+
     const translateToEnglish = async (text) => {
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -350,7 +400,7 @@ function chatgptApi({weatherData, userData}) {
                     max_tokens: 500,
                 }),
             });
-    
+
             const data = await response.json();
             return data.choices[0].message.content.trim();
         } catch (error) {
@@ -358,7 +408,7 @@ function chatgptApi({weatherData, userData}) {
             return text; // 번역 실패 시 원본 텍스트 반환
         }
     };
-    
+
     const uploadDalleImageToS3 = async (dalleImageUrl) => {
         try {
             const response = await fetch("http://localhost:8080/upload-dalle-image", {
@@ -368,7 +418,7 @@ function chatgptApi({weatherData, userData}) {
                 },
                 body: JSON.stringify({ url: dalleImageUrl }), // DALL·E URL 전달
             });
-    
+
             if (response.ok) {
                 const s3Url = await response.text(); // S3 URL 반환
                 console.log("Image uploaded to S3:", s3Url);
@@ -380,14 +430,18 @@ function chatgptApi({weatherData, userData}) {
             console.error("Error uploading DALL·E image to S3:", error);
         }
     };
-    
+
 
     return (
         <>
+        {isRe_Rec ? (
             <div>
-                <FontAwesomeIcon icon={faShirt} onClick={call_get_style}/> 
-            </div>
-
+            
+            <FontAwesomeIcon icon={faRepeat} onClick={checkIsGood} />
+        </div>
+        ) : (
+            <FontAwesomeIcon icon={faShirt} onClick={checkIsGood} />
+        )}
             
         </>
     )

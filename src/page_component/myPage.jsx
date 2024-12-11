@@ -146,24 +146,24 @@ function myPage() {
                     <div className="myPage-container">
                         {editMode ? (
                             <div>
-                                <label className="myPage-container-title">닉네임</label> <br/>
+                                <strong className="myPage-container-title">닉네임</strong> <br/>
                                 <img src={getProviderImage()} alt={userInfo.social_userId} style={{ width: "20px", marginRight: "5px", height: "20px", display: "inline" }} />
-                                <input className="myPage-container-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">이메일 주소</label> <br/>
-                                <input className="myPage-container-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
+                                <strong className="myPage-container-title">이메일 주소</strong> <br/>
+                                <input className="myPage-container-input-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">나이</label> <br/>
-                                <input className="myPage-container-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
+                                <strong className="myPage-container-title">나이</strong> <br/>
+                                <input className="myPage-container-input-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">성별</label> <br/>
-                                <input className="myPage-container-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
+                                <strong className="myPage-container-title">성별</strong> <br/>
+                                <input className="myPage-container-input-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">키</label> <br/>
-                                <input className="myPage-container-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
+                                <strong className="myPage-container-title">키</strong> <br/>
+                                <input className="myPage-container-input-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">몸무게</label> <br/>
-                                <input className="myPage-container-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
+                                <strong className="myPage-container-title">몸무게</strong> <br/>
+                                <input className="myPage-container-input-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
                                 <br />
                                 <br/>
                                 <div className="myPage-container-button">
@@ -199,33 +199,33 @@ function myPage() {
                     <div className="myPage-container">
                         {editMode ? (
                             <div>
-                                <label className="myPage-container-title">아이디 </label>
+                                <strong className="myPage-container-title">아이디 </strong>
                                 <br/>
-                                <input className="myPage-container-content" type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="text" name="userId" value={userInfo.userId} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">닉네임</label>
+                                <strong className="myPage-container-title">닉네임</strong>
                                 <br/>
-                                <input className="myPage-container-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="text" name="nickname" value={userInfo.nickname} onChange={handleChange} />
                                 <br />
-                                <label  className="myPage-container-title">이메일</label>
+                                <strong  className="myPage-container-title">이메일</strong>
                                 <br/>
-                                <input className="myPage-container-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="email" name="email" value={userInfo.email} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">나이 </label>
+                                <strong className="myPage-container-title">나이 </strong>
                                 <br/>
-                                <input className="myPage-container-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="number" name="age" value={userInfo.age} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">성별</label>
+                                <strong className="myPage-container-title">성별</strong>
                                 <br/>
-                                <input className="myPage-container-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="text" name="gender" value={userInfo.gender} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">키</label>
+                                <strong className="myPage-container-title">키</strong>
                                 <br/>
-                                <input className="myPage-container-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="number" name="height" value={userInfo.height} onChange={handleChange} />
                                 <br />
-                                <label className="myPage-container-title">몸무게</label>
+                                <strong className="myPage-container-title">몸무게</strong>
                                 <br/>
-                                <input className="myPage-container-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
+                                <input className="myPage-container-input-content" type="number" name="weight" value={userInfo.weight} onChange={handleChange} />
                                 <br />
                                 <br/>
                                 <div className="myPage-container-button">

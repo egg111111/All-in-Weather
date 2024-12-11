@@ -8,12 +8,14 @@
   font-size: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .extra-info-form {
   max-width: 400px;
   margin: 20px auto;
-  padding: 20px;
+  /* padding: 20px; */
   /* border: 1px solid #ddd; */
   border-radius: 8px;
   /* background-color: #f9f9f9; */
@@ -44,6 +46,7 @@
   background-color: #fff;
   cursor: pointer;
   transition: border-color 0.3s ease;
+  margin-left: 10px;
 }
 
 .gender-buttons button.active {
@@ -64,9 +67,16 @@
   display: grid;
   justify-content: left;
   font-family: 'NEXON Lv1 Gothic OTF';
+  margin-left: 20px;
 }
 
 .addUser-text-first{
   margin-left: 15px;
   margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+.input-box-input{
+  margin-left: 10px;
+  margin-right: 10px;
 }

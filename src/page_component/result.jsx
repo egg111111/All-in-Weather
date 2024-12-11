@@ -1,17 +1,29 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../reducers/titleSlice.js";
 
+import ChatgptApi from "../service/chatgptApi.jsx";
+
 import Loading from "../header_footer/loading";
 import './result.css'
+import { faL } from "@fortawesome/free-solid-svg-icons";
+
+import { WeatherdataContext } from "../service/weatherdataProvider.jsx";
+import { UserDataContext } from "../service/userDataProvider.jsx";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 
 function Result() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { result, imageUrl, type, loading, imageLoading } = location.state || { result: null, imageUrl: null, type: null, loading: true, imageLoading: true };
+    const { result, imageUrl, type, loading, imageLoading, isRecommended } = location.state || { result: null, imageUrl: null, type: null, loading: true, imageLoading: true, isRecommended: false };
     const dispatch = useDispatch();
+    const { currentWeather } = useContext(WeatherdataContext);
+    const { userInfo } = useContext(UserDataContext)
+    // const [isRe_Rec, SetIsRe_Rec]
 
     useEffect(() => {
         dispatch(setTitle('옷차림 추천'));
@@ -48,11 +60,19 @@ function Result() {
                     )}
                 </>
             )}
-            <br/>
+            <br />
+            <div className="result-repeat-button">
+                    <ChatgptApi weatherData={currentWeather} userData={userInfo} isRe_Rec={true} />
+                    
+                </div>
+                <p className="repeat-text">재추천</p>
             <div className="result-content-button">
+                
+                <br />
                 <button className="result-real-button" onClick={() => navigate('/dashboard')}> 돌아가기 </button>
                 <button className="result-real-button" onClick={() => navigate('/recView')}> 기록 보러 가기 </button>
             </div>
+
         </div>
     );
 }

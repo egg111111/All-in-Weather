@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'NEXON Lv1 Gothic OTF';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
+  /* font-weight: normal;
+  font-style: normal; */
 }
 
 @font-face {
@@ -46,7 +46,7 @@
 
 .line-chart {
   width: 85vw;
-  height: 15vh;
+  height: 13vh;
   max-width: 600px;
   margin-bottom: 5%;
 }
@@ -321,11 +321,58 @@
   /* width: 10px; */
   height: 5vh;
   justify-content: center;
-  color: cornflowerblue;
+  color: rgb(0, 0, 0);
   align-self: flex-start;
   font-size: 13px;
-  background: #d5ebff;
-  border-color: unset;
+  background: #E8E8F3;
+  /* border-color: unset; */
+  margin-top: -24px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.button-toggle{
+  margin-top: 0px;
+}
+
+.weather-forecast-container{
+  display: grid;
+    width: 90vw;
+    max-width: 610px;
+    /* height: 50vh; */
+    max-height: 600px;
+    /* margin-bottom: 20px; */
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(193, 140, 140, 0.1);
+    background-color: #fff;
+    margin-bottom: 15px;
+}
+
+.weather-forecast-item{
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+}
+
+.img-forcast{
+  width: 30px;
+  height: auto;
+  object-fit: contain;
+}
+
+.forecast-table{
+  width: -webkit-fill-available;
+}
+
+.td-weekday{
+  text-align-last: left;
+}
+
+.td-precipiation{
+  text-align-last: right;
 }
 
 @media (max-width: 576px) {

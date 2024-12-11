@@ -59,6 +59,7 @@ ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, LineEleme
 
 function WeatherChart({ userData }) {
     const [hourlyData, setHourlyData] = useState([]);
+    const [dailyData, setDailyDate] = useState([]);
     const [location, setLocation] = useState({ latitude: null, longitude: null });
     // const [currentWeather, setCurrentWeather] = useState(null);
     const { currentWeather, setCurrentWeather } = useContext(WeatherdataContext);
@@ -221,6 +222,22 @@ function WeatherChart({ userData }) {
                         };
                     });
                     setHourlyData(forecastData);
+                    console.log("hourly:", hourlyData);
+                    const weekdays = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+                    const forecastDailyDate = data.daily.slice(0, 7).map((dailyD, index) => {
+                        const date = new Date();
+                        date.setDate(date.getDate() + index);
+                        return {
+                            temp_min: Math.round(dailyD.temp.min),
+                            temp_max: Math.round(dailyD.temp.max),
+                            description: dailyD.weather[0].id,
+                            precipitation: Math.round(dailyD.pop * 100),
+                            weekday: weekdays[date.getDay()],
+                        }
+                    })
+                    setDailyDate(forecastDailyDate);
+                    console.log('daily: ', dailyData);
+
                 } catch (error) {
                     console.error("Error fetching weather data:", error);
                 }
@@ -326,7 +343,7 @@ function WeatherChart({ userData }) {
                 label: "Temperature (°C)",
                 data: hourlyData
                     .slice(currentHourIndex, currentHourIndex + hoursPerPage)
-                    .map(hour => hour?.temp || null),  // hour가 정의되지 않은 경우 null로 설
+                    .map(hour => hour?.temp),
                 backgroundColor: "rgba(255, 99, 132, 0.2)",
                 pointRadius: 5,
                 datalabels: {
@@ -367,6 +384,7 @@ function WeatherChart({ userData }) {
         scales: {
             y: {
                 display: false,
+                beginAtZero: false, // Y축이 0부터 시작
             },
             x: {
                 grid: {
@@ -559,9 +577,6 @@ function WeatherChart({ userData }) {
 
                 <div className="chart-container">
 
-                    <button onClick={toggleView} className="toggle-view-button">
-                        {currentView === "rain" ? <p> <FontAwesomeIcon icon={faUmbrella} /> 강수량</p> : <p> <FontAwesomeIcon icon={faStarOfLife} /> 미세먼지 </p>}
-                    </button>
                     {!isFirstPage && <button className="prev-button" onClick={handlePrev}>&lt;</button>}
 
                     <div className="line-chart">
@@ -603,7 +618,9 @@ function WeatherChart({ userData }) {
                     )}
                 </div>
                 <br />
-
+                <button onClick={toggleView} className="toggle-view-button">
+                    {currentView === "rain" ? <p className="button-toggle"> <FontAwesomeIcon icon={faUmbrella} /> 강수량</p> : <p className="button-toggle"> <FontAwesomeIcon icon={faStarOfLife} /> 미세먼지 </p>}
+                </button>
             </div>
 
             <div>
@@ -611,6 +628,24 @@ function WeatherChart({ userData }) {
             </div>
 
             <br />
+
+            <div className="weather-forecast-container">
+                <div className="weather-forecast-item">
+                    <table className="forecast-table" cellspacing="5">
+
+                        {dailyData.map((dailyD, index) => (
+                            <tr key={index}>
+                                <td className="td-weekday">{dailyD.weekday}</td>
+                                <td>　　</td>
+                                <td><img className="img-forcast" src={weatherIcon_Map(dailyD.description)} /></td>
+                                <td>{dailyD.temp_max}°C</td>
+                                <td>{dailyD.temp_min}°C</td>
+                                <td className="td-precipiation"><FontAwesomeIcon icon={faDroplet} /> {dailyD.precipitation}%</td>
+                            </tr>
+                        ))}
+                    </table>
+                </div>
+            </div>
 
             <div className="collapse-content">
                 <Collapse
@@ -621,6 +656,8 @@ function WeatherChart({ userData }) {
                     items={getItems(panelStyle)}
                 />
             </div>
+
+            
 
         </div>
     );

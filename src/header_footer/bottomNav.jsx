@@ -26,9 +26,8 @@ const BottomNav = () => {
         <nav className="BottomNav_container" style={{color: isNight ? '#BDACF6' : '#5ba3ff' }}>
             <div onClick={()=>{navigate('/dashboard')}}> <FontAwesomeIcon icon={faHouse} /> </div>
             <div > 
-                {/* <FontAwesomeIcon icon={faShirt}/>  */}
                 {currentWeather && (
-                        <ChatgptApi weatherData={currentWeather}  userData={userInfo}/>
+                        <ChatgptApi weatherData={currentWeather} userData={userInfo} isRe_Rec={false}/>
                     )}
             </div>
             <div> <FontAwesomeIcon icon={faCalendar} onClick={()=>{navigate('/recCalendar', { state: { userInfo } })}}/> </div>
