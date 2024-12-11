@@ -1,0 +1,5 @@
+#map {
+  width: 100%; /* 전체 너비 */
+  height: 400px; /* 높이 고정 */
+  margin: 0 auto;
+}

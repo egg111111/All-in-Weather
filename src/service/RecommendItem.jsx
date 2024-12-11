@@ -2,8 +2,8 @@ import React from "react";
 import umbrellaImg from "/src/assets/images/umbrella1.png";
 import maskImg from "/src/assets/images/mask.png";
 import sunglassesImg from "/src/assets/images/sunglasses.png";
-import rainyIcon from "/src/icon/rainy.png";
-import snowIcon from "/src/icon/snow.png";
+import rainyIcon from "/src/assets/icon/rainy.png";
+import snowIcon from "/src/assets/icon/snow.png";
 import "./RecommendItem.css";
 
 function RecommendItem({ hourlyData, airPollData, uvIndex }) {

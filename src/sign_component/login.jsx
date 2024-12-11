@@ -6,6 +6,8 @@ import InputBox from "./InputBox";
 import googleImg from '/src/assets/googleSignIn.png';
 import naverImg from '/src/assets/naverSignIn.png';
 import kakaoImg from '/src/assets/kakaoSignIn.png';
+import { messaging } from '../firebase';
+import { getToken } from "firebase/messaging"; // getToken 가져오기
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
@@ -16,8 +18,97 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-
     const navigate = useNavigate();
+
+    // 알림 권한 요청 (앱 로드시 요청)
+    useEffect(() => {
+        // 알림 권한 요청
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission()
+                .then((permission) => {
+                    if (permission === 'granted') {
+                        console.log("알림 권한이 허용되었습니다.");
+                    } else {
+                        console.warn("알림 권한이 거부되었습니다.");
+                    }
+                });
+        }
+    
+        // 위치 권한 요청
+        const requestLocationPermission = () => {
+            if (navigator.geolocation) {
+                // 권한 상태를 확인
+                navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
+                    console.log("위치 권한 상태:", permissionStatus.state);
+                    
+                    if (permissionStatus.state === "granted") {
+                        // 이미 허용된 상태
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                console.log("위치 권한 허용됨:", position.coords);
+                            }
+                        );
+                    } else if (permissionStatus.state === "prompt") {
+                        // 권한 요청 가능
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                console.log("위치 권한 허용됨:", position.coords);
+                            },
+                            (error) => {
+                                console.error("위치 권한 거부됨:", error.message);
+                                Swal.fire({
+                                    title: "위치 권한 필요",
+                                    text: "날씨 정보를 제공하려면 위치 권한이 필요합니다.",
+                                    icon: "warning",
+                                    confirmButtonText: "확인",
+                                });
+                            }
+                        );
+                    } else if (permissionStatus.state === "denied") {
+                        // 이미 거부된 상태
+                        Swal.fire({
+                            title: "위치 권한 필요",
+                            text: "브라우저 설정에서 위치 권한을 허용해주세요.",
+                            icon: "warning",
+                            confirmButtonText: "확인",
+                        });
+                    }
+                });
+            } else {
+                console.error("이 브라우저는 Geolocation API를 지원하지 않습니다.");
+            }
+        };
+
+    
+        requestLocationPermission();
+    }, []);
+
+    useEffect(() => {
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                registrations.forEach((registration) => {
+                    registration.unregister().then(() => {
+                        console.log("서비스 워커가 login.jsx에서 비활성화되었습니다");
+                    });
+                });
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        const deleteCookies = () => {
+            // 삭제할 쿠키 이름 리스트
+            const cookiesToDelete = ["Authorization", "JSESSIONID"];
+            cookiesToDelete.forEach((cookieName) => {
+                document.cookie = `${cookieName}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+            });
+            console.log("쿠키 삭제 완료");
+        };
+    
+        // 페이지 로드 시 불필요한 쿠키 삭제
+        deleteCookies();
+    }, []);
+    
 
     const onSignUpButtonClickHandler = () => {
         navigate('/sign_up');
@@ -29,11 +120,6 @@ function Login() {
             return;
         }
         e.preventDefault();
-
-        // 기존 토큰 삭제
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('refreshToken');
-        // localStorage.removeItem('tokenExpiry');
 
         const loginData = { userId, password };
 
@@ -58,6 +144,36 @@ function Login() {
                 localStorage.setItem('refreshToken', refreshToken);
                 localStorage.setItem('userId', userId);
                 localStorage.setItem('tokenExpiry', tokenExpiry);
+
+                // FCM 토큰 발급 전 권한 확인
+                if (Notification.permission === 'granted') {
+                    getToken(messaging, { vapidKey: import.meta.env.VITE_FCM_vapidKey })
+                        .then((fcmToken) => {
+                            if (fcmToken) {
+                                console.log("FCM Token:", fcmToken);
+                                fetch(`${API_URL}/api/users/update/fcm_token`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        userId: userId,
+                                        fcmToken: fcmToken,
+                                    }),
+                                })
+                                .then(response => response.json())
+                                .then(data => console.log("FCM 토큰 업데이트 성공:", data))
+                                .catch(err => console.error("FCM 토큰 업데이트 실패:", err));
+                            } else {
+                                console.error("FCM 토큰을 발급받을 수 없습니다.");
+                            }
+                        })
+                        .catch((err) => {
+                            console.error("FCM 토큰 발급 실패:", err);
+                        });
+                } else {
+                    console.error("알림 권한이 허용되지 않았습니다.");
+                }
 
                 navigate('/dashboard');
             } else {

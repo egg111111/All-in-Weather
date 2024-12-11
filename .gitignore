@@ -32,3 +32,4 @@ dist-ssr
 openssl.cnf
 
 *.pem
+public/firebase-messaging-sw.js

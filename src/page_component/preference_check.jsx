@@ -69,7 +69,10 @@ function PreferenceCheck() {
                     showConfirmButton: false,
                     timer: 1500,
                 });
-                navigate('/dashboard'); // 성공 시 대시보드로 이동
+                localStorage.removeItem("token"); // 토큰 제거
+                localStorage.removeItem("refreshToken"); // 리프레시 토큰 제거
+                localStorage.removeItem("tokenExpiry"); // 만료 시간 제거
+                navigate('/login'); // 성공 시 로그인페이지로 이동
             } catch (error) {
                 console.error("Error saving preference:", error);
                 Swal.fire("오류", "취향 저장 중 문제가 발생했습니다.", "error");

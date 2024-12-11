@@ -136,8 +136,8 @@ function chatgptApi({ weatherData, userData, isRe_Rec }) {
             };
 
             // fetch 요청
-            const response = await fetch(`http://localhost:8080/api/users/style/${UserId}`, fetchOptions);
-
+            const response = await fetch(`${API_URL}/api/users/style/${UserId}`, fetchOptions);
+    
             // 응답 처리
             if (response.ok) {
                 const userStyles = await response.json(); // 여러 스타일을 받을 수 있음
@@ -371,8 +371,8 @@ function chatgptApi({ weatherData, userData, isRe_Rec }) {
 
         // API 호출
         try {
-            const response = await fetch(`http://localhost:8080/api/chat/save`, fetchOptions);
-
+            const response = await fetch(`${API_URL}/api/chat/save`, fetchOptions);
+    
             if (response.ok) {
                 console.log("GPT 결과값 서버 전송 성공");
             } else {
@@ -411,7 +411,7 @@ function chatgptApi({ weatherData, userData, isRe_Rec }) {
 
     const uploadDalleImageToS3 = async (dalleImageUrl) => {
         try {
-            const response = await fetch("http://localhost:8080/upload-dalle-image", {
+            const response = await fetch(`${API_URL}/api/upload-dalle-image`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

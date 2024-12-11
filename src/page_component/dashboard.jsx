@@ -29,6 +29,19 @@ function Dashboard() {
         dispatch(setTitle(' '));
     }, [dispatch]);
 
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('/firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('서비스 워커가 대시보드에서 다시 등록되었습니다:', registration.scope);
+                })
+                .catch((err) => {
+                    console.error('서비스 워커 등록 실패:', err);
+                });
+        }
+    }, []);
+
     // Ant Design Notification 설정 함수
     const openNotification = (title, description) => {
         notification.open({

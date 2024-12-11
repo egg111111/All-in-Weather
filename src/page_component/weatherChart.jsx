@@ -34,9 +34,9 @@ import { WeatherdataContext } from "../service/weatherdataProvider";
 
 import weatherDescKo from "../service/weatherDescKo";
 import "./weatherChart.css";
-import rainyIcon from '../icon/rainy.png';
-import cloudyIcon from '../icon/cloudy.png';
-import sunnyIcon from '../icon/sunshine.png';
+import rainyIcon from '../assets/icon/rainy.png';
+import cloudyIcon from '../assets/icon/cloudy.png';
+import sunnyIcon from '../assets/icon/sunshine.png';
 import RecommendItem from "../service/RecommendItem";
 
 import T_clounds from '/src/assets/images/weatherChart_icon/clouds.gif';
@@ -46,6 +46,8 @@ import T_snow from '/src/assets/images/weatherChart_icon/snow.gif';
 import T_sunny from '/src/assets/images/weatherChart_icon/sun_1.gif';
 import T_storm from '/src/assets/images/weatherChart_icon/storm.gif';
 import T_night from '/src/assets/images/weatherChart_icon/night.gif';
+import { isAction } from "redux";
+const API_URL = import.meta.env.VITE_API_URL;
 
 //미세먼지 아이콘 
 import rowIcon from '/src/assets/images/pm2_5/low.png';
@@ -88,7 +90,7 @@ function WeatherChart({ userData }) {
         hoursPerPage = 6;
     }
 
-    // Kakao Maps SDK 로드
+    //Kakao Maps SDK 로드
     const getAddressFromCoords = (latitude, longitude) => {
         if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
             const geocoder = new window.kakao.maps.services.Geocoder();
@@ -97,12 +99,13 @@ function WeatherChart({ userData }) {
                 if (status === window.kakao.maps.services.Status.OK) {
                     const region = result.find(item => item.region_type === 'H');
                     setAddress(region ? region.address_name : '위치 정보 없음');
+                    console.log("변환된 주소:", region ? region.address_name : '위치 정보 없음');
                 } else {
                     console.error(`Geocoder Error: ${status}`);
                 }
             });
         } else {
-            console.error("Kakao Maps SDK가 로드되지 않았습니다.");
+            console.error("Kakao Maps SDK가 vm에서 로드되지 않았습니다.");
         }
     };
 
@@ -112,23 +115,40 @@ function WeatherChart({ userData }) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
+                    console.log("현재 위치:", latitude, longitude);
                     setLocation({ latitude, longitude });
-
-                    // 위치 정보 서버로 전송
-                    sendLocationToServer(latitude, longitude);
                 },
                 (error) => {
-                    console.error("Error getting location:", error);
+                    console.error("Error getting location:", error.message);
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            console.error("사용자가 위치 권한을 거부했습니다.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            console.error("위치 정보를 사용할 수 없습니다.");
+                            break;
+                        case error.TIMEOUT:
+                            console.error("위치 요청이 시간 초과되었습니다.");
+                            break;
+                        default:
+                            console.error("알 수 없는 오류:", error);
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // 10초 대기
+                    maximumAge: 0   // 캐시된 위치 정보 사용 안 함
                 }
             );
         } else {
-            console.log("Geolocation is not supported by this browser.");
+            console.error("Geolocation이 브라우저에서 지원되지 않습니다.");
         }
     }, []);
 
-    // Kakao Maps SDK가 로드된 후 위치 정보를 기반으로 주소를 가져옴
+    //Kakao Maps SDK가 로드된 후 위치 정보를 기반으로 주소를 가져옴
     useEffect(() => {
-        if (location && location.latitude && location.longitude) {
+        if (location.latitude !== null && location.longitude !== null) {
+            console.log("주소 변환을 시작합니다:", location);
             getAddressFromCoords(location.latitude, location.longitude);
         } else {
             console.error("위치 정보가 없습니다:", location);
@@ -137,29 +157,27 @@ function WeatherChart({ userData }) {
 
 
     // 서버로 위치 정보 전송
-    const sendLocationToServer = (latitude, longitude) => {
-        const userId = userData.userId; // 사용자 ID
-        fetch('http://localhost:8080/api/location', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId,
-                latitude,
-                longitude,
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Location saved:', data);
-            })
-            .catch((error) => {
-                console.error('Error sending location to server:', error);
-            });
-    };
-
-
+    // const sendLocationToServer = (latitude, longitude) => {
+    //     const userId = userData.userId; // 사용자 ID
+    //    fetch(`${API_URL}/api/location`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             userId,
+    //             latitude,
+    //             longitude,
+    //         }),
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Location saved:', data);
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error sending location to server:', error);
+    //     });
+    // };
 
     // 날씨 데이터 가져오기
     useEffect(() => {
@@ -195,7 +213,7 @@ function WeatherChart({ userData }) {
 
                     //대기오염 api 가져오기 
                     const pollution_response = await fetch(
-                        `http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
+                        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.latitude}&lon=${location.longitude}&appid=${Weather_Key}&lang=kr`
                     );
                     const pollution_data = await pollution_response.json();
                     console.log(pollution_data);
@@ -556,7 +574,6 @@ function WeatherChart({ userData }) {
                 <h3 className="current-location"> <FontAwesomeIcon icon={faLocationDot} /> {address}</h3>
                 {currentWeather && (
                     <div className="current-weather">
-
                         <img src={weatherIcon_Map(currentWeather.id)}
                             alt="Weather Icon"
                             className="weather-icon" />

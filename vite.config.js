@@ -18,12 +18,12 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: './src/asserts/icon_192.png',
+            src: './src/asserts/icon/icon_192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: './src/asserts/icon_512.png',
+            src: './src/asserts/icon/icon_512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
@@ -35,12 +35,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    // https:
-    //   {
-    //       key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-    //       cert: fs.readFileSync(path.resolve(__dirname, 'localhost-cert.pem')),
-    //     },
-       // isHttps가 'true'일 때만 HTTPS 설정
+  
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL, // Spring Boot 서버 주소

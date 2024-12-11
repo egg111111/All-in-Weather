@@ -47,7 +47,7 @@ function Loading() {
                 text: "잠시 후 다시 시도해주세요.",
                 icon: "warning",
                 showConfirmButton: false,
-                timer: 1500,
+                timer: 3000,
             }).then(() => {
                 setTimeLimit(false);
                 navigate('/dashboard');

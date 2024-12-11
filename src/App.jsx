@@ -28,15 +28,64 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import { IsNightContext } from './service/isNight_Provider';
 
+import { messaging, onMessage } from './firebase'; 
 
 const App = () => {
   const { isNight } = useContext(IsNightContext);
 
   useEffect(() => {
+    // 조건부로 Firebase와 일반 서비스 워커 등록
+    if ('serviceWorker' in navigator) {
+      const currentPath = window.location.pathname;
+  
+      // Firebase 메시징 서비스 워커 등록
+      if (!currentPath.startsWith('/login') && !currentPath.startsWith('/oauth2')) {
+        navigator.serviceWorker
+          .register('/firebase-messaging-sw.js')
+          .then((registration) => {
+            console.log('Firebase Service Worker registered:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('Firebase Service Worker registration failed:', err);
+          });
+      }
+  
+      // 일반 서비스 워커 등록 (예: /sw.js)
+      if (!currentPath.startsWith('/login') && !currentPath.startsWith('/oauth2')) {
+        navigator.serviceWorker
+          .register('/sw.js')
+          .then((registration) => {
+            console.log('General Service Worker registered:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('General Service Worker registration failed:', err);
+          });
+      }
+    }
+  }, []);
+  
+
+  // // 포그라운드에서 알림 수신 리스너 추가
+  useEffect(() => {
+    onMessage(messaging, (payload) => {
+      console.log("Message received: ", payload);
+      const { title, body } = payload.notification;
+
+      if (Notification.permission === "granted") {
+        new Notification(title, {
+          body: body,
+          icon: "/firebase-logo.png",
+        });
+      }
+    });
+  }, []);
+  
+
+  useEffect(() => {
     // body 스타일 업데이트
     document.body.style.backgroundImage = isNight
-      ? "url('../src/assets/images/background_night.jpg')"
-      : "url('../src/assets/images/background.jpg')";
+      ? "url('/images/background_night.jpg')" // 절대 경로
+      : "url('/images/background.jpg')";
     document.body.style.backgroundRepeat = "no-repeat";
     document.body.style.backgroundAttachment = "fixed";
     document.body.style.backgroundSize = "cover";

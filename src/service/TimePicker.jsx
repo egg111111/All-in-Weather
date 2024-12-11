@@ -2,32 +2,37 @@ import React, { useState, useRef, useEffect } from "react";
 
 const TimePicker = ({ onTimeSelect }) => {
   const hours = Array.from({ length: 12 }, (_, i) => i + 1); // 1~12
-  const repeatedHours = [...hours, ...hours, ...hours]; // 시간을 반복하여 스크롤의 원형 효과를 줌
+  const repeatedHours = [...hours, ...hours, ...hours]; // 무한 스크롤용
   const [amPm, setAmPm] = useState("오전");
   const [selectedHour, setSelectedHour] = useState(1);
-  const scrollRef = useRef();
+  const scrollRef = useRef(null);
 
-  // 초기 스크롤 위치를 중앙으로 설정하여 중간에서 시작하도록 함
+  // 초기 스크롤 위치 설정
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = (repeatedHours.length / 3) * 40; // 초기 스크롤 위치 설정
+      scrollRef.current.scrollTop = (repeatedHours.length / 3) * 40; // 초기 중앙 위치로 스크롤
     }
   }, []);
 
+  // 스크롤 이벤트 처리
   const handleScroll = (event) => {
     const scrollTop = event.target.scrollTop;
-    const totalHeight = repeatedHours.length * 40;
-    const hourIndex = Math.round(scrollTop / 40) % 12;
+    const itemHeight = 40; // 각 시간 아이템의 높이
+    const totalHeight = repeatedHours.length * itemHeight;
 
-    // 스크롤이 맨 위 또는 맨 아래로 갔을 때 중앙으로 이동
-    if (scrollTop <= 40) {
-      event.target.scrollTop = scrollTop + hours.length * 40;
-    } else if (scrollTop >= totalHeight - hours.length * 40) {
-      event.target.scrollTop = scrollTop - hours.length * 40;
+    // 현재 선택된 시간 계산
+    const index = Math.round(scrollTop / itemHeight) % 12; // 0~11
+    const newHour = hours[index < 0 ? index + 12 : index]; // 음수 인덱스 보정
+
+    // 무한 스크롤 중앙 유지
+    if (scrollTop < itemHeight * hours.length) {
+      event.target.scrollTop = scrollTop + hours.length * itemHeight;
+    } else if (scrollTop > totalHeight - itemHeight * hours.length) {
+      event.target.scrollTop = scrollTop - hours.length * itemHeight;
     }
 
-    setSelectedHour(hours[hourIndex]);
-    onTimeSelect && onTimeSelect(`${amPm} ${hours[hourIndex]}시`);
+    setSelectedHour(newHour);
+    onTimeSelect && onTimeSelect(`${amPm} ${newHour}시`);
   };
 
   return (
@@ -40,13 +45,12 @@ const TimePicker = ({ onTimeSelect }) => {
         gap: "20px",
       }}
     >
-      {/* 오전/오후 버튼 세로 배치 */}
+      {/* 오전/오후 버튼 */}
       <div
         style={{
           display: "flex",
-          flexDirection: "column", // 세로 방향 배치
-          alignItems: "flex-start", // 버튼을 좌측 정렬
-          textAlign: "left",
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
       >
         <button
@@ -80,7 +84,7 @@ const TimePicker = ({ onTimeSelect }) => {
         </button>
       </div>
 
-      {/* 시간 선택 스크롤 */}
+      {/* 시간 스크롤 */}
       <div
         ref={scrollRef}
         style={{
