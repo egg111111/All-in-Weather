@@ -34,17 +34,36 @@ const App = () => {
   const { isNight } = useContext(IsNightContext);
 
   useEffect(() => {
+    // 조건부로 Firebase와 일반 서비스 워커 등록
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((err) => {
-          console.error('Service Worker registration failed:', err);
-        });
+      const currentPath = window.location.pathname;
+  
+      // Firebase 메시징 서비스 워커 등록
+      if (!currentPath.startsWith('/login') && !currentPath.startsWith('/oauth2')) {
+        navigator.serviceWorker
+          .register('/firebase-messaging-sw.js')
+          .then((registration) => {
+            console.log('Firebase Service Worker registered:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('Firebase Service Worker registration failed:', err);
+          });
+      }
+  
+      // 일반 서비스 워커 등록 (예: /sw.js)
+      if (!currentPath.startsWith('/login') && !currentPath.startsWith('/oauth2')) {
+        navigator.serviceWorker
+          .register('/sw.js')
+          .then((registration) => {
+            console.log('General Service Worker registered:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('General Service Worker registration failed:', err);
+          });
+      }
     }
   }, []);
+  
 
   // // 포그라운드에서 알림 수신 리스너 추가
   useEffect(() => {

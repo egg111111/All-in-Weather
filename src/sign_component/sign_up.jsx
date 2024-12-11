@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import InputBox from "./InputBox";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -193,6 +193,19 @@ export default function SignUp() {
       alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
+
+  // 서비스 워커 비활성화
+  useEffect(() => {
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+            registrations.forEach((registration) => {
+                registration.unregister().then(() => {
+                    console.log("sign_up.jsx에서 서비스 워커가 비활성화되었습니다");
+                });
+            });
+        });
+    }
+}, []);
 
   const handleNaverLogin = () => {
       window.location.href = `${API_URL}/oauth2/authorization/naver`;

@@ -54,6 +54,8 @@ function DeleteUser() {
                     timer: 1500
                 });
                 localStorage.removeItem('token');
+                localStorage.removeItem('tokenExpiry');
+                localStorage.removeItem('refreshToken');
                 localStorage.removeItem('userId');
                 navigate('/');
             } else {

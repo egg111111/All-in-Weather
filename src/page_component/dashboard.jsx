@@ -29,6 +29,19 @@ function Dashboard() {
         dispatch(setTitle(' '));
     }, [dispatch]);
 
+    useEffect(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('/firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('서비스 워커가 대시보드에서 다시 등록되었습니다:', registration.scope);
+                })
+                .catch((err) => {
+                    console.error('서비스 워커 등록 실패:', err);
+                });
+        }
+    }, []);
+
     // Ant Design Notification 설정 함수
     const openNotification = (title, description) => {
         notification.open({
@@ -74,9 +87,6 @@ function Dashboard() {
                 // 사용자 정보 가져온 후 알림을 요청
                 fetchNotifications(userId);
                 localStorage.setItem("nickname", userInfo.nickname);
-
-                 // **추가된 부분: 백그라운드 푸시 알림 테스트**
-                 sendTestNotification(userId);
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
@@ -97,18 +107,6 @@ function Dashboard() {
             .catch(error => {
                 console.error("Error fetching notifications:", error);
             });
-    };
-
-     // **추가된 함수: FCM 테스트 요청**
-     const sendTestNotification = async () => {
-        try {
-            const response = await axios.post(`${API_URL}/api/test/notify`);
-            console.log("테스트 알림 응답:", response.data);
-            alert("테스트 알림이 성공적으로 전송되었습니다!");
-        } catch (error) {
-            console.error("테스트 알림 전송 실패:", error);
-            alert("테스트 알림 전송에 실패했습니다.");
-        }
     };
 
     return (

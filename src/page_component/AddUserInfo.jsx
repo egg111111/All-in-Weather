@@ -9,7 +9,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const AddUserInfo = () => {
   const [age, setAge] = useState(20);
-  const [isAgeWheelEnabled, setIsAgeWheelEnabled] = useState(false);
   const [gender, setGender] = useState(null);
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -59,25 +58,6 @@ const AddUserInfo = () => {
         console.error("Error fetching social user info:", error);
       });
   }, []); // 컴포넌트 최초 렌더링 시 한 번만 실행
-
-  // 나이 변경 핸들러
-  const handleAgeChange = (e) => {
-    let newAge = parseInt(e.target.value);
-    if (newAge < 10) newAge = 10;
-    if (newAge > 80) newAge = 80;
-    setAge(newAge);
-  };
-
-  // 마우스 휠로 나이 변경
-  const handleAgeWheel = (e) => {
-    if (isAgeWheelEnabled) {
-      if (e.deltaY < 0 && age < 80) {
-        setAge((prevAge) => prevAge + 1);
-      } else if (e.deltaY > 0 && age > 10) {
-        setAge((prevAge) => prevAge - 1);
-      }
-    }
-  };
 
   // 다음 버튼 클릭 시
   const handleSubmit = async () => {
@@ -147,19 +127,18 @@ const AddUserInfo = () => {
             <InputBox
               type="number"
               value={age}
-              min="10"
-              max="80"
-              onChange={handleAgeChange}
-              onWheel={handleAgeWheel}
+              placeholder="나이"
+              onChange={(e) => {
+                const input = e.target.value;
+                setAge(input); // 실시간으로 입력값 업데이트
+              }}
+              onBlur={() => {
+                let validatedAge = parseInt(age, 10);
+                if (validatedAge < 10) validatedAge = 10;
+                if (validatedAge > 80) validatedAge = 80;
+                setAge(validatedAge); // 입력이 완료되었을 때 검증
+              }}
             />
-            <label>
-              <input
-                type="checkbox"
-                checked={isAgeWheelEnabled}
-                onChange={() => setIsAgeWheelEnabled(!isAgeWheelEnabled)}
-              />
-              마우스 휠 사용
-            </label>
           </div>
         </div>
 
