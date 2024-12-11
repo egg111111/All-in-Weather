@@ -106,7 +106,7 @@ function recView() {
                 weeksData[1].data.push(item);
             } else if (day >= 15 && day <= 21) {
                 weeksData[2].data.push(item);
-            } else if (day >= 22) {
+            }else if (day >= 22) {
                 weeksData[3].data.push(item);
             }
         });
@@ -159,7 +159,7 @@ function recView() {
                 </Select>
             </div>
 
-            <hr class="hr-2"></hr>
+            <hr className="hr-2"></hr>
             <div className="rec_background">
                 {currentWeekData.map((item, index) => (
                     <p
