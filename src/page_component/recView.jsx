@@ -98,9 +98,12 @@ function recView() {
         data.forEach((item) => {
             const date = new Date(item.createDate);
             const day = date.getDate();
+            console.log("day", day);
 
             if (day >= 1 && day <= 7) {
                 weeksData[0].data.push(item);
+            }else if (day >= 8 && day <= 14) {
+                weeksData[1].data.push(item);
             } else if (day >= 15 && day <= 21) {
                 weeksData[2].data.push(item);
             } else if (day >= 22) {
@@ -124,12 +127,12 @@ function recView() {
     const indexOfFirstItem = indexOfLastItem - itemPerPage;
     const currentItems = filteredView.slice(indexOfFirstItem, indexOfLastItem);
 
-    // const handlePageChange = (pageNumber) => {
-    //     setCurrentPage(pageNumber);
-    // }
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    }
 
-    // const totalPages = Math.ceil(filteredView.length / itemPerPage);
-    // const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+    const totalPages = Math.ceil(filteredView.length / itemPerPage);
+    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
 
     return (

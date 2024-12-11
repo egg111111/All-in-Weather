@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./RecentCalendar.css";
 import generalApiClient from "../service/generalApiClient";
 import ReactModal from "react-modal";
@@ -14,6 +14,9 @@ import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../reducers/titleSlice.js";
 
+import { UserDataContext } from "./userDataProvider.jsx";
+
+
 //아이콘 추가 임포트
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -23,8 +26,9 @@ moment.locale("ko"); // moment의 로케일을 한국어로 설정
 ReactModal.setAppElement("#root");
 
 const RecentCalendar = () => {
+  const {userInfo} = useContext(UserDataContext)
   const location = useLocation();
-  const { userInfo } = location.state || {};
+  const { userData } = location.state || {};
 
   const dispatch = useDispatch();
     
@@ -116,7 +120,7 @@ const RecentCalendar = () => {
   const [isModified, setIsModified] = useState(false); // 수정 여부 상태 추가
 
   const [weatherInfo, setWeatherInfo] = useState(null);
-  const userId = userData.userId;
+  const userId = userInfo.userId;
 
   const handleActivityNameChange = (e) => {
     setEditedActivityName(e.target.value);
